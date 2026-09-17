@@ -69,7 +69,7 @@ GitHub Actions does not require the Android NDK; FFmpeg JNI libraries are prebui
 
 ## Debug signing (overwrite installs)
 
-Local `./gradlew assembleDebug` and GitHub Actions CI use the same committed debug keystore so a new debug APK can overwrite an older TetraVideoPlayer debug install without uninstalling:
+Local `./gradlew assembleDebug` and GitHub Actions CI use the same committed **TetraVideoPlayerAD-only** debug keystore so a new debug APK can overwrite an older TetraVideoPlayer debug install without uninstalling. This keystore is **not** the FreeQuadPlayer / TetraView debug key — the two apps have different `applicationId` values and different certificates, so neither can overwrite the other on a device.
 
 - Keystore: [`app/debug.keystore`](app/debug.keystore)
 - Alias: `androiddebugkey`

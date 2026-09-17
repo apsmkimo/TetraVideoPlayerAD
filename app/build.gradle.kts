@@ -83,8 +83,9 @@ android {
 
     // SMCPKG_SUPPORT>>>Cursor012
     // Debug APKs (local + GitHub Actions assembleDebug) always use the committed
-    // project keystore at app/debug.keystore so overwrite-install upgrades work.
-    // Store password / key password / alias match the standard Android debug key.
+    // TetraVideoPlayerAD-only keystore at app/debug.keystore. This material is
+    // not shared with FreeQuadPlayer / TetraView, so the two apps cannot
+    // overwrite each other on a device.
     signingConfigs {
         getByName("debug") {
             storeFile = file("debug.keystore")
@@ -100,6 +101,8 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
+            // No dedicated release keystore is committed. Do not fall back to
+            // FreeQuadPlayer / TetraView signing material.
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

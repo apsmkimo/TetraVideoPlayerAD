@@ -70,6 +70,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -100,10 +101,13 @@ private val LabelWhite = Color(0xFFFFFFFF)
 // private val GlyphFill = Color(0xFFD5DCE8)
 // SMCPKG_SUPPORT<<<Cursor020
 // SMCPKG_SUPPORT>>>Cursor023
-private val NeonBlue = Color(0xFF5BA8FF)
-private val NeonYellow = Color(0xFFFFE14A)
-private val NeonGreen = Color(0xFF3DDC84)
-private val NeonPink = Color(0xFFFF6BCC)
+private val NeonGreen = Color(0xFF3DFF8A)
+private val NeonOrange = Color(0xFFFF8A2A)
+private val NeonRed = Color(0xFFFF3355)
+private val NeonCyan = Color(0xFF2DE8FF)
+private val TileGlassTop = Color(0xCC1A2436)
+private val TileGlassBottom = Color(0xEE080C14)
+private val TileHighlight = Color(0x33FFFFFF)
 // SMCPKG_SUPPORT<<<Cursor023
 
 @Composable
@@ -149,31 +153,31 @@ fun LauncherSelectionScreen(
                         tile = tile,
                         label = stringResource(R.string.layout_2x2_grid),
                         glyph = LayoutGlyph.GRID_2X2,
-                        accent = NeonBlue,
+                        accent = NeonGreen,
                         onClick = { onLayoutSelected(PlayerLayout.LANDSCAPE_2X2) },
                     )
                     GlassLayoutTile(
                         tile = tile,
                         label = stringResource(R.string.layout_1x4_stack),
                         glyph = LayoutGlyph.STACK_1X4,
-                        accent = NeonYellow,
+                        accent = NeonOrange,
                         onClick = { onLayoutSelected(PlayerLayout.VERTICAL_1X4) },
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
                     GlassLayoutTile(
                         tile = tile,
-                        label = stringResource(R.string.layout_1x2_vertical),
-                        glyph = LayoutGlyph.VERTICAL_1X2,
-                        accent = NeonGreen,
-                        onClick = { onLayoutSelected(PlayerLayout.VERTICAL_1X2) },
+                        label = stringResource(R.string.layout_2x1_horizontal),
+                        glyph = LayoutGlyph.HORIZONTAL_2X1,
+                        accent = NeonRed,
+                        onClick = { onLayoutSelected(PlayerLayout.LANDSCAPE_2X1) },
                     )
                     GlassLayoutTile(
                         tile = tile,
-                        label = stringResource(R.string.layout_2x1_horizontal),
-                        glyph = LayoutGlyph.HORIZONTAL_2X1,
-                        accent = NeonPink,
-                        onClick = { onLayoutSelected(PlayerLayout.LANDSCAPE_2X1) },
+                        label = stringResource(R.string.layout_1x2_vertical),
+                        glyph = LayoutGlyph.VERTICAL_1X2,
+                        accent = NeonCyan,
+                        onClick = { onLayoutSelected(PlayerLayout.VERTICAL_1X2) },
                     )
                 }
             }
@@ -222,28 +226,23 @@ private fun GlassLayoutTile(
     // SMCPKG_SUPPORT<<<Cursor023
     onClick: () -> Unit,
 ) {
-    val corner = tile * 0.28f
+    val corner = tile * 0.22f
     val shape = RoundedCornerShape(corner)
-    val iconSize = tile * 0.42f
+    val iconSize = tile * 0.46f
     Box(
         modifier = Modifier
             .size(tile)
             .shadow(
-                elevation = 22.dp,
+                elevation = 18.dp,
                 shape = shape,
-                ambientColor = accent.copy(alpha = 0.55f),
-                spotColor = accent.copy(alpha = 0.40f),
+                ambientColor = accent.copy(alpha = 0.42f),
+                spotColor = accent.copy(alpha = 0.28f),
             )
             .clip(shape)
             .background(
-                Brush.verticalGradient(
-                    listOf(
-                        accent.copy(alpha = 0.28f),
-                        Color(0xCC10141C),
-                    ),
-                ),
+                Brush.verticalGradient(listOf(TileGlassTop, TileGlassBottom)),
             )
-            .border(1.5.dp, accent.copy(alpha = 0.62f), shape)
+            .border(1.4.dp, accent.copy(alpha = 0.55f), shape)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -251,16 +250,21 @@ private fun GlassLayoutTile(
                 onClick = onClick,
             ),
     ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 1.dp)
+                .size(width = tile * 0.72f, height = tile * 0.18f)
+                .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
+                .background(TileHighlight),
+        )
         Canvas(
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(bottom = tile * 0.14f)
                 .size(iconSize),
         ) {
-            // SMCPKG_SUPPORT>>>Cursor023
-            // drawLayoutGlyph(glyph)
-            drawLayoutGlyph(glyph, accent)
-            // SMCPKG_SUPPORT<<<Cursor023
+            drawLayoutGlyph(glyph)
         }
         Text(
             text = label,
@@ -274,42 +278,60 @@ private fun GlassLayoutTile(
     }
 }
 
-private fun DrawScope.drawLayoutGlyph(glyph: LayoutGlyph, accent: Color) {
+private data class NeonPaneSpec(
+    val start: Color,
+    val end: Color,
+)
+
+private val GridPanes = listOf(
+    NeonPaneSpec(Color(0xFF3DFF8A), Color(0xFF7A4DFF)),
+    NeonPaneSpec(Color(0xFF2EE6A8), Color(0xFF9B4DFF)),
+    NeonPaneSpec(Color(0xFF2AD4C0), Color(0xFF6B3DFF)),
+    NeonPaneSpec(Color(0xFF3DFFB0), Color(0xFFC04DFF)),
+)
+
+private val StackPanes = listOf(
+    NeonPaneSpec(Color(0xFFFFB03A), Color(0xFFFF7A2A)),
+    NeonPaneSpec(Color(0xFFFF8A3A), Color(0xFFE04080)),
+    NeonPaneSpec(Color(0xFFFF5A8A), Color(0xFFC04DFF)),
+    NeonPaneSpec(Color(0xFFE040C0), Color(0xFF8B3DFF)),
+)
+
+private val HorizontalPanes = listOf(
+    NeonPaneSpec(Color(0xFFFF2B4A), Color(0xFFFF3D7A)),
+    NeonPaneSpec(Color(0xFFFF2D8A), Color(0xFFFF2DB8)),
+)
+
+private val VerticalPanes = listOf(
+    NeonPaneSpec(Color(0xFF2DE8FF), Color(0xFF3DB8FF)),
+    NeonPaneSpec(Color(0xFFFFD24A), Color(0xFFFF9A2A)),
+)
+
+private fun DrawScope.drawLayoutGlyph(glyph: LayoutGlyph) {
     val w = size.width
     val h = size.height
     when (glyph) {
         LayoutGlyph.GRID_2X2 -> {
-            val gap = w * 0.18f
+            val gap = w * 0.16f
             val cell = (w - gap) / 2f
-            val radius = CornerRadius(cell * 0.38f)
-            val xs = floatArrayOf(0f, cell + gap)
-            val ys = floatArrayOf(0f, cell + gap)
-            for (x in xs) {
-                for (y in ys) {
-                    drawNeonPane(accent, Offset(x, y), Size(cell, cell), radius)
-                }
+            val radius = CornerRadius(cell * 0.34f)
+            val origins = listOf(
+                Offset(0f, 0f),
+                Offset(cell + gap, 0f),
+                Offset(0f, cell + gap),
+                Offset(cell + gap, cell + gap),
+            )
+            origins.forEachIndexed { index, origin ->
+                drawNeonPane(GridPanes[index], origin, Size(cell, cell), radius)
             }
         }
         LayoutGlyph.STACK_1X4 -> {
-            val gap = h * 0.14f
+            val gap = h * 0.12f
             val barH = (h - 3f * gap) / 4f
-            val radius = CornerRadius(barH * 0.5f)
+            val radius = CornerRadius(barH * 0.55f)
             repeat(4) { index ->
                 drawNeonPane(
-                    accent,
-                    Offset(0f, index * (barH + gap)),
-                    Size(w, barH),
-                    radius,
-                )
-            }
-        }
-        LayoutGlyph.VERTICAL_1X2 -> {
-            val gap = h * 0.18f
-            val barH = (h - gap) / 2f
-            val radius = CornerRadius(barH * 0.48f)
-            repeat(2) { index ->
-                drawNeonPane(
-                    accent,
+                    StackPanes[index],
                     Offset(0f, index * (barH + gap)),
                     Size(w, barH),
                     radius,
@@ -317,14 +339,27 @@ private fun DrawScope.drawLayoutGlyph(glyph: LayoutGlyph, accent: Color) {
             }
         }
         LayoutGlyph.HORIZONTAL_2X1 -> {
-            val gap = w * 0.18f
+            val gap = w * 0.16f
             val barW = (w - gap) / 2f
-            val radius = CornerRadius(barW * 0.48f)
+            val radius = CornerRadius(barW * 0.28f)
             repeat(2) { index ->
                 drawNeonPane(
-                    accent,
+                    HorizontalPanes[index],
                     Offset(index * (barW + gap), 0f),
                     Size(barW, h),
+                    radius,
+                )
+            }
+        }
+        LayoutGlyph.VERTICAL_1X2 -> {
+            val gap = h * 0.16f
+            val barH = (h - gap) / 2f
+            val radius = CornerRadius(barH * 0.28f)
+            repeat(2) { index ->
+                drawNeonPane(
+                    VerticalPanes[index],
+                    Offset(0f, index * (barH + gap)),
+                    Size(w, barH),
                     radius,
                 )
             }
@@ -333,27 +368,48 @@ private fun DrawScope.drawLayoutGlyph(glyph: LayoutGlyph, accent: Color) {
 }
 
 private fun DrawScope.drawNeonPane(
-    accent: Color,
+    spec: NeonPaneSpec,
     topLeft: Offset,
     size: Size,
     corner: CornerRadius,
 ) {
-    val glowPad = size.minDimension * 0.12f
+    val glowPad = size.minDimension * 0.14f
     drawRoundRect(
-        color = accent.copy(alpha = 0.28f),
+        brush = Brush.radialGradient(
+            colors = listOf(spec.start.copy(alpha = 0.42f), Color.Transparent),
+            center = Offset(topLeft.x + size.width / 2f, topLeft.y + size.height / 2f),
+            radius = size.minDimension,
+        ),
         topLeft = Offset(topLeft.x - glowPad, topLeft.y - glowPad),
         size = Size(size.width + glowPad * 2f, size.height + glowPad * 2f),
         cornerRadius = CornerRadius(corner.x + glowPad),
     )
     drawRoundRect(
-        brush = Brush.verticalGradient(
-            colors = listOf(Color.White.copy(alpha = 0.92f), accent),
-            startY = topLeft.y,
-            endY = topLeft.y + size.height,
+        brush = Brush.linearGradient(
+            colors = listOf(spec.start, spec.end),
+            start = topLeft,
+            end = Offset(topLeft.x + size.width, topLeft.y + size.height),
         ),
         topLeft = topLeft,
         size = size,
         cornerRadius = corner,
+    )
+    drawRoundRect(
+        brush = Brush.verticalGradient(
+            colors = listOf(Color.White.copy(alpha = 0.38f), Color.Transparent),
+            startY = topLeft.y,
+            endY = topLeft.y + size.height * 0.55f,
+        ),
+        topLeft = topLeft,
+        size = size,
+        cornerRadius = corner,
+    )
+    drawRoundRect(
+        color = Color.White.copy(alpha = 0.28f),
+        topLeft = topLeft,
+        size = size,
+        cornerRadius = corner,
+        style = Stroke(width = size.minDimension * 0.06f),
     )
 }
 // SMCPKG_SUPPORT<<<Cursor020
