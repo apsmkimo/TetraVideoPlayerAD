@@ -205,12 +205,22 @@ fun LauncherSelectionScreen(
                             LayoutTile(
                                 tile = tile,
                                 label = stringResource(R.string.layout_2x1_horizontal),
+                                // SMCPKG_SUPPORT>>>Cursor033
+                                // Artwork pixels: two side-by-side tall panes (||) for
+                                // LANDSCAPE_2X1. The previous glyph in this file was the
+                                // stacked bars that belong on 1x2; icons were swapped
+                                // in the PNGs (labels / onClick unchanged).
+                                // SMCPKG_SUPPORT<<<Cursor033
                                 artwork = R.drawable.layout_2x1_horizontal,
                                 onClick = { pick(PlayerLayout.LANDSCAPE_2X1) },
                             )
                             LayoutTile(
                                 tile = tile,
                                 label = stringResource(R.string.layout_1x2_vertical),
+                                // SMCPKG_SUPPORT>>>Cursor033
+                                // Artwork pixels: two stacked wide panes (=), same visual
+                                // language as 1x4. Do not assign layout_2x1_horizontal here.
+                                // SMCPKG_SUPPORT<<<Cursor033
                                 artwork = R.drawable.layout_1x2_vertical,
                                 onClick = { pick(PlayerLayout.VERTICAL_1X2) },
                             )

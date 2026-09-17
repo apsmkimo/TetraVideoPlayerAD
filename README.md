@@ -30,7 +30,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 **Package ID:** `com.apsmkimo.tetravideoplayer`  
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 35  
-**Version:** 1.0.3 (`versionCode` 103)
+**Version:** 1.0.4 (`versionCode` 104)
 
 Official `androidx.media3:media3-decoder-ffmpeg` is not published on Maven Central. TetraVideoPlayer vendors the Media3 1.11.0 `decoder_ffmpeg` module with a prebuilt `libffmpegJNI.so` plus LGPL-only shared FFmpeg libraries. Modern H.264/HEVC streams stay on hardware MediaCodec; FFmpeg is preferred for allowlisted legacy codecs. See [decoder-ffmpeg/README.md](decoder-ffmpeg/README.md) for native rebuild notes.
 
