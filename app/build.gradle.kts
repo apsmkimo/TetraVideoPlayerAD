@@ -24,7 +24,8 @@ plugins {
 // val APP_VERSION_NAME = "1.0.13"
 // SMCPKG_SUPPORT>>>Cursor030
 // val APP_VERSION_NAME = "1.0.14"
-val APP_VERSION_NAME = "1.0.0"
+// val APP_VERSION_NAME = "1.0.0"
+val APP_VERSION_NAME = "1.0.1"
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
 // SMCPKG_SUPPORT<<<Cursor011
@@ -83,8 +84,9 @@ android {
 
     // SMCPKG_SUPPORT>>>Cursor012
     // Debug APKs (local + GitHub Actions assembleDebug) always use the committed
-    // project keystore at app/debug.keystore so overwrite-install upgrades work.
-    // Store password / key password / alias match the standard Android debug key.
+    // TetraVideoPlayerAD-only keystore at app/debug.keystore. This material is
+    // not shared with FreeQuadPlayer / TetraView, so the two apps cannot
+    // overwrite each other on a device.
     signingConfigs {
         getByName("debug") {
             storeFile = file("debug.keystore")
@@ -100,6 +102,8 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
+            // No dedicated release keystore is committed. Do not fall back to
+            // FreeQuadPlayer / TetraView signing material.
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -171,4 +175,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.video)
     // SMCPKG_SUPPORT<<<Cursor005
+
+    implementation(libs.play.services.ads)
 }
