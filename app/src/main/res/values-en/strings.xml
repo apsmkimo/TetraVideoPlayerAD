@@ -69,7 +69,10 @@
     <string name="about_rate_us">Rate Us</string>
     <!-- SMCPKG_SUPPORT<<<Cursor031 -->
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
-    <string name="remove_ads_test">Remove ads (test)</string>
-    <string name="ads_removed">Ads removed. Long-press to restore test ads.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor032 -->
+    <!-- <string name="remove_ads_test">Remove ads (test)</string> -->
+    <!-- <string name="ads_removed">Ads removed. Long-press to restore test ads.</string> -->
+    <string name="remove_ads_test">Remove ads</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor032 -->
     <!-- SMCPKG_SUPPORT<<<Cursor021 -->
 </resources>
