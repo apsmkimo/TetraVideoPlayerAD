@@ -24,7 +24,8 @@ plugins {
 // val APP_VERSION_NAME = "1.0.13"
 // SMCPKG_SUPPORT>>>Cursor030
 // val APP_VERSION_NAME = "1.0.14"
-val APP_VERSION_NAME = "1.0.0"
+// val APP_VERSION_NAME = "1.0.0"
+val APP_VERSION_NAME = "1.0.1"
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
 // SMCPKG_SUPPORT<<<Cursor011
@@ -174,4 +175,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.video)
     // SMCPKG_SUPPORT<<<Cursor005
+
+    implementation(libs.play.services.ads)
 }

@@ -62,8 +62,10 @@
     <string name="about_license_missing">LICENSE text is missing from the APK. See https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE</string>
     <string name="about_source_label">Repository</string>
     <string name="about_components_title">Open-source components</string>
-    <string name="about_components_body">Media3 ExoPlayer (Apache 2.0); Media3 FFmpeg extension (Apache 2.0); FFmpeg 6.0 LGPL-only (no --enable-gpl / --enable-nonfree), dynamically linked as shared .so libraries; Coil (Apache 2.0); AndroidX / Jetpack Compose (Apache 2.0). The application itself is proprietary. Third-party license texts are in the repository.</string>
+    <string name="about_components_body">Media3 ExoPlayer (Apache 2.0); Media3 FFmpeg extension (Apache 2.0); FFmpeg 6.0 LGPL-only (no --enable-gpl / --enable-nonfree), dynamically linked as shared .so libraries; Coil (Apache 2.0); AndroidX / Jetpack Compose (Apache 2.0); Google Mobile Ads SDK / Google Play services (Google terms). The application itself is proprietary. Third-party license texts are in the repository.</string>
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
-    <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos. This app does not request MANAGE_EXTERNAL_STORAGE.</string>
+    <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load Google test ads on the layout picker. This app does not request MANAGE_EXTERNAL_STORAGE.</string>
+    <string name="remove_ads_test">Remove ads (test)</string>
+    <string name="ads_removed">Ads removed. Long-press to restore test ads.</string>
     <!-- SMCPKG_SUPPORT<<<Cursor021 -->
 </resources>

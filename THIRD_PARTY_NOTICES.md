@@ -17,6 +17,19 @@ Official `androidx.media3:media3-decoder-ffmpeg` is not published on Maven.
 Apache License 2.0  
 https://github.com/coil-kt/coil
 
+## Google Mobile Ads SDK (Google Play services)
+
+Google Play services / Google Mobile Ads SDK is used to show Google-provided
+test banners and a test interstitial on the layout picker.
+
+Copyright Google LLC. Use is subject to the Google APIs Terms of Service and
+the Google Mobile Ads SDK terms:
+
+https://developers.google.com/admob  
+https://developers.google.com/admob/android/quick-start
+
+This build uses Google official test application and ad unit IDs only.
+
 ## FFmpeg 6.0 (LGPL-only, dynamically linked)
 
 FFmpeg is used under **LGPL 2.1 or later**.
