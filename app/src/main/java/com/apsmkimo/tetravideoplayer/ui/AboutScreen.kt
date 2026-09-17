@@ -34,6 +34,9 @@ package com.apsmkimo.tetravideoplayer.ui
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
 
+// SMCPKG_SUPPORT>>>Cursor031
+import android.content.ActivityNotFoundException
+// SMCPKG_SUPPORT<<<Cursor031
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -51,13 +54,18 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+// SMCPKG_SUPPORT>>>Cursor031
+import android.content.ActivityNotFoundException
+// SMCPKG_SUPPORT<<<Cursor031
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+// SMCPKG_SUPPORT>>>Cursor031
+// import androidx.compose.material3.TextButton
+// SMCPKG_SUPPORT<<<Cursor031
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -65,10 +73,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
+// SMCPKG_SUPPORT>>>Cursor031
+// import androidx.compose.ui.text.font.FontFamily
+// SMCPKG_SUPPORT<<<Cursor031
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+// SMCPKG_SUPPORT>>>Cursor031
+// import androidx.compose.ui.unit.sp
+// SMCPKG_SUPPORT<<<Cursor031
 // SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
@@ -79,15 +91,27 @@ private val AboutMuted = Color(0xFFB4C0D0)
 // SMCPKG_SUPPORT>>>Cursor030
 // private const val SOURCE_URL = "https://github.com/apsmkimo/FreeQuadPlayer"
 // private const val LICENSE_URL = "https://github.com/apsmkimo/FreeQuadPlayer/blob/main/LICENSE"
-private const val SOURCE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD"
-private const val LICENSE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE"
+// SMCPKG_SUPPORT>>>Cursor031
+// private const val SOURCE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD"
+// private const val LICENSE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE"
+private const val PRIVACY_POLICY_URL =
+    "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+private const val PLAY_STORE_PACKAGE = "com.apsmkimo.tetravideoplayer"
+private const val PLAY_STORE_MARKET_URI = "market://details?id=$PLAY_STORE_PACKAGE"
+private const val PLAY_STORE_WEB_URI =
+    "https://play.google.com/store/apps/details?id=$PLAY_STORE_PACKAGE"
+// SMCPKG_SUPPORT<<<Cursor031
 // SMCPKG_SUPPORT<<<Cursor030
-private const val LICENSE_ASSET = "LICENSE"
+// SMCPKG_SUPPORT>>>Cursor031
+// private const val LICENSE_ASSET = "LICENSE"
+// SMCPKG_SUPPORT<<<Cursor031
 
 @Composable
 fun AboutScreen(
     onClose: () -> Unit,
-    onViewLicense: () -> Unit,
+    // SMCPKG_SUPPORT>>>Cursor031
+    // onViewLicense: () -> Unit,
+    // SMCPKG_SUPPORT<<<Cursor031
     modifier: Modifier = Modifier,
 ) {
     BackHandler(onBack = onClose)
@@ -133,78 +157,94 @@ fun AboutScreen(
                 color = AboutText,
             )
             Text(text = versionLabel, color = AboutMuted)
-            Text(
-                text = stringResource(R.string.about_gpl_statement),
-                color = AboutText,
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = onViewLicense) {
-                    Text(stringResource(R.string.about_view_license))
-                }
-                OutlinedButton(onClick = { openUrl(context, LICENSE_URL) }) {
-                    Text(stringResource(R.string.about_license_online))
-                }
+            // SMCPKG_SUPPORT>>>Cursor031
+            // Text(
+            //     text = stringResource(R.string.about_gpl_statement),
+            //     color = AboutText,
+            // )
+            // Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            //     Button(onClick = onViewLicense) {
+            //         Text(stringResource(R.string.about_view_license))
+            //     }
+            //     OutlinedButton(onClick = { openUrl(context, LICENSE_URL) }) {
+            //         Text(stringResource(R.string.about_license_online))
+            //     }
+            // }
+            // Text(
+            //     text = stringResource(R.string.about_source_label),
+            //     fontWeight = FontWeight.SemiBold,
+            //     color = AboutText,
+            // )
+            // TextButton(onClick = { openUrl(context, SOURCE_URL) }) {
+            //     Text(SOURCE_URL)
+            // }
+            // Text(
+            //     text = stringResource(R.string.about_components_title),
+            //     fontWeight = FontWeight.SemiBold,
+            //     color = AboutText,
+            // )
+            // Text(
+            //     text = stringResource(R.string.about_components_body),
+            //     color = AboutMuted,
+            // )
+            // Text(
+            //     text = stringResource(R.string.about_permissions),
+            //     color = AboutMuted,
+            // )
+            Button(
+                onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.about_privacy_policy))
             }
-            Text(
-                text = stringResource(R.string.about_source_label),
-                fontWeight = FontWeight.SemiBold,
-                color = AboutText,
-            )
-            TextButton(onClick = { openUrl(context, SOURCE_URL) }) {
-                Text(SOURCE_URL)
+            OutlinedButton(
+                onClick = { openPlayStoreListing(context) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(stringResource(R.string.about_rate_us))
             }
-            Text(
-                text = stringResource(R.string.about_components_title),
-                fontWeight = FontWeight.SemiBold,
-                color = AboutText,
-            )
-            Text(
-                text = stringResource(R.string.about_components_body),
-                color = AboutMuted,
-            )
-            Text(
-                text = stringResource(R.string.about_permissions),
-                color = AboutMuted,
-            )
+            // SMCPKG_SUPPORT<<<Cursor031
         }
     }
 }
 
-@Composable
-fun LicenseTextScreen(
-    onClose: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    BackHandler(onBack = onClose)
-    val context = LocalContext.current
-    val licenseText = remember {
-        runCatching {
-            context.assets.open(LICENSE_ASSET).bufferedReader().use { it.readText() }
-        }.getOrElse { context.getString(R.string.about_license_missing) }
-    }
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AboutBackground)
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-    ) {
-        AboutTopBar(
-            title = stringResource(R.string.about_license_title),
-            onClose = onClose,
-        )
-        Text(
-            text = licenseText,
-            color = AboutText,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 12.sp,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        )
-    }
-}
+// SMCPKG_SUPPORT>>>Cursor031
+// @Composable
+// fun LicenseTextScreen(
+//     onClose: () -> Unit,
+//     modifier: Modifier = Modifier,
+// ) {
+//     BackHandler(onBack = onClose)
+//     val context = LocalContext.current
+//     val licenseText = remember {
+//         runCatching {
+//             context.assets.open(LICENSE_ASSET).bufferedReader().use { it.readText() }
+//         }.getOrElse { context.getString(R.string.about_license_missing) }
+//     }
+//     Column(
+//         modifier = modifier
+//             .fillMaxSize()
+//             .background(AboutBackground)
+//             .statusBarsPadding()
+//             .navigationBarsPadding(),
+//     ) {
+//         AboutTopBar(
+//             title = stringResource(R.string.about_license_title),
+//             onClose = onClose,
+//         )
+//         Text(
+//             text = licenseText,
+//             color = AboutText,
+//             fontFamily = FontFamily.Monospace,
+//             fontSize = 12.sp,
+//             modifier = Modifier
+//                 .fillMaxSize()
+//                 .verticalScroll(rememberScrollState())
+//                 .padding(horizontal = 16.dp, vertical = 8.dp),
+//         )
+//     }
+// }
+// SMCPKG_SUPPORT<<<Cursor031
 
 @Composable
 private fun AboutTopBar(
@@ -237,3 +277,14 @@ private fun openUrl(context: android.content.Context, url: String) {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor031
+private fun openPlayStoreListing(context: android.content.Context) {
+    val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_STORE_MARKET_URI))
+    try {
+        context.startActivity(marketIntent)
+    } catch (_: ActivityNotFoundException) {
+        openUrl(context, PLAY_STORE_WEB_URI)
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor031
