@@ -1,0 +1,65 @@
+// SMCPKG_SUPPORT>>>Cursor030
+/*
+ * TetraVideoPlayer
+ * Copyright (C) 2026 apsmkimo
+ * All rights reserved.
+ *
+ * This software is proprietary. Unauthorized copying, distribution,
+ * modification, or use is strictly prohibited except as expressly
+ * permitted in writing by the copyright holder.
+ */
+// SMCPKG_SUPPORT<<<Cursor030
+/*
+ * TetraView / FreeQuadPlayer
+ * Copyright (C) 2026 apsmkimo
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// SMCPKG_SUPPORT>>>Cursor021
+// package com.example.quadvideoplayer.ui.theme
+// SMCPKG_SUPPORT>>>Cursor030
+// package com.apsmkimo.tetraview.ui.theme
+package com.apsmkimo.tetravideoplayer.ui.theme
+// SMCPKG_SUPPORT<<<Cursor030
+// SMCPKG_SUPPORT<<<Cursor021
+
+import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+
+val Typography = Typography(
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+    ),
+    labelLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+    ),
+)

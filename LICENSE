@@ -1,0 +1,23 @@
+Copyright (c) 2026 apsmkimo / A.P.S.Mobile
+All rights reserved.
+
+TetraVideoPlayer is proprietary software. Unauthorized copying, distribution,
+modification, public display, or use of this software, via any medium, is
+strictly prohibited except as expressly permitted in writing by the copyright
+holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+This application incorporates third-party components that remain under their
+own licenses. Those licenses are not replaced by this notice:
+
+  - AndroidX / Jetpack Compose / Media3 ExoPlayer and the vendored Media3
+    decoder_ffmpeg Java/JNI sources: Apache License 2.0
+  - Coil: Apache License 2.0
+  - FFmpeg 6.0: LGPL 2.1 or later (LGPL-only configure: no --enable-gpl and
+    no --enable-nonfree). FFmpeg is dynamically linked as shared .so
+    libraries. See THIRD_PARTY_NOTICES.md and decoder-ffmpeg/README.md.
+
+The application as a whole is not licensed under GPLv3.
