@@ -108,6 +108,8 @@ import com.apsmkimo.tetravideoplayer.data.LocalVideoFolder
 import com.apsmkimo.tetravideoplayer.data.LocalVideoStore
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
+import com.apsmkimo.tetravideoplayer.ads.AdPreferences
+import com.apsmkimo.tetravideoplayer.ads.BannerAd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -222,20 +224,30 @@ fun VideoPickerScreen(
                 }
 
                 selectedFolder == null -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 160.dp),
+                    val adsRemoved = AdPreferences.isAdRemoved(context)
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding),
-                        contentPadding = PaddingValues(12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        items(folders, key = { it.bucketId }) { folder ->
-                            FolderPickerItem(
-                                folder = folder,
-                                onClick = { selectedFolder = folder },
-                            )
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = 160.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentPadding = PaddingValues(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            items(folders, key = { it.bucketId }) { folder ->
+                                FolderPickerItem(
+                                    folder = folder,
+                                    onClick = { selectedFolder = folder },
+                                )
+                            }
+                        }
+                        if (!adsRemoved) {
+                            BannerAd(Modifier.fillMaxWidth())
                         }
                     }
                 }
