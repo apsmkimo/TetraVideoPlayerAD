@@ -30,6 +30,7 @@
 package com.apsmkimo.tetravideoplayer.ui
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,12 +52,15 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+// SMCPKG_SUPPORT>>>Cursor033
+// import androidx.compose.material.icons.filled.Star
+// import androidx.compose.material.icons.outlined.Star
+// SMCPKG_SUPPORT<<<Cursor033
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,10 +77,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import com.apsmkimo.tetravideoplayer.BuildConfig
 import com.apsmkimo.tetravideoplayer.R
+import com.apsmkimo.tetravideoplayer.TetraVideoPlayerApp
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
-import com.apsmkimo.tetravideoplayer.ads.AdSession
+// SMCPKG_SUPPORT>>>Cursor033
+// import com.apsmkimo.tetravideoplayer.ads.AdSession
+// SMCPKG_SUPPORT<<<Cursor033
 import com.apsmkimo.tetravideoplayer.ads.BannerAd
+import com.apsmkimo.tetravideoplayer.ads.RemoveAdsBilling
 import com.apsmkimo.tetravideoplayer.ads.maybeShowInterstitialOnce
 import com.apsmkimo.tetravideoplayer.ads.preloadInterstitial
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
@@ -84,7 +93,9 @@ import kotlinx.coroutines.launch
 
 private val ScreenBlack = Color(0xFF000000)
 private val LabelWhite = Color(0xFFFFFFFF)
-private val StarGold = Color(0xFFFFC107)
+// SMCPKG_SUPPORT>>>Cursor033
+// private val StarGold = Color(0xFFFFC107)
+// SMCPKG_SUPPORT<<<Cursor033
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -103,6 +114,17 @@ fun LauncherSelectionScreen(
     val scope = rememberCoroutineScope()
     var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
     var gating by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor033
+    val billing = (context.applicationContext as TetraVideoPlayerApp).removeAdsBilling
+    DisposableEffect(billing) {
+        val listener = RemoveAdsBilling.EntitlementListener { owned ->
+            adsRemoved = owned
+        }
+        billing.addListener(listener)
+        adsRemoved = AdPreferences.isAdRemoved(context)
+        onDispose { billing.removeListener(listener) }
+    }
+    // SMCPKG_SUPPORT<<<Cursor033
 
     LaunchedEffect(adsRemoved) {
         if (!adsRemoved) {
@@ -197,46 +219,108 @@ fun LauncherSelectionScreen(
                 .padding(end = 4.dp, top = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x33202A3A))
-                    .combinedClickable(
-                        onClick = {
-                            AdPreferences.setAdRemoved(context, true)
-                            adsRemoved = true
-                        },
-                        onLongClick = {
-                            AdPreferences.setAdRemoved(context, false)
-                            AdSession.interstitialConsumed = false
-                            AdSession.loadedInterstitial = null
-                            adsRemoved = false
-                        },
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = if (adsRemoved) Icons.Filled.Star else Icons.Outlined.Star,
-                    contentDescription = stringResource(
-                        if (adsRemoved) R.string.ads_removed else R.string.remove_ads_test,
-                    ),
-                    tint = if (adsRemoved) StarGold else LabelWhite,
-                )
+            // SMCPKG_SUPPORT>>>Cursor033
+            // Box(
+            //     modifier = Modifier
+            //         .size(40.dp)
+            //         .clip(CircleShape)
+            //         .background(Color(0x33202A3A))
+            //         .combinedClickable(
+            //             onClick = {
+            //                 AdPreferences.setAdRemoved(context, true)
+            //                 adsRemoved = true
+            //             },
+            //             onLongClick = {
+            //                 AdPreferences.setAdRemoved(context, false)
+            //                 AdSession.interstitialConsumed = false
+            //                 AdSession.loadedInterstitial = null
+            //                 adsRemoved = false
+            //             },
+            //         ),
+            //     contentAlignment = Alignment.Center,
+            // ) {
+            //     Icon(
+            //         imageVector = if (adsRemoved) Icons.Filled.Star else Icons.Outlined.Star,
+            //         contentDescription = stringResource(
+            //             if (adsRemoved) R.string.ads_removed else R.string.remove_ads_test,
+            //         ),
+            //         tint = if (adsRemoved) StarGold else LabelWhite,
+            //     )
+            // }
+            if (!adsRemoved) {
+                IconButton(
+                    onClick = {
+                        when (billing.launchPurchase(activity)) {
+                            RemoveAdsBilling.LaunchResult.STARTED -> Unit
+                            RemoveAdsBilling.LaunchResult.UNAVAILABLE -> {
+                                Toast.makeText(
+                                    context,
+                                    R.string.remove_ads_billing_unavailable,
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                            RemoveAdsBilling.LaunchResult.PRODUCT_UNAVAILABLE -> {
+                                Toast.makeText(
+                                    context,
+                                    R.string.remove_ads_product_unavailable,
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                            RemoveAdsBilling.LaunchResult.FAILED -> {
+                                Toast.makeText(
+                                    context,
+                                    R.string.remove_ads_purchase_failed,
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x33202A3A)),
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_remove_ads),
+                        contentDescription = stringResource(R.string.remove_ads),
+                        tint = Color.Unspecified,
+                    )
+                }
             }
-            IconButton(
-                onClick = onAbout,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x33202A3A)),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = stringResource(R.string.about_title),
-                    tint = LabelWhite,
-                )
+            if (BuildConfig.DEBUG) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x33202A3A))
+                        .combinedClickable(
+                            onClick = onAbout,
+                            onLongClick = { billing.restoreAdsForDebug() },
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = stringResource(R.string.about_title),
+                        tint = LabelWhite,
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = onAbout,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x33202A3A)),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = stringResource(R.string.about_title),
+                        tint = LabelWhite,
+                    )
+                }
             }
+            // SMCPKG_SUPPORT<<<Cursor033
         }
     }
 }

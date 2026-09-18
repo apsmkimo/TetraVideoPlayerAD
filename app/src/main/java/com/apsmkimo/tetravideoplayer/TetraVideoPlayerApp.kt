@@ -11,11 +11,22 @@
 package com.apsmkimo.tetravideoplayer
 
 import android.app.Application
+// SMCPKG_SUPPORT>>>Cursor033
+import com.apsmkimo.tetravideoplayer.ads.RemoveAdsBilling
+// SMCPKG_SUPPORT<<<Cursor033
 import com.google.android.gms.ads.MobileAds
 
 class TetraVideoPlayerApp : Application() {
+    // SMCPKG_SUPPORT>>>Cursor033
+    lateinit var removeAdsBilling: RemoveAdsBilling
+        private set
+    // SMCPKG_SUPPORT<<<Cursor033
+
     override fun onCreate() {
         super.onCreate()
         MobileAds.initialize(this)
+        // SMCPKG_SUPPORT>>>Cursor033
+        removeAdsBilling = RemoveAdsBilling(this).also { it.start() }
+        // SMCPKG_SUPPORT<<<Cursor033
     }
 }

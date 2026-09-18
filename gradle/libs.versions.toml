@@ -11,6 +11,9 @@ composeBom = "2024.12.01"
 media3 = "1.11.0"
 coil = "2.7.0"
 playServicesAds = "23.6.0"
+# SMCPKG_SUPPORT>>>Cursor033
+billing = "9.1.0"
+# SMCPKG_SUPPORT<<<Cursor033
 # SMCPKG_SUPPORT>>>Cursor009
 checkerQual = "3.43.0"
 annotation = "1.9.1"
@@ -39,6 +42,9 @@ androidx-annotation = { group = "androidx.annotation", name = "annotation", vers
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-video = { group = "io.coil-kt", name = "coil-video", version.ref = "coil" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+# SMCPKG_SUPPORT>>>Cursor033
+billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
+# SMCPKG_SUPPORT<<<Cursor033
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

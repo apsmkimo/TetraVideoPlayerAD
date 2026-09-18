@@ -6,7 +6,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Key Features
 
-- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). Google official test banners sit in the empty top and bottom bands; the first layout pick in a process may show a test interstitial. The star button simulates a “remove ads” purchase (`is_ad_removed`); long-press restores ads for testing.
+- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). AdMob banners sit in the empty top and bottom bands; the first layout pick in a process may show an interstitial. The top-right **Remove Ads** button is a Google Play Billing one-time purchase (`remove_ads`); after purchase or restore it disappears and banners/interstitials stay off. Debug builds can long-press **About** to show ads again for testing.
 - **2x2 Grid** — Four independent local videos in a landscape 2×2 grid.
 - **1x4 Stack** — Four players stacked top-to-bottom in portrait, hairline separators, FIT letterbox.
 - **1x2 Vertical** — Two players stacked top-to-bottom in portrait.
@@ -26,11 +26,12 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 | Playback | Jetpack Media3 ExoPlayer |
 | Decode | Media3 FFmpeg Extension (FFmpeg software decoding) |
 | Thumbnails | Coil (`coil-compose`, `coil-video`) |
+| Billing | Google Play Billing Library (`remove_ads` one-time IAP) |
 | CI/CD | GitHub Actions (`./gradlew assembleDebug`, artifact `app-debug`) |
 
 **Package ID:** `com.apsmkimo.tetravideoplayer`  
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 35  
-**Version:** 1.0.1 (`versionCode` 101)
+**Version:** 1.0.2 (`versionCode` 102)
 
 Official `androidx.media3:media3-decoder-ffmpeg` is not published on Maven Central. TetraVideoPlayer vendors the Media3 1.11.0 `decoder_ffmpeg` module with a prebuilt `libffmpegJNI.so` plus LGPL-only shared FFmpeg libraries. Modern H.264/HEVC streams stay on hardware MediaCodec; FFmpeg is preferred for allowlisted legacy codecs. See [decoder-ffmpeg/README.md](decoder-ffmpeg/README.md) for native rebuild notes.
 
@@ -66,6 +67,16 @@ GitHub Actions builds a debug APK on every push to `main` and uploads it as an a
 Output: `app/build/outputs/apk/debug/app-debug.apk`
 
 GitHub Actions does not require the Android NDK; FFmpeg JNI libraries are prebuilt and committed. Rebuilding natives needs NDK r26b and FFmpeg 6.0 (`./decoder-ffmpeg/rebuild-native.sh`).
+
+## Remove Ads (Play Billing)
+
+The layout picker’s top-right **Remove Ads** control launches a one-time Google Play purchase. Product id (must match Play Console exactly):
+
+```
+remove_ads
+```
+
+Create it in Play Console as a **managed / one-time** in-app product (not a subscription, not consumable), activate it, and ship a build that includes this Billing Library integration (an internal testing track is enough). Add license testers under **Setup → License testing** to buy without charge. When BillingClient is ready the app queries existing INAPP purchases so a reinstall restores entitlement. The button is hidden after purchase or restore. If Play Billing is missing or the product is not available, the app shows a short toast and leaves ads on.
 
 ## Debug signing (overwrite installs)
 
