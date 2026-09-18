@@ -25,6 +25,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.apsmkimo.tetravideoplayer.BuildConfig
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -39,9 +40,15 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 
 object AdConfig {
-    const val APP_ID = "ca-app-pub-3940256099942544~3347511713"
-    const val BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
-    const val INTERSTITIAL_UNIT_ID = "ca-app-pub-3940256099942544/1033173712"
+    // SMCPKG_SUPPORT>>>Cursor031
+    // const val APP_ID = "ca-app-pub-3940256099942544~3347511713"
+    // const val BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
+    // const val INTERSTITIAL_UNIT_ID = "ca-app-pub-3940256099942544/1033173712"
+    // Same Gradle-injected values as Manifest APPLICATION_ID / ad unit IDs.
+    val APP_ID: String = BuildConfig.ADMOB_APP_ID
+    val BANNER_UNIT_ID: String = BuildConfig.ADMOB_BANNER_UNIT_ID
+    val INTERSTITIAL_UNIT_ID: String = BuildConfig.ADMOB_INTERSTITIAL_UNIT_ID
+    // SMCPKG_SUPPORT<<<Cursor031
 }
 
 object AdPreferences {

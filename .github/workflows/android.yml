@@ -28,6 +28,11 @@ jobs:
       # plus LGPL-only shared FFmpeg .so (no --enable-gpl / --enable-nonfree).
       # Rebuild natives locally with ./decoder-ffmpeg/rebuild-native.sh (NDK r26b + FFmpeg 6.0).
       # SMCPKG_SUPPORT<<<Cursor030
+      # SMCPKG_SUPPORT>>>Cursor031
+      # CI builds debug only. Debug always uses committed Google test AdMob IDs.
+      # Release signing and production AdMob IDs are local-only (local.properties
+      # or env). Do not echo ADMOB_* values if a future job adds assembleRelease.
+      # SMCPKG_SUPPORT<<<Cursor031
       - name: Build debug APK
         run: ./gradlew assembleDebug
 

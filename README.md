@@ -6,7 +6,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Key Features
 
-- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). Google official test banners sit in the empty top and bottom bands; the first layout pick in a process may show a test interstitial. The star button simulates a “remove ads” purchase (`is_ad_removed`); long-press restores ads for testing.
+- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). Banners sit in the empty top and bottom bands; the first layout pick in a process may show an interstitial. **Debug / public clones use Google official test ad IDs.** The star button simulates a “remove ads” purchase (`is_ad_removed`); long-press restores ads for testing.
 - **2x2 Grid** — Four independent local videos in a landscape 2×2 grid.
 - **1x4 Stack** — Four players stacked top-to-bottom in portrait, hairline separators, FIT letterbox.
 - **1x2 Vertical** — Two players stacked top-to-bottom in portrait.
@@ -66,6 +66,26 @@ GitHub Actions builds a debug APK on every push to `main` and uploads it as an a
 Output: `app/build/outputs/apk/debug/app-debug.apk`
 
 GitHub Actions does not require the Android NDK; FFmpeg JNI libraries are prebuilt and committed. Rebuilding natives needs NDK r26b and FFmpeg 6.0 (`./decoder-ffmpeg/rebuild-native.sh`).
+
+## AdMob IDs (debug vs release)
+
+Public clones and **debug** builds (`./gradlew assembleDebug`, including GitHub Actions) always use [Google official test IDs](https://developers.google.com/admob/android/test-ads). Those values are the committed defaults in Gradle. Production IDs are **never** stored in this repository.
+
+**Release** builds (`./gradlew assembleRelease` / `bundleRelease`) inject IDs at build time from gitignored `local.properties` or environment variables:
+
+| Key | Used for |
+| --- | --- |
+| `ADMOB_APP_ID` | Manifest `com.google.android.gms.ads.APPLICATION_ID` and `BuildConfig.ADMOB_APP_ID` |
+| `ADMOB_BANNER_UNIT_ID` | Banner unit (`AdConfig.BANNER_UNIT_ID`) |
+| `ADMOB_INTERSTITIAL_UNIT_ID` | Interstitial unit (`AdConfig.INTERSTITIAL_UNIT_ID`) |
+
+1. Keep your existing `sdk.dir` line in `local.properties` (already gitignored).
+2. Copy the three keys from [`local.properties.example`](local.properties.example) and replace the sample test values with your production IDs. Do not commit that file.
+3. Alternatively, export the same three names as environment variables (useful for a private CI job). Environment values win over `local.properties`.
+
+If any of the three keys is missing, the **release** task fails with a Gradle error so a Play upload cannot silently ship test inventory. Debug builds ignore these overrides so a local debug install cannot hit live ads by accident.
+
+GitHub Actions currently runs `assembleDebug` only. Release signing and production AdMob IDs are local-only. If a future workflow adds a release job, pass the three keys from GitHub Actions secrets into the environment and never echo them in logs.
 
 ## Debug signing (overwrite installs)
 
