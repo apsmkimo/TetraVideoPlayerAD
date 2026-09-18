@@ -39,8 +39,12 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 <!-- **Version:** 1.0.2 (`versionCode` 102) -->
 <!-- SMCPKG_SUPPORT>>>Cursor036 -->
 <!-- **Version:** 1.0.3 (`versionCode` 103) -->
+<!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
+<!-- **Version:** 1.0.4 (`versionCode` 104) -->
+<!-- SMCPKG_SUPPORT>>>Cursor037 -->
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
-**Version:** 1.0.4 (`versionCode` 104)
+**Version:** 1.0.5 (`versionCode` 105)
+<!-- SMCPKG_SUPPORT<<<Cursor037 -->
 <!-- SMCPKG_SUPPORT<<<Cursor036 -->
 <!-- SMCPKG_SUPPORT<<<Cursor035 -->
 
