@@ -31,8 +31,11 @@ plugins {
 // val APP_VERSION_NAME = "1.0.0"
 // val APP_VERSION_NAME = "1.0.1"
 // SMCPKG_SUPPORT>>>Cursor033
-val APP_VERSION_NAME = "1.0.2"
+// val APP_VERSION_NAME = "1.0.2"
 // SMCPKG_SUPPORT<<<Cursor033
+// SMCPKG_SUPPORT>>>Cursor035
+val APP_VERSION_NAME = "1.0.3"
+// SMCPKG_SUPPORT<<<Cursor035
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
 // SMCPKG_SUPPORT<<<Cursor011
@@ -109,7 +112,11 @@ android {
         // SMCPKG_SUPPORT<<<Cursor030
         // SMCPKG_SUPPORT<<<Cursor021
         minSdk = 24
-        targetSdk = 35
+        // SMCPKG_SUPPORT>>>Cursor035
+        // targetSdk = 35
+        // Play Console (2026) requires target API 36 for new uploads.
+        targetSdk = 36
+        // SMCPKG_SUPPORT<<<Cursor035
         // SMCPKG_SUPPORT>>>Cursor009
         // versionCode = 1
         // versionName = "1.0"
