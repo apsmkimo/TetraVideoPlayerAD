@@ -1,3 +1,7 @@
+// SMCPKG_SUPPORT>>>Cursor034
+import java.util.Properties
+// SMCPKG_SUPPORT<<<Cursor034
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -53,7 +57,7 @@ fun versionCodeFor(versionName: String): Int {
 // 2) -P Gradle properties
 // 3) local.properties (gitignored; local machine only)
 // Missing values leave the release buildType unsigned so debug CI never fails.
-val localProperties = java.util.Properties().apply {
+val localProperties = Properties().apply {
     val localFile = rootProject.file("local.properties")
     if (localFile.exists()) {
         localFile.inputStream().use(::load)
