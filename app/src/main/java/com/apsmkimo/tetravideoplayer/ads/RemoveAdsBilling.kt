@@ -261,7 +261,7 @@ class RemoveAdsBilling(private val app: Application) {
 
     private fun offerTokenOf(details: ProductDetails): String? {
         return details.oneTimePurchaseOfferDetailsList
-            .firstOrNull()
+            ?.firstOrNull()
             ?.offerToken
     }
 }
