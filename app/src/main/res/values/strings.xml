@@ -5,20 +5,16 @@
     <string name="app_name">TetraVideoPlayer</string>
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
-    <!-- <string name="master_play">全部播放</string> -->
-    <!-- <string name="master_pause">全部暫停</string> -->
-    <!-- <string name="pick_video">選擇影片</string> -->
+    <!-- Default locale is English-only. Do not put Chinese (or any values-zh*) here:
+         a zh-locale phone must still resolve these English strings. -->
     <string name="master_play">Play all</string>
     <string name="master_pause">Pause all</string>
     <string name="pick_video">Pick video</string>
     <!-- SMCPKG_SUPPORT<<<Cursor036 -->
     <!-- SMCPKG_SUPPORT>>>Cursor005 -->
-    <!-- <string name="change_video">更換</string> -->
+    <!-- unused: change_video -->
     <!-- SMCPKG_SUPPORT<<<Cursor005 -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
-    <!-- <string name="placeholder_title">尚未選擇影片</string> -->
-    <!-- <string name="placeholder_hint">點此選擇本機影片</string> -->
-    <!-- <string name="picker_title">選擇本機影片</string> -->
     <string name="placeholder_title">No video selected</string>
     <string name="placeholder_hint">Tap to pick a local video</string>
     <string name="picker_title">Choose a local video</string>
@@ -27,18 +23,6 @@
     <string name="picker_folder_count">%1$d videos</string>
     <string name="picker_back">Back</string>
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
-    <!-- <string name="picker_close">關閉</string> -->
-    <!-- <string name="picker_empty">找不到本機影片</string> -->
-    <!-- <string name="unmuted_label">播放聲音</string> -->
-    <!-- <string name="muted_label">已靜音</string> -->
-    <!-- <string name="permission_needed_title">需要本機影片讀取權限</string> -->
-    <!-- <string name="permission_needed_body">授權後才能掃描本機影片並顯示縮圖清單。請先授予讀取權限。</string> -->
-    <!-- <string name="permission_grant">授予權限</string> -->
-    <!-- <string name="permission_settings">開啟設定</string> -->
-    <!-- <string name="permission_granted">已授予影片讀取權限</string> -->
-    <!-- <string name="cell_index">畫面 %1$d</string> -->
-    <!-- <string name="cell_play">播放</string> -->
-    <!-- <string name="cell_pause">暫停</string> -->
     <string name="picker_close">Close</string>
     <string name="picker_empty">No local videos found</string>
     <string name="unmuted_label">Audio on</string>
@@ -55,11 +39,7 @@
     <string name="cell_mute">Mute</string>
     <string name="cell_unmute">Unmute</string>
     <!-- SMCPKG_SUPPORT>>>Cursor012 -->
-    <!-- <string name="layout_selection_title">選擇畫面配置</string> -->
-    <!-- <string name="layout_vertical_title">直向模式（1x4 直向堆疊）</string> -->
-    <!-- <string name="layout_vertical_body">直向顯示，四個播放器由上到下堆疊，各占滿寬度，以 FIT 比例留黑邊。</string> -->
-    <!-- <string name="layout_landscape_title">橫向模式（2x2 格狀）</string> -->
-    <!-- <string name="layout_landscape_body">強制橫向，維持目前的 2x2 格狀畫面。</string> -->
+    <!-- unused layout-picker copy: layout_selection_title / layout_vertical_* / layout_landscape_* -->
     <string name="change_layout">Change layout</string>
     <!-- SMCPKG_SUPPORT<<<Cursor012 -->
     <!-- SMCPKG_SUPPORT>>>Cursor019 -->
@@ -74,33 +54,18 @@
     <string name="about_close">Back</string>
     <string name="about_version_line">Version %1$s (versionCode %2$s)</string>
     <!-- SMCPKG_SUPPORT>>>Cursor030 -->
-    <!-- <string name="about_gpl_statement">TetraView is free software licensed under the GNU General Public License v3.0 (GPLv3). You may redistribute and modify it under the terms of that license.</string> -->
-    <!-- <string name="about_view_license">View GPLv3 license</string> -->
-    <!-- <string name="about_license_title">GNU GPLv3</string> -->
-    <!-- <string name="about_license_missing">LICENSE text is missing from the APK. See https://github.com/apsmkimo/FreeQuadPlayer/blob/main/LICENSE</string> -->
-    <!-- <string name="about_source_label">Source code</string> -->
-    <!-- <string name="about_components_body">Media3 ExoPlayer (Apache 2.0); Media3 FFmpeg extension and FFmpeg (LGPL/GPL as shipped); Coil (Apache 2.0); AndroidX / Jetpack Compose (Apache 2.0). Full license texts are in the GitHub repository.</string> -->
+    <!-- unused About copy (GPL / license / repository / components) removed from UI -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
-    <!-- <string name="about_gpl_statement">TetraVideoPlayer is proprietary software. Copyright (C) 2026 apsmkimo. All rights reserved. Unauthorized copying, distribution, or modification is prohibited except as expressly permitted in writing.</string> -->
-    <!-- <string name="about_view_license">View license</string> -->
-    <!-- <string name="about_license_online">Open LICENSE on GitHub</string> -->
-    <!-- <string name="about_license_title">License</string> -->
-    <!-- about_license_missing omitted: contained a GitHub URL and is unused after About simplification -->
-    <!-- <string name="about_source_label">Repository</string> -->
-    <!-- <string name="about_components_title">Open-source components</string> -->
-    <!-- previous about_components_body omitted from XML comments: double-hyphen is illegal in comments -->
-    <!-- <string name="about_permissions">Permissions essay removed from About UI.</string> -->
     <string name="about_privacy_policy">Privacy Policy</string>
     <string name="about_rate_us">Rate Us</string>
     <!-- SMCPKG_SUPPORT<<<Cursor036 -->
     <!-- SMCPKG_SUPPORT>>>Cursor033 -->
-    <!-- previous about_components_body omitted from XML comments: double-hyphen is illegal in comments -->
+    <!-- unused About permissions essay removed from UI -->
     <!-- SMCPKG_SUPPORT<<<Cursor033 -->
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
-    <!-- <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load Google test ads on the layout picker. This app does not request MANAGE_EXTERNAL_STORAGE.</string> -->
     <!-- SMCPKG_SUPPORT>>>Cursor033 -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
-    <!-- <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load ads on the layout picker; com.android.vending.BILLING for the optional Remove Ads purchase. This app does not request MANAGE_EXTERNAL_STORAGE.</string> -->
+    <!-- unused About permissions essay removed from UI -->
     <!-- SMCPKG_SUPPORT<<<Cursor036 -->
     <!-- <string name="remove_ads_test">Remove ads (test)</string> -->
     <!-- <string name="ads_removed">Ads removed. Long-press to restore test ads.</string> -->
