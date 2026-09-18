@@ -1,61 +1,8 @@
-// SMCPKG_SUPPORT>>>Cursor031
-import java.util.Properties
-// SMCPKG_SUPPORT<<<Cursor031
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
-
-// SMCPKG_SUPPORT>>>Cursor031
-
-/** Google official test IDs — committed defaults; always used for debug. */
-val TEST_ADMOB_APP_ID = "ca-app-pub-3940256099942544~3347511713"
-val TEST_ADMOB_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
-val TEST_ADMOB_INTERSTITIAL_UNIT_ID = "ca-app-pub-3940256099942544/1033173712"
-
-fun loadLocalProperties(): Properties {
-    val props = Properties()
-    val file = rootProject.file("local.properties")
-    if (file.exists()) {
-        file.inputStream().use { props.load(it) }
-    }
-    return props
-}
-
-fun secretOrLocal(localProps: Properties, key: String): String? {
-    val fromEnv = System.getenv(key)?.trim()?.takeIf { it.isNotEmpty() }
-    if (fromEnv != null) {
-        return fromEnv
-    }
-    return localProps.getProperty(key)?.trim()?.takeIf { it.isNotEmpty() }
-}
-
-fun quoteForBuildConfig(value: String): String {
-    return "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""
-}
-
-fun com.android.build.api.dsl.VariantDimension.applyAdMobIds(
-    appId: String,
-    bannerUnitId: String,
-    interstitialUnitId: String,
-) {
-    buildConfigField("String", "ADMOB_APP_ID", quoteForBuildConfig(appId))
-    buildConfigField("String", "ADMOB_BANNER_UNIT_ID", quoteForBuildConfig(bannerUnitId))
-    buildConfigField("String", "ADMOB_INTERSTITIAL_UNIT_ID", quoteForBuildConfig(interstitialUnitId))
-    manifestPlaceholders["admobAppId"] = appId
-}
-
-val localProps = loadLocalProperties()
-val releaseAdMobAppId = secretOrLocal(localProps, "ADMOB_APP_ID")
-val releaseAdMobBannerUnitId = secretOrLocal(localProps, "ADMOB_BANNER_UNIT_ID")
-val releaseAdMobInterstitialUnitId = secretOrLocal(localProps, "ADMOB_INTERSTITIAL_UNIT_ID")
-val hasReleaseAdMobIds =
-    !releaseAdMobAppId.isNullOrEmpty() &&
-        !releaseAdMobBannerUnitId.isNullOrEmpty() &&
-        !releaseAdMobInterstitialUnitId.isNullOrEmpty()
-// SMCPKG_SUPPORT<<<Cursor031
 
 // SMCPKG_SUPPORT>>>Cursor009
 /** Current release name. Next release: increment the third component by 1 (1.0.0 → 1.0.1). */
@@ -133,13 +80,6 @@ android {
         versionName = APP_VERSION_NAME
         versionCode = versionCodeFor(APP_VERSION_NAME)
         // SMCPKG_SUPPORT<<<Cursor009
-        // SMCPKG_SUPPORT>>>Cursor031
-        applyAdMobIds(
-            TEST_ADMOB_APP_ID,
-            TEST_ADMOB_BANNER_UNIT_ID,
-            TEST_ADMOB_INTERSTITIAL_UNIT_ID,
-        )
-        // SMCPKG_SUPPORT<<<Cursor031
     }
 
     // SMCPKG_SUPPORT>>>Cursor012
@@ -160,15 +100,6 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
-            // SMCPKG_SUPPORT>>>Cursor031
-            // Debug always ships Google test IDs, even if local.properties has
-            // production overrides. That keeps local installs off live inventory.
-            applyAdMobIds(
-                TEST_ADMOB_APP_ID,
-                TEST_ADMOB_BANNER_UNIT_ID,
-                TEST_ADMOB_INTERSTITIAL_UNIT_ID,
-            )
-            // SMCPKG_SUPPORT<<<Cursor031
         }
         release {
             // No dedicated release keystore is committed. Do not fall back to
@@ -178,24 +109,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            // SMCPKG_SUPPORT>>>Cursor031
-            // Configuration-time placeholders stay on test IDs so IDE sync and
-            // assembleDebug still work without secrets. assembleRelease / bundleRelease
-            // fail later if production IDs are missing (see gradle.taskGraph.whenReady).
-            if (hasReleaseAdMobIds) {
-                applyAdMobIds(
-                    releaseAdMobAppId!!,
-                    releaseAdMobBannerUnitId!!,
-                    releaseAdMobInterstitialUnitId!!,
-                )
-            } else {
-                applyAdMobIds(
-                    TEST_ADMOB_APP_ID,
-                    TEST_ADMOB_BANNER_UNIT_ID,
-                    TEST_ADMOB_INTERSTITIAL_UNIT_ID,
-                )
-            }
-            // SMCPKG_SUPPORT<<<Cursor031
         }
     }
 
@@ -212,9 +125,6 @@ android {
 
     buildFeatures {
         compose = true
-        // SMCPKG_SUPPORT>>>Cursor031
-        buildConfig = true
-        // SMCPKG_SUPPORT<<<Cursor031
     }
 
     packaging {
@@ -268,18 +178,3 @@ dependencies {
 
     implementation(libs.play.services.ads)
 }
-
-// SMCPKG_SUPPORT>>>Cursor031
-gradle.taskGraph.whenReady {
-    val requestedRelease = allTasks.any { task ->
-        Regex("^(assemble|bundle|publish).*Release.*").matches(task.name)
-    }
-    if (requestedRelease && !hasReleaseAdMobIds) {
-        throw GradleException(
-            "Release builds require ADMOB_APP_ID, ADMOB_BANNER_UNIT_ID, and " +
-                "ADMOB_INTERSTITIAL_UNIT_ID in local.properties or the environment. " +
-                "See README.md. Debug builds always use Google official test IDs.",
-        )
-    }
-}
-// SMCPKG_SUPPORT<<<Cursor031

@@ -18,11 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuadVideoPlayer">
-        <!-- SMCPKG_SUPPORT>>>Cursor031 was: android:value="ca-app-pub-3940256099942544~3347511713" -->
+        <!-- SMCPKG_SUPPORT>>>Cursor032 was: android:value="ca-app-pub-3940256099942544~3347511713" -->
+        <!-- SMCPKG_SUPPORT>>>Cursor031 was: android:value="${admobAppId}" -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="${admobAppId}" />
-        <!-- SMCPKG_SUPPORT<<<Cursor031 -->
+            android:value="ca-app-pub-6138247296137119~9086588842" />
+        <!-- SMCPKG_SUPPORT<<<Cursor032 -->
         <!-- SMCPKG_SUPPORT>>>Cursor005 was: android:screenOrientation="fullSensor" -->
         <!-- SMCPKG_SUPPORT>>>Cursor012 was: android:screenOrientation="landscape" -->
         <activity

@@ -28,10 +28,7 @@ the Google Mobile Ads SDK terms:
 https://developers.google.com/admob  
 https://developers.google.com/admob/android/quick-start
 
-Debug and other public/default builds use Google official test application
-and ad unit IDs only. Release builds may inject production IDs at compile
-time from gitignored `local.properties` or environment variables; those
-values are not committed. See README.md.
+This build uses Google official test application and ad unit IDs only.
 
 ## FFmpeg 6.0 (LGPL-only, dynamically linked)
 
