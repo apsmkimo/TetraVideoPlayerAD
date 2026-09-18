@@ -6,7 +6,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Key Features
 
-- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). Google official test banners sit in the empty top and bottom bands; the first layout pick in a process may show a test interstitial. The star button simulates a “remove ads” purchase (`is_ad_removed`); long-press restores ads for testing.
+- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (version only, Privacy Policy, and Rate Us). Google official test banners sit in the empty top and bottom bands; the first layout pick in a process may show a test interstitial. A circular **AD** (strikethrough) button simulates a “remove ads” purchase (`is_ad_removed`) and then disappears.
 - **2x2 Grid** — Four independent local videos in a landscape 2×2 grid.
 - **1x4 Stack** — Four players stacked top-to-bottom in portrait, hairline separators, FIT letterbox.
 - **1x2 Vertical** — Two players stacked top-to-bottom in portrait.
@@ -30,7 +30,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 **Package ID:** `com.apsmkimo.tetravideoplayer`  
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 35  
-**Version:** 1.0.1 (`versionCode` 101)
+**Version:** 1.0.4 (`versionCode` 104)
 
 Official `androidx.media3:media3-decoder-ffmpeg` is not published on Maven Central. TetraVideoPlayer vendors the Media3 1.11.0 `decoder_ffmpeg` module with a prebuilt `libffmpegJNI.so` plus LGPL-only shared FFmpeg libraries. Modern H.264/HEVC streams stay on hardware MediaCodec; FFmpeg is preferred for allowlisted legacy codecs. See [decoder-ffmpeg/README.md](decoder-ffmpeg/README.md) for native rebuild notes.
 

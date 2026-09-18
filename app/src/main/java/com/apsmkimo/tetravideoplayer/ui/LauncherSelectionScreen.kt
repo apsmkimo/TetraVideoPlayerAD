@@ -32,11 +32,16 @@ package com.apsmkimo.tetravideoplayer.ui
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.ExperimentalFoundationApi
+// SMCPKG_SUPPORT>>>Cursor032
+// import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Canvas
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+// SMCPKG_SUPPORT>>>Cursor032
+// import androidx.compose.foundation.combinedClickable
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -51,11 +56,18 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+// SMCPKG_SUPPORT>>>Cursor032
+// import androidx.compose.material.icons.filled.Star
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Star
+// SMCPKG_SUPPORT>>>Cursor032
+// import androidx.compose.material.icons.outlined.Star
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+// SMCPKG_SUPPORT>>>Cursor032
+import androidx.compose.material3.Text
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -66,16 +78,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+// SMCPKG_SUPPORT>>>Cursor032
+import androidx.compose.ui.geometry.Offset
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.ui.graphics.Color
+// SMCPKG_SUPPORT>>>Cursor032
+import androidx.compose.ui.graphics.StrokeCap
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+// SMCPKG_SUPPORT>>>Cursor032
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+// SMCPKG_SUPPORT<<<Cursor032
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+// SMCPKG_SUPPORT>>>Cursor032
+import androidx.compose.ui.unit.sp
+// SMCPKG_SUPPORT<<<Cursor032
 import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
-import com.apsmkimo.tetravideoplayer.ads.AdSession
+// SMCPKG_SUPPORT>>>Cursor032
+// import com.apsmkimo.tetravideoplayer.ads.AdSession
+// SMCPKG_SUPPORT<<<Cursor032
 import com.apsmkimo.tetravideoplayer.ads.BannerAd
 import com.apsmkimo.tetravideoplayer.ads.maybeShowInterstitialOnce
 import com.apsmkimo.tetravideoplayer.ads.preloadInterstitial
@@ -84,9 +112,14 @@ import kotlinx.coroutines.launch
 
 private val ScreenBlack = Color(0xFF000000)
 private val LabelWhite = Color(0xFFFFFFFF)
-private val StarGold = Color(0xFFFFC107)
+// SMCPKG_SUPPORT>>>Cursor032
+// private val StarGold = Color(0xFFFFC107)
+private val AdSlash = Color(0xFFFF5252)
+// SMCPKG_SUPPORT<<<Cursor032
 
-@OptIn(ExperimentalFoundationApi::class)
+// SMCPKG_SUPPORT>>>Cursor032
+// @OptIn(ExperimentalFoundationApi::class)
+// SMCPKG_SUPPORT<<<Cursor032
 @Composable
 fun LauncherSelectionScreen(
     onLayoutSelected: (PlayerLayout) -> Unit,
@@ -172,12 +205,22 @@ fun LauncherSelectionScreen(
                             LayoutTile(
                                 tile = tile,
                                 label = stringResource(R.string.layout_2x1_horizontal),
+                                // SMCPKG_SUPPORT>>>Cursor033
+                                // Artwork pixels: two side-by-side tall panes (||) for
+                                // LANDSCAPE_2X1. The previous glyph in this file was the
+                                // stacked bars that belong on 1x2; icons were swapped
+                                // in the PNGs (labels / onClick unchanged).
+                                // SMCPKG_SUPPORT<<<Cursor033
                                 artwork = R.drawable.layout_2x1_horizontal,
                                 onClick = { pick(PlayerLayout.LANDSCAPE_2X1) },
                             )
                             LayoutTile(
                                 tile = tile,
                                 label = stringResource(R.string.layout_1x2_vertical),
+                                // SMCPKG_SUPPORT>>>Cursor033
+                                // Artwork pixels: two stacked wide panes (=), same visual
+                                // language as 1x4. Do not assign layout_2x1_horizontal here.
+                                // SMCPKG_SUPPORT<<<Cursor033
                                 artwork = R.drawable.layout_1x2_vertical,
                                 onClick = { pick(PlayerLayout.VERTICAL_1X2) },
                             )
@@ -197,33 +240,52 @@ fun LauncherSelectionScreen(
                 .padding(end = 4.dp, top = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x33202A3A))
-                    .combinedClickable(
-                        onClick = {
+            // SMCPKG_SUPPORT>>>Cursor032
+            // Box(
+            //     modifier = Modifier
+            //         .size(40.dp)
+            //         .clip(CircleShape)
+            //         .background(Color(0x33202A3A))
+            //         .combinedClickable(
+            //             onClick = {
+            //                 AdPreferences.setAdRemoved(context, true)
+            //                 adsRemoved = true
+            //             },
+            //             onLongClick = {
+            //                 AdPreferences.setAdRemoved(context, false)
+            //                 AdSession.interstitialConsumed = false
+            //                 AdSession.loadedInterstitial = null
+            //                 adsRemoved = false
+            //             },
+            //         ),
+            //     contentAlignment = Alignment.Center,
+            // ) {
+            //     Icon(
+            //         imageVector = if (adsRemoved) Icons.Filled.Star else Icons.Outlined.Star,
+            //         contentDescription = stringResource(
+            //             if (adsRemoved) R.string.ads_removed else R.string.remove_ads_test,
+            //         ),
+            //         tint = if (adsRemoved) StarGold else LabelWhite,
+            //     )
+            // }
+            if (!adsRemoved) {
+                val removeAdsLabel = stringResource(R.string.remove_ads_test)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x33202A3A))
+                        .semantics { contentDescription = removeAdsLabel }
+                        .clickable {
                             AdPreferences.setAdRemoved(context, true)
                             adsRemoved = true
                         },
-                        onLongClick = {
-                            AdPreferences.setAdRemoved(context, false)
-                            AdSession.interstitialConsumed = false
-                            AdSession.loadedInterstitial = null
-                            adsRemoved = false
-                        },
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = if (adsRemoved) Icons.Filled.Star else Icons.Outlined.Star,
-                    contentDescription = stringResource(
-                        if (adsRemoved) R.string.ads_removed else R.string.remove_ads_test,
-                    ),
-                    tint = if (adsRemoved) StarGold else LabelWhite,
-                )
+                    contentAlignment = Alignment.Center,
+                ) {
+                    AdSlashMark()
+                }
             }
+            // SMCPKG_SUPPORT<<<Cursor032
             IconButton(
                 onClick = onAbout,
                 modifier = Modifier
@@ -240,6 +302,34 @@ fun LauncherSelectionScreen(
         }
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor032
+@Composable
+private fun AdSlashMark() {
+    Box(
+        modifier = Modifier.size(28.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = "AD",
+            color = LabelWhite,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            letterSpacing = 0.4.sp,
+        )
+        Canvas(modifier = Modifier.size(26.dp)) {
+            val inset = 2.dp.toPx()
+            drawLine(
+                color = AdSlash,
+                start = Offset(inset, size.height - inset),
+                end = Offset(size.width - inset, inset),
+                strokeWidth = 2.5.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+        }
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor032
 
 @Composable
 private fun LayoutTile(
