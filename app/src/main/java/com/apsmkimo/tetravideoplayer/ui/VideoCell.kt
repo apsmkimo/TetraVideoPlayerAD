@@ -63,11 +63,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+// SMCPKG_SUPPORT>>>Cursor037
+// import androidx.compose.runtime.saveable.rememberSaveable
+// SMCPKG_SUPPORT<<<Cursor037
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -129,7 +132,16 @@ fun VideoCell(
     //     MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
     // }
     // SMCPKG_SUPPORT<<<Cursor004
-    var controlsVisible by rememberSaveable(videoUri?.toString()) { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor037
+    // var controlsVisible by rememberSaveable(videoUri?.toString()) { mutableStateOf(false) }
+    // rememberSaveable(uri) allocated a new MutableState on in-cell swap, while
+    // pointerInput(player) kept writing the previous instance — taps no-op'd the
+    // toolbar. Volume overlay uses remember{} so vertical drag still worked.
+    var controlsVisible by remember { mutableStateOf(false) }
+    LaunchedEffect(videoUri?.toString()) {
+        controlsVisible = false
+    }
+    // SMCPKG_SUPPORT<<<Cursor037
     // SMCPKG_SUPPORT>>>Cursor023
     var volumeOverlayVisible by remember { mutableStateOf(false) }
     var overlayVolume by remember { mutableFloatStateOf(player.volume.coerceIn(0f, 1f)) }
@@ -285,7 +297,10 @@ fun VideoCell(
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f)
-                    .pointerInput(player) {
+                    // SMCPKG_SUPPORT>>>Cursor037
+                    // .pointerInput(player) {
+                    .pointerInput(player, videoUri?.toString()) {
+                    // SMCPKG_SUPPORT<<<Cursor037
                         val slopPx = viewConfiguration.touchSlop
                         awaitEachGesture {
                             val down = awaitFirstDown()
