@@ -1,3 +1,7 @@
+// SMCPKG_SUPPORT>>>Cursor034
+import java.util.Properties
+// SMCPKG_SUPPORT<<<Cursor034
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -47,6 +51,42 @@ fun versionCodeFor(versionName: String): Int {
 }
 // SMCPKG_SUPPORT<<<Cursor009
 
+// SMCPKG_SUPPORT>>>Cursor034
+// Play Console upload-key signing. Values are read in this order:
+// 1) environment variables (GitHub Actions)
+// 2) -P Gradle properties
+// 3) local.properties (gitignored; local machine only)
+// Missing values leave the release buildType unsigned so debug CI never fails.
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use(::load)
+    }
+}
+
+fun releaseSigningValue(name: String): String? {
+    sequenceOf(
+        System.getenv(name),
+        project.findProperty(name) as String?,
+        localProperties.getProperty(name),
+    ).forEach { raw ->
+        val trimmed = raw?.trim().orEmpty()
+        if (trimmed.isNotEmpty()) return trimmed
+    }
+    return null
+}
+
+val releaseKeystoreFile = releaseSigningValue("KEYSTORE_FILE")
+val releaseKeystorePassword = releaseSigningValue("KEYSTORE_PASSWORD")
+val releaseKeyAlias = releaseSigningValue("KEY_ALIAS")
+val releaseKeyPassword = releaseSigningValue("KEY_PASSWORD")
+val hasReleaseSigning =
+    !releaseKeystoreFile.isNullOrEmpty() &&
+        !releaseKeystorePassword.isNullOrEmpty() &&
+        !releaseKeyAlias.isNullOrEmpty() &&
+        !releaseKeyPassword.isNullOrEmpty()
+// SMCPKG_SUPPORT<<<Cursor034
+
 android {
     // SMCPKG_SUPPORT>>>Cursor021
     // namespace = "com.example.quadvideoplayer"
@@ -90,6 +130,15 @@ android {
     // TetraVideoPlayerAD-only keystore at app/debug.keystore. This material is
     // not shared with FreeQuadPlayer / TetraView, so the two apps cannot
     // overwrite each other on a device.
+    // SMCPKG_SUPPORT>>>Cursor034
+    // signingConfigs {
+    //     getByName("debug") {
+    //         storeFile = file("debug.keystore")
+    //         storePassword = "android"
+    //         keyAlias = "androiddebugkey"
+    //         keyPassword = "android"
+    //     }
+    // }
     signingConfigs {
         getByName("debug") {
             storeFile = file("debug.keystore")
@@ -97,7 +146,16 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(releaseKeystoreFile!!)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
     }
+    // SMCPKG_SUPPORT<<<Cursor034
     // SMCPKG_SUPPORT<<<Cursor012
 
     buildTypes {
@@ -105,8 +163,14 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            // No dedicated release keystore is committed. Do not fall back to
-            // FreeQuadPlayer / TetraView signing material.
+            // SMCPKG_SUPPORT>>>Cursor034
+            // // No dedicated release keystore is committed. Do not fall back to
+            // // FreeQuadPlayer / TetraView signing material.
+            // Apply upload-key signing only when KEYSTORE_* credentials are present.
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+            // SMCPKG_SUPPORT<<<Cursor034
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
