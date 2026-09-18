@@ -82,7 +82,9 @@ fun TetraViewApp() {
     // SMCPKG_SUPPORT<<<Cursor019
     // SMCPKG_SUPPORT>>>Cursor021
     var showAbout by remember { mutableStateOf(false) }
-    var showLicense by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor036
+    // var showLicense by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT<<<Cursor036
     // SMCPKG_SUPPORT<<<Cursor021
 
     LaunchedEffect(Unit) {
@@ -148,13 +150,20 @@ fun TetraViewApp() {
     }
     // SMCPKG_SUPPORT<<<Cursor019
     // SMCPKG_SUPPORT>>>Cursor021
-    if (showLicense) {
-        LicenseTextScreen(onClose = { showLicense = false })
-    } else if (showAbout) {
+    // SMCPKG_SUPPORT>>>Cursor036
+    // if (showLicense) {
+    //     LicenseTextScreen(onClose = { showLicense = false })
+    // } else if (showAbout) {
+    //     AboutScreen(
+    //         onClose = { showAbout = false },
+    //         onViewLicense = { showLicense = true },
+    //     )
+    // }
+    if (showAbout) {
         AboutScreen(
             onClose = { showAbout = false },
-            onViewLicense = { showLicense = true },
         )
     }
+    // SMCPKG_SUPPORT<<<Cursor036
     // SMCPKG_SUPPORT<<<Cursor021
 }
