@@ -101,44 +101,56 @@ With [Play App Signing](https://support.google.com/googleplay/android-developer/
 
 ### 1. Create an upload keystore (once)
 
+<!-- SMCPKG_SUPPORT>>>Cursor034
+Old example used upload-keystore.jks / alias upload.
+SMCPKG_SUPPORT<<<Cursor034 -->
+
 ```bash
 keytool -genkeypair -v \
   -storetype JKS \
-  -keystore upload-keystore.jks \
+  -keystore tetra-upload.jks \
   -keyalg RSA \
   -keysize 2048 \
   -validity 10000 \
-  -alias upload
+  -alias tetraupload
 ```
 
-Use a strong store password (and key password if prompted). Do not commit `upload-keystore.jks`.
+Use a strong store password (and key password if prompted). Do not commit `tetra-upload.jks`.
 
 ### 2. Base64 the keystore
 
 Linux:
 
 ```bash
-base64 -w 0 upload-keystore.jks
+base64 -w 0 tetra-upload.jks
 ```
 
 macOS:
 
 ```bash
-base64 -i upload-keystore.jks
+base64 -i tetra-upload.jks
 ```
 
 Copy the single-line output. Do not commit the base64 string.
 
 ### 3. Set GitHub Actions secrets
 
-Repo → **Settings → Secrets and variables → Actions → New repository secret**. Create exactly these four names:
+Repo → **Settings → Secrets and variables → Actions → New repository secret**, or `gh secret set`. Create exactly these four names (values never belong in git):
 
 | Secret | Value |
 | --- | --- |
-| `ANDROID_KEYSTORE_BASE64` | Base64 of `upload-keystore.jks` |
+| `ANDROID_KEYSTORE_BASE64` | Base64 of `tetra-upload.jks` |
 | `ANDROID_KEYSTORE_PASSWORD` | Keystore (store) password |
-| `ANDROID_KEY_ALIAS` | Key alias (e.g. `upload`) |
-| `ANDROID_KEY_PASSWORD` | Key password (often the same as the store password) |
+| `ANDROID_KEY_ALIAS` | `tetraupload` |
+| `ANDROID_KEY_PASSWORD` | Key password |
+
+```bash
+# Values come from your offline JKS / secrets.txt — do not commit them.
+gh secret set ANDROID_KEYSTORE_BASE64 --repo apsmkimo/TetraVideoPlayerAD < tetra-upload.jks.b64
+printf '%s' "$ANDROID_KEYSTORE_PASSWORD" | gh secret set ANDROID_KEYSTORE_PASSWORD --repo apsmkimo/TetraVideoPlayerAD
+printf '%s' "tetraupload" | gh secret set ANDROID_KEY_ALIAS --repo apsmkimo/TetraVideoPlayerAD
+printf '%s' "$ANDROID_KEY_PASSWORD" | gh secret set ANDROID_KEY_PASSWORD --repo apsmkimo/TetraVideoPlayerAD
+```
 
 PRs and forks skip the release job (or skip the Gradle steps when any secret is empty), so they stay green without these secrets.
 
@@ -162,9 +174,9 @@ Sideload testing still uses the **`app-debug`** APK artifact from the same workf
 `local.properties` is gitignored. You can point Gradle at a local upload keystore:
 
 ```
-KEYSTORE_FILE=/absolute/path/to/upload-keystore.jks
+KEYSTORE_FILE=/absolute/path/to/tetra-upload.jks
 KEYSTORE_PASSWORD=...
-KEY_ALIAS=upload
+KEY_ALIAS=tetraupload
 KEY_PASSWORD=...
 ```
 
