@@ -25,7 +25,10 @@ plugins {
 // SMCPKG_SUPPORT>>>Cursor030
 // val APP_VERSION_NAME = "1.0.14"
 // val APP_VERSION_NAME = "1.0.0"
-val APP_VERSION_NAME = "1.0.1"
+// val APP_VERSION_NAME = "1.0.1"
+// SMCPKG_SUPPORT>>>Cursor033
+val APP_VERSION_NAME = "1.0.2"
+// SMCPKG_SUPPORT<<<Cursor033
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
 // SMCPKG_SUPPORT<<<Cursor011
@@ -125,6 +128,9 @@ android {
 
     buildFeatures {
         compose = true
+        // SMCPKG_SUPPORT>>>Cursor033
+        buildConfig = true
+        // SMCPKG_SUPPORT<<<Cursor033
     }
 
     packaging {
@@ -177,4 +183,7 @@ dependencies {
     // SMCPKG_SUPPORT<<<Cursor005
 
     implementation(libs.play.services.ads)
+    // SMCPKG_SUPPORT>>>Cursor033
+    implementation(libs.billing.ktx)
+    // SMCPKG_SUPPORT<<<Cursor033
 }

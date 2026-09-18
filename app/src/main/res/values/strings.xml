@@ -63,10 +63,20 @@
     <string name="about_license_missing">LICENSE text is missing from the APK. See https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE</string>
     <string name="about_source_label">Repository</string>
     <string name="about_components_title">Open-source components</string>
-    <string name="about_components_body">Media3 ExoPlayer (Apache 2.0); Media3 FFmpeg extension (Apache 2.0); FFmpeg 6.0 LGPL-only (no --enable-gpl / --enable-nonfree), dynamically linked as shared .so libraries; Coil (Apache 2.0); AndroidX / Jetpack Compose (Apache 2.0); Google Mobile Ads SDK / Google Play services (Google terms). The application itself is proprietary. Third-party license texts are in the repository.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor033 -->
+    <!-- previous about_components_body omitted from XML comments: double-hyphen is illegal in comments -->
+    <string name="about_components_body">Media3 ExoPlayer (Apache 2.0); Media3 FFmpeg extension (Apache 2.0); FFmpeg 6.0 LGPL-only (no --enable-gpl / --enable-nonfree), dynamically linked as shared .so libraries; Coil (Apache 2.0); AndroidX / Jetpack Compose (Apache 2.0); Google Mobile Ads SDK / Google Play services (Google terms); Google Play Billing Library (Google Play Billing terms). The application itself is proprietary. Third-party license texts are in the repository.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor033 -->
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
-    <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load Google test ads on the layout picker. This app does not request MANAGE_EXTERNAL_STORAGE.</string>
-    <string name="remove_ads_test">Remove ads (test)</string>
-    <string name="ads_removed">Ads removed. Long-press to restore test ads.</string>
+    <!-- <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load Google test ads on the layout picker. This app does not request MANAGE_EXTERNAL_STORAGE.</string> -->
+    <!-- SMCPKG_SUPPORT>>>Cursor033 -->
+    <string name="about_permissions">Permissions: READ_MEDIA_VIDEO (Android 13+) or READ_EXTERNAL_STORAGE (older Android) only to browse and play local videos; INTERNET to load ads on the layout picker; com.android.vending.BILLING for the optional Remove Ads purchase. This app does not request MANAGE_EXTERNAL_STORAGE.</string>
+    <!-- <string name="remove_ads_test">Remove ads (test)</string> -->
+    <!-- <string name="ads_removed">Ads removed. Long-press to restore test ads.</string> -->
+    <string name="remove_ads">Remove ads</string>
+    <string name="remove_ads_billing_unavailable">Google Play Billing is unavailable on this device.</string>
+    <string name="remove_ads_product_unavailable">Unable to start purchase. Check Play Store and try again.</string>
+    <string name="remove_ads_purchase_failed">Purchase could not be started. Please try again.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor033 -->
     <!-- SMCPKG_SUPPORT<<<Cursor021 -->
 </resources>

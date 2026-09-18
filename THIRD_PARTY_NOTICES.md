@@ -28,7 +28,15 @@ the Google Mobile Ads SDK terms:
 https://developers.google.com/admob  
 https://developers.google.com/admob/android/quick-start
 
-This build uses Google official test application and ad unit IDs only.
+Ad unit IDs are configured in `AdConfig` / the application manifest.
+
+## Google Play Billing Library
+
+Google Play Billing Library is used for the one-time **Remove Ads** product
+(`remove_ads`). Copyright Google LLC. Use is subject to the Google Play Billing
+terms:
+
+https://developer.android.com/google/play/billing
 
 ## FFmpeg 6.0 (LGPL-only, dynamically linked)
 
