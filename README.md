@@ -19,6 +19,10 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Tech Stack
 
+<!-- SMCPKG_SUPPORT>>>Cursor034 -->
+<!-- Old CI/CD row: GitHub Actions (`./gradlew assembleDebug`, artifact `app-debug`) -->
+<!-- SMCPKG_SUPPORT<<<Cursor034 -->
+
 | Layer | Choice |
 | --- | --- |
 | Language | Kotlin |
@@ -27,7 +31,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 | Decode | Media3 FFmpeg Extension (FFmpeg software decoding) |
 | Thumbnails | Coil (`coil-compose`, `coil-video`) |
 | Billing | Google Play Billing Library (`remove_ads` one-time IAP) |
-| CI/CD | GitHub Actions (`./gradlew assembleDebug`, artifact `app-debug`) |
+| CI/CD | GitHub Actions (`assembleDebug` → `app-debug`; `bundleRelease` → `app-release` AAB on `main` / `workflow_dispatch` when signing secrets are set) |
 
 **Package ID:** `com.apsmkimo.tetravideoplayer`  
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 35  
@@ -87,3 +91,88 @@ Local `./gradlew assembleDebug` and GitHub Actions CI use the same committed **T
 - Store / key password: `android`
 
 `app/build.gradle.kts` `signingConfigs.debug` points at that file. `*.keystore` stays in `.gitignore` except this one (`!app/debug.keystore`). If you still see a signing mismatch, the device has an older APK signed with a different key—uninstall once, then future upgrades from this keystore will succeed.
+
+<!-- SMCPKG_SUPPORT>>>Cursor034 -->
+## Release signing & Play Console AAB
+
+GitHub Actions on `main` (and **Actions → Android CI → Run workflow**) can produce a **signed `app-release.aab`** for Play Console. The keystore never lives in git: CI decodes it from GitHub Actions secrets onto the runner, then Gradle reads `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`. Debug APK jobs do not need these secrets.
+
+With [Play App Signing](https://support.google.com/googleplay/android-developer/answer/9842756), this keystore is the **upload key**. Google re-signs the app with the app signing key. Keep the upload JKS and passwords offline as well as in secrets; losing the upload key requires a Play Console reset.
+
+### 1. Create an upload keystore (once)
+
+```bash
+keytool -genkeypair -v \
+  -storetype JKS \
+  -keystore upload-keystore.jks \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 10000 \
+  -alias upload
+```
+
+Use a strong store password (and key password if prompted). Do not commit `upload-keystore.jks`.
+
+### 2. Base64 the keystore
+
+Linux:
+
+```bash
+base64 -w 0 upload-keystore.jks
+```
+
+macOS:
+
+```bash
+base64 -i upload-keystore.jks
+```
+
+Copy the single-line output. Do not commit the base64 string.
+
+### 3. Set GitHub Actions secrets
+
+Repo → **Settings → Secrets and variables → Actions → New repository secret**. Create exactly these four names:
+
+| Secret | Value |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | Base64 of `upload-keystore.jks` |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore (store) password |
+| `ANDROID_KEY_ALIAS` | Key alias (e.g. `upload`) |
+| `ANDROID_KEY_PASSWORD` | Key password (often the same as the store password) |
+
+PRs and forks skip the release job (or skip the Gradle steps when any secret is empty), so they stay green without these secrets.
+
+### 4. Download the AAB from Actions
+
+1. After a successful run on `main` (or a manual **Run workflow**), open **Actions → Android CI**.
+2. Download the **`app-release`** artifact (zip).
+3. Unzip to get `app-release.aab` (`app/build/outputs/bundle/release/` on the runner).
+
+Sideload testing still uses the **`app-debug`** APK artifact from the same workflow.
+
+### 5. Upload to Play Console (internal testing)
+
+1. Open [Play Console](https://play.google.com/console) → the `com.apsmkimo.tetravideoplayer` app.
+2. Enroll in **Play App Signing** if the first upload asks for it. Register this JKS as the **upload key**.
+3. **Testing → Internal testing → Create new release**.
+4. Upload `app-release.aab`, save, and roll out to internal testers.
+
+### Local `bundleRelease` (optional)
+
+`local.properties` is gitignored. You can point Gradle at a local upload keystore:
+
+```
+KEYSTORE_FILE=/absolute/path/to/upload-keystore.jks
+KEYSTORE_PASSWORD=...
+KEY_ALIAS=upload
+KEY_PASSWORD=...
+```
+
+Then:
+
+```bash
+./gradlew bundleRelease
+```
+
+Output: `app/build/outputs/bundle/release/app-release.aab`. The same four names also work as environment variables.
+<!-- SMCPKG_SUPPORT<<<Cursor034 -->
