@@ -61,6 +61,10 @@ import com.apsmkimo.tetravideoplayer.data.LayoutPreferences
 // SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.PlayerLayout
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
+// SMCPKG_SUPPORT>>>Cursor038
+import com.apsmkimo.tetravideoplayer.data.PlayerSettings
+import com.apsmkimo.tetravideoplayer.data.PlayerSettingsStore
+// SMCPKG_SUPPORT<<<Cursor038
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
 
@@ -81,7 +85,11 @@ fun TetraViewApp() {
     var showSelection by remember { mutableStateOf(true) }
     // SMCPKG_SUPPORT<<<Cursor019
     // SMCPKG_SUPPORT>>>Cursor021
-    var showAbout by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor038
+    // var showAbout by remember { mutableStateOf(false) }
+    var showSettings by remember { mutableStateOf(false) }
+    var settings by remember { mutableStateOf(PlayerSettingsStore.load(context)) }
+    // SMCPKG_SUPPORT<<<Cursor038
     // SMCPKG_SUPPORT>>>Cursor036
     // var showLicense by remember { mutableStateOf(false) }
     // SMCPKG_SUPPORT<<<Cursor036
@@ -91,6 +99,23 @@ fun TetraViewApp() {
         LayoutPreferences.clear(context)
     }
 
+    // SMCPKG_SUPPORT>>>Cursor038
+    fun updateSettings(next: PlayerSettings) {
+        settings = next
+        PlayerSettingsStore.save(context, next)
+    }
+
+    fun orientationFor(selected: PlayerLayout?, atSelection: Boolean): Int {
+        if (settings.allowRotation) {
+            return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        }
+        if (atSelection && selected == null) {
+            return ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+        return selected?.orientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    }
+    // SMCPKG_SUPPORT<<<Cursor038
+
     fun applyLayout(newLayout: PlayerLayout) {
         // SMCPKG_SUPPORT>>>Cursor019
         // LayoutPreferences.save(context, newLayout)
@@ -98,16 +123,24 @@ fun TetraViewApp() {
         // SMCPKG_SUPPORT<<<Cursor019
         layout = newLayout
         showSelection = false
-        activity.requestedOrientation = newLayout.orientation
+        // SMCPKG_SUPPORT>>>Cursor038
+        // activity.requestedOrientation = newLayout.orientation
+        activity.requestedOrientation = orientationFor(newLayout, atSelection = false)
+        // SMCPKG_SUPPORT<<<Cursor038
     }
 
-    LaunchedEffect(showSelection, layout) {
-        activity.requestedOrientation = if (showSelection && layout == null) {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        } else {
-            layout?.orientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
+    // SMCPKG_SUPPORT>>>Cursor038
+    // LaunchedEffect(showSelection, layout) {
+    //     activity.requestedOrientation = if (showSelection && layout == null) {
+    //         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    //     } else {
+    //         layout?.orientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    //     }
+    // }
+    LaunchedEffect(showSelection, layout, settings.allowRotation) {
+        activity.requestedOrientation = orientationFor(layout, atSelection = showSelection)
     }
+    // SMCPKG_SUPPORT<<<Cursor038
 
     // SMCPKG_SUPPORT>>>Cursor019
     // if (persisted == null && showSelection) {
@@ -117,7 +150,10 @@ fun TetraViewApp() {
     if (selected == null) {
         LauncherSelectionScreen(
             onLayoutSelected = ::applyLayout,
-            onAbout = { showAbout = true },
+            // SMCPKG_SUPPORT>>>Cursor038
+            // onAbout = { showAbout = true },
+            onSettings = { showSettings = true },
+            // SMCPKG_SUPPORT<<<Cursor038
         )
     } else {
         // SMCPKG_SUPPORT>>>Cursor024
@@ -145,6 +181,10 @@ fun TetraViewApp() {
             // SMCPKG_SUPPORT>>>Cursor022
             // onAbout = { showAbout = true },
             // SMCPKG_SUPPORT<<<Cursor022
+            // SMCPKG_SUPPORT>>>Cursor038
+            settings = settings,
+            onOpenSettings = { showSettings = true },
+            // SMCPKG_SUPPORT<<<Cursor038
         )
         // SMCPKG_SUPPORT<<<Cursor024
     }
@@ -159,11 +199,20 @@ fun TetraViewApp() {
     //         onViewLicense = { showLicense = true },
     //     )
     // }
-    if (showAbout) {
-        AboutScreen(
-            onClose = { showAbout = false },
+    // SMCPKG_SUPPORT>>>Cursor038
+    // if (showAbout) {
+    //     AboutScreen(
+    //         onClose = { showAbout = false },
+    //     )
+    // }
+    if (showSettings) {
+        SettingsScreen(
+            settings = settings,
+            onSettingsChange = ::updateSettings,
+            onClose = { showSettings = false },
         )
     }
+    // SMCPKG_SUPPORT<<<Cursor038
     // SMCPKG_SUPPORT<<<Cursor036
     // SMCPKG_SUPPORT<<<Cursor021
 }

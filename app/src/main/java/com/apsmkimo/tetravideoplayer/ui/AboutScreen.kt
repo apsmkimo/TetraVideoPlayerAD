@@ -91,8 +91,12 @@ private val AboutMuted = Color(0xFFB4C0D0)
 // SMCPKG_SUPPORT>>>Cursor036
 // private const val SOURCE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD"
 // private const val LICENSE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE"
-private const val PRIVACY_POLICY_URL =
+// SMCPKG_SUPPORT>>>Cursor038
+// private const val PRIVACY_POLICY_URL =
+//     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+internal const val PRIVACY_POLICY_URL =
     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+// SMCPKG_SUPPORT<<<Cursor038
 private const val PLAY_STORE_PACKAGE = "com.apsmkimo.tetravideoplayer"
 private const val PLAY_STORE_MARKET_URI = "market://details?id=$PLAY_STORE_PACKAGE"
 private const val PLAY_STORE_WEB_URI =
@@ -269,14 +273,20 @@ private fun AboutTopBar(
     }
 }
 
-private fun openUrl(context: android.content.Context, url: String) {
+// SMCPKG_SUPPORT>>>Cursor038
+// private fun openUrl(context: android.content.Context, url: String) {
+internal fun openUrl(context: android.content.Context, url: String) {
+// SMCPKG_SUPPORT<<<Cursor038
     runCatching {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 }
 
 // SMCPKG_SUPPORT>>>Cursor036
-private fun openPlayStoreListing(context: android.content.Context) {
+// SMCPKG_SUPPORT>>>Cursor038
+// private fun openPlayStoreListing(context: android.content.Context) {
+internal fun openPlayStoreListing(context: android.content.Context) {
+// SMCPKG_SUPPORT<<<Cursor038
     val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_STORE_MARKET_URI))
     try {
         context.startActivity(marketIntent)

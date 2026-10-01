@@ -93,6 +93,9 @@ import com.apsmkimo.tetravideoplayer.R
 // SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.PlayerLayout
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
+// SMCPKG_SUPPORT>>>Cursor038
+import com.apsmkimo.tetravideoplayer.data.PlayerSettings
+// SMCPKG_SUPPORT<<<Cursor038
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.player.QuadPlayerController
@@ -120,10 +123,40 @@ fun QuadPlayerScreen(
     // onAbout: () -> Unit = {},
     // SMCPKG_SUPPORT<<<Cursor022
     // SMCPKG_SUPPORT<<<Cursor021
+    // SMCPKG_SUPPORT>>>Cursor038
+    settings: PlayerSettings = PlayerSettings(),
+    onOpenSettings: () -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor038
 ) {
 // SMCPKG_SUPPORT<<<Cursor012
     val context = LocalContext.current
-    val controller = remember { QuadPlayerController(context) }
+    // SMCPKG_SUPPORT>>>Cursor038
+    // val controller = remember { QuadPlayerController(context) }
+    val controller = remember {
+        QuadPlayerController(
+            context,
+            initialDecodeModes = settings.panes.map { it.decodeMode },
+            initialLoop = settings.panes.map { it.loop },
+        )
+    }
+    var playerGeneration by remember { mutableIntStateOf(0) }
+    DisposableEffect(controller) {
+        controller.onPlayerReplaced = { playerGeneration++ }
+        onDispose { controller.onPlayerReplaced = null }
+    }
+    val decodeKey = settings.panes.joinToString(separator = ",") { it.decodeMode.name }
+    val loopKey = settings.panes.joinToString(separator = ",") { it.loop.toString() }
+    LaunchedEffect(decodeKey) {
+        settings.panes.forEachIndexed { index, pane ->
+            controller.applyDecodeMode(index, pane.decodeMode)
+        }
+    }
+    LaunchedEffect(loopKey) {
+        settings.panes.forEachIndexed { index, pane ->
+            controller.applyLoop(index, pane.loop)
+        }
+    }
+    // SMCPKG_SUPPORT<<<Cursor038
 
     // SMCPKG_SUPPORT>>>Cursor024
     // var videoUriStrings by rememberSaveable {
@@ -365,7 +398,12 @@ fun QuadPlayerScreen(
             val uri = videoUriStrings.getOrNull(index)
                 ?.takeIf { it.isNotEmpty() }
                 ?.let(Uri::parse)
+            // SMCPKG_SUPPORT>>>Cursor038
+            // val player = controller.players.getOrNull(index) ?: return@PlayerPaneGrid
+            // playerGeneration changes when one pane's ExoPlayer is rebuilt.
+            if (playerGeneration < 0) return@PlayerPaneGrid
             val player = controller.players.getOrNull(index) ?: return@PlayerPaneGrid
+            // SMCPKG_SUPPORT<<<Cursor038
             VideoCell(
                 index = index,
                 player = player,
@@ -380,6 +418,9 @@ fun QuadPlayerScreen(
                 // SMCPKG_SUPPORT<<<Cursor017
                 onAttachPlayerView = { view -> controller.attachPlayerView(index, view) },
                 onDetachPlayerView = { view -> controller.detachPlayerView(index, view) },
+                // SMCPKG_SUPPORT>>>Cursor038
+                toolbarLift = settings.pane(index).toolbarLift,
+                // SMCPKG_SUPPORT<<<Cursor038
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -390,27 +431,48 @@ fun QuadPlayerScreen(
             // SMCPKG_SUPPORT>>>Cursor022
             // Row(...) { About IconButton 40.dp; layout IconButton 40.dp }
             // About stays on LauncherSelectionScreen only. Layout chip is 50% of 40.dp.
-            Box(
+            // SMCPKG_SUPPORT>>>Cursor038
+            // Box( ... DashboardCustomize only ... )
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .statusBarsPadding()
-                    .padding(end = 8.dp, top = 4.dp)
-                    .size(20.dp)
-                    .clip(CircleShape)
-                    .background(Color(0x99000000))
-                    // SMCPKG_SUPPORT>>>Cursor024
-                    // .clickable(onClick = onChangeLayout),
-                    .clickable(onClick = { leaveToSelection() }),
-                    // SMCPKG_SUPPORT<<<Cursor024
-                contentAlignment = Alignment.Center,
+                    .padding(end = 8.dp, top = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    imageVector = Icons.Filled.DashboardCustomize,
-                    contentDescription = stringResource(R.string.change_layout),
-                    tint = Color.White,
-                    modifier = Modifier.size(12.dp),
-                )
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x99000000))
+                        .clickable(onClick = onOpenSettings),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = SettingsGearIcon,
+                        contentDescription = stringResource(R.string.settings_open),
+                        tint = Color.White,
+                        modifier = Modifier.size(12.dp),
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .background(Color(0x99000000))
+                        .clickable(onClick = { leaveToSelection() }),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.DashboardCustomize,
+                        contentDescription = stringResource(R.string.change_layout),
+                        tint = Color.White,
+                        modifier = Modifier.size(12.dp),
+                    )
+                }
             }
+            // SMCPKG_SUPPORT<<<Cursor038
             // SMCPKG_SUPPORT<<<Cursor022
             // SMCPKG_SUPPORT<<<Cursor012
             PermissionBanner(

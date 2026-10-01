@@ -49,11 +49,13 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -123,6 +125,9 @@ fun VideoCell(
         }
     },
     // SMCPKG_SUPPORT<<<Cursor017
+    // SMCPKG_SUPPORT>>>Cursor038
+    toolbarLift: Int = 0,
+    // SMCPKG_SUPPORT<<<Cursor038
 ) {
     // SMCPKG_SUPPORT>>>Cursor004
     // val shape = RoundedCornerShape(12.dp)
@@ -152,7 +157,10 @@ fun VideoCell(
     // SMCPKG_SUPPORT<<<Cursor024
     // SMCPKG_SUPPORT<<<Cursor023
 
-    Box(
+    // SMCPKG_SUPPORT>>>Cursor038
+    // Box(
+    BoxWithConstraints(
+    // SMCPKG_SUPPORT<<<Cursor038
         modifier = modifier
             // SMCPKG_SUPPORT>>>Cursor004
             // .padding(4.dp)
@@ -347,6 +355,13 @@ fun VideoCell(
             }
 
             if (controlsVisible) {
+                // SMCPKG_SUPPORT>>>Cursor038
+                // CellPlaybackBar(..., Modifier.align(Alignment.BottomCenter).zIndex(2f))
+                // 0 keeps the bar on the bottom edge. 100 lifts it by the free
+                // space in this pane so the bar sits on the top edge.
+                val liftFraction = toolbarLift.coerceIn(0, 100) / 100f
+                val lift = (maxHeight - CellPlaybackBarHeight).coerceAtLeast(0.dp) * liftFraction
+                // SMCPKG_SUPPORT<<<Cursor038
                 CellPlaybackBar(
                     player = player,
                     onPickVideo = onPickVideo,
@@ -355,6 +370,9 @@ fun VideoCell(
                     // SMCPKG_SUPPORT<<<Cursor017
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
+                        // SMCPKG_SUPPORT>>>Cursor038
+                        .offset(y = -lift)
+                        // SMCPKG_SUPPORT<<<Cursor038
                         .zIndex(2f),
                 )
             }

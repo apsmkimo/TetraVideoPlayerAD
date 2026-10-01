@@ -413,7 +413,11 @@ private fun VerticalVolumeOverlay(
 }
 
 // SMCPKG_SUPPORT>>>Cursor022
-private val BarHeight = 24.dp
+// SMCPKG_SUPPORT>>>Cursor038
+// private val BarHeight = 24.dp
+internal val CellPlaybackBarHeight = 24.dp
+private val BarHeight = CellPlaybackBarHeight
+// SMCPKG_SUPPORT<<<Cursor038
 private val BarButtonSize = 24.dp
 private val BarIconSize = 19.dp
 private val VolumeOverlayLift = 56.dp

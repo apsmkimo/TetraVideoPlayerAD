@@ -52,6 +52,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.decoder.ffmpeg.FfmpegLibrary
@@ -60,6 +61,7 @@ import androidx.media3.extractor.ExtractorsFactory
 import androidx.media3.extractor.avi.AviExtractor
 import androidx.media3.extractor.text.DefaultSubtitleParserFactory
 import androidx.media3.ui.PlayerView
+import com.apsmkimo.tetravideoplayer.data.DecodeMode
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
@@ -74,6 +76,10 @@ import kotlinx.coroutines.yield
 class QuadPlayerController(
     context: Context,
     val playerCount: Int = PLAYER_COUNT,
+    // SMCPKG_SUPPORT>>>Cursor038
+    initialDecodeModes: List<DecodeMode> = emptyList(),
+    initialLoop: List<Boolean> = emptyList(),
+    // SMCPKG_SUPPORT<<<Cursor038
 ) {
     private val appContext = context.applicationContext
     private val dataSourceFactory = DefaultDataSource.Factory(appContext)
@@ -83,30 +89,37 @@ class QuadPlayerController(
         ExtractorsFactory { arrayOf(AviExtractor(0, DefaultSubtitleParserFactory())) },
     )
 
-    val players: List<ExoPlayer> = List(playerCount) { index ->
-        // SMCPKG_SUPPORT>>>Cursor007
-        // ExoPlayer.Builder(context.applicationContext, createSoftDecodeRenderersFactory(context))
-        //     .build()
-        // SMCPKG_SUPPORT>>>Cursor008
-        createHardwareFirstPlayer(appContext)
-            // SMCPKG_SUPPORT<<<Cursor008
-            .apply {
-                repeatMode = Player.REPEAT_MODE_ONE
-                // SMCPKG_SUPPORT>>>Cursor004
-                // volume = if (index == DEFAULT_UNMUTED_INDEX) 1f else 0f
-                volume = 1f
-                setAudioAttributes(concurrentMediaAttributes(), /* handleAudioFocus = */ false)
-                // SMCPKG_SUPPORT<<<Cursor004
-                playWhenReady = false
-                // SMCPKG_SUPPORT>>>Cursor014
-                addListener(PlayerErrorLogger(index))
-                // SMCPKG_SUPPORT<<<Cursor014
-                // SMCPKG_SUPPORT>>>Cursor017
-                addListener(AutoPlayOnReadyListener(index))
-                // SMCPKG_SUPPORT<<<Cursor017
-            }
-        // SMCPKG_SUPPORT<<<Cursor007
+    // SMCPKG_SUPPORT>>>Cursor038
+    // val players: List<ExoPlayer> = List(playerCount) { index ->
+    //     createHardwareFirstPlayer(appContext).apply {
+    //         repeatMode = Player.REPEAT_MODE_ONE
+    //         volume = 1f
+    //         setAudioAttributes(concurrentMediaAttributes(), /* handleAudioFocus = */ false)
+    //         playWhenReady = false
+    //         addListener(PlayerErrorLogger(index))
+    //         addListener(AutoPlayOnReadyListener(index))
+    //     }
+    // }
+    private val decodeModes = Array(playerCount) { index ->
+        initialDecodeModes.getOrElse(index) { DecodeMode.HARDWARE }
     }
+    private val loopEnabled = BooleanArray(playerCount) { index ->
+        initialLoop.getOrElse(index) { true }
+    }
+
+    /** Fired on the main thread after a pane's ExoPlayer instance is replaced. */
+    var onPlayerReplaced: (() -> Unit)? = null
+
+    private val playerSlots: MutableList<ExoPlayer> = MutableList(playerCount) { index ->
+        buildPlayer(
+            index = index,
+            decodeMode = decodeModes[index],
+            repeatMode = repeatModeFor(loopEnabled[index]),
+            volume = 1f,
+        )
+    }
+    val players: List<ExoPlayer> get() = playerSlots
+    // SMCPKG_SUPPORT<<<Cursor038
 
     @Volatile
     private var released: Boolean = false
@@ -145,6 +158,98 @@ class QuadPlayerController(
     //     }
     // }
     // SMCPKG_SUPPORT<<<Cursor004
+
+    // SMCPKG_SUPPORT>>>Cursor038
+    fun applyLoop(index: Int, loop: Boolean) {
+        if (released || index !in playerSlots.indices) return
+        loopEnabled[index] = loop
+        playerSlots[index].repeatMode = repeatModeFor(loop)
+    }
+
+    /**
+     * Rebuilds one pane when HW/SW changes. Position, URI, volume, and loop
+     * are copied onto the new ExoPlayer. Same-mode calls are a no-op.
+     */
+    suspend fun applyDecodeMode(index: Int, mode: DecodeMode) {
+        if (released || index !in playerSlots.indices) return
+        if (decodeModes[index] == mode) return
+        swapMutexes[index].withLock {
+            if (released || decodeModes[index] == mode) return@withLock
+            withContext(NonCancellable) {
+                decodeModes[index] = mode
+                swapPlayerLocked(index)
+            }
+        }
+    }
+
+    private fun buildPlayer(
+        index: Int,
+        decodeMode: DecodeMode,
+        repeatMode: Int,
+        volume: Float,
+    ): ExoPlayer {
+        return createHardwareFirstPlayer(appContext, decodeMode).apply {
+            this.repeatMode = repeatMode
+            this.volume = volume
+            setAudioAttributes(concurrentMediaAttributes(), /* handleAudioFocus = */ false)
+            playWhenReady = false
+            addListener(PlayerErrorLogger(index))
+            addListener(AutoPlayOnReadyListener(index))
+        }
+    }
+
+    private fun swapPlayerLocked(index: Int) {
+        val old = playerSlots[index]
+        val uri = old.currentMediaItem?.localConfiguration?.uri
+        val position = old.currentPosition.coerceAtLeast(0L)
+        val playWhenReady = autoplayWanted[index] || old.playWhenReady || old.isPlaying
+        val volume = old.volume
+        val view = boundViews[index]
+        val created = buildPlayer(
+            index = index,
+            decodeMode = decodeModes[index],
+            repeatMode = repeatModeFor(loopEnabled[index]),
+            volume = volume,
+        )
+        cancelBufferingRecovery(index)
+        runCatching { view?.player = null }
+        runCatching {
+            old.playWhenReady = false
+            old.stop()
+            old.clearMediaItems()
+            old.release()
+        }.onFailure { error ->
+            Log.w(TAG, "release replaced player[$index] failed", error)
+        }
+        playerSlots[index] = created
+        autoplayWanted[index] = playWhenReady && uri != null
+        if (view != null) {
+            boundViews[index] = view
+            runCatching { view.player = created }
+                .onFailure { error -> Log.w(TAG, "rebind replaced player[$index] failed", error) }
+        }
+        if (uri != null) {
+            runCatching {
+                created.setMediaSource(createMediaSource(uri))
+                created.prepare()
+                if (position > 0L) {
+                    created.seekTo(position)
+                }
+                created.playWhenReady = playWhenReady
+                if (playWhenReady) {
+                    created.play()
+                }
+            }.onFailure { error ->
+                Log.w(TAG, "restore replaced player[$index] failed", error)
+            }
+        }
+        onPlayerReplaced?.invoke()
+    }
+
+    private fun repeatModeFor(loop: Boolean): Int {
+        return if (loop) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+    }
+    // SMCPKG_SUPPORT<<<Cursor038
 
     fun pauseAll() {
         if (released) return
@@ -605,8 +710,14 @@ class QuadPlayerController(
         // }
         // SMCPKG_SUPPORT<<<Cursor007
 
+        // SMCPKG_SUPPORT>>>Cursor038
+        // fun createHardwareFirstPlayer(context: Context): ExoPlayer {
         @OptIn(UnstableApi::class)
-        fun createHardwareFirstPlayer(context: Context): ExoPlayer {
+        fun createHardwareFirstPlayer(
+            context: Context,
+            decodeMode: DecodeMode = DecodeMode.HARDWARE,
+        ): ExoPlayer {
+        // SMCPKG_SUPPORT<<<Cursor038
             val appContext = context.applicationContext
             // Load libffmpegJNI.so so DefaultRenderersFactory can instantiate FfmpegAudioRenderer.
             FfmpegLibrary.isAvailable()
@@ -654,11 +765,43 @@ class QuadPlayerController(
                 // SMCPKG_SUPPORT<<<Cursor018
                 // SMCPKG_SUPPORT<<<Cursor014
                 .build()
+            // SMCPKG_SUPPORT>>>Cursor038
+            // HW keeps the factory above: FFmpeg only for allowlisted legacy codecs,
+            // H.264/HEVC/VP9/AV1 on hardware MediaCodec (default selector order).
+            // SW keeps that FFmpeg path and asks MediaCodec to try software
+            // decoders first for everything FFmpeg does not advertise.
+            if (decodeMode == DecodeMode.SOFTWARE) {
+                renderersFactory.setMediaCodecSelector(preferSoftwareMediaCodecSelector())
+            }
+            Log.i(TAG, "create player decodeMode=$decodeMode")
+            // SMCPKG_SUPPORT<<<Cursor038
             return ExoPlayer.Builder(appContext, renderersFactory)
                 .setLoadControl(loadControl)
                 .setVideoChangeFrameRateStrategy(C.VIDEO_CHANGE_FRAME_RATE_STRATEGY_OFF)
                 .build()
         }
+
+        // SMCPKG_SUPPORT>>>Cursor038
+        /**
+         * Software decoders (c2.android.* / OMX.google.*) first.
+         * [setEnableDecoderFallback] still tries the next decoder, so a device
+         * with no software codec falls back to hardware instead of crashing.
+         * H.264/HEVC are not in the LGPL FFmpeg allowlist; this selector is
+         * their software path.
+         */
+        @OptIn(UnstableApi::class)
+        fun preferSoftwareMediaCodecSelector(): MediaCodecSelector {
+            val fallback = MediaCodecSelector.DEFAULT
+            return MediaCodecSelector { mimeType, requiresSecureDecoder, requiresTunnelingDecoder ->
+                val infos = fallback.getDecoderInfos(
+                    mimeType,
+                    requiresSecureDecoder,
+                    requiresTunnelingDecoder,
+                )
+                infos.sortedBy { info -> if (info.hardwareAccelerated) 1 else 0 }
+            }
+        }
+        // SMCPKG_SUPPORT<<<Cursor038
 
         fun concurrentMediaAttributes(): AudioAttributes {
             return AudioAttributes.Builder()
