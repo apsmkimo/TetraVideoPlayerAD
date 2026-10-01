@@ -6,7 +6,8 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Key Features
 
-- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The info button opens **About** (proprietary license, repository URL, and third-party component licenses). AdMob banners sit in the empty top and bottom bands; the first layout pick in a process may show an interstitial. The top-right **Remove Ads** button is a Google Play Billing one-time purchase (`remove_ads`); after purchase or restore it disappears and banners/interstitials stay off. Debug builds can long-press **About** to show ads again for testing.
+- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The gear button opens **Settings** (screen rotation, per-pane toolbar position, HW/SW decode, loop, plus version, privacy policy, and rate). AdMob banners sit in the empty top and bottom bands; the first layout pick in a process may show an interstitial. The top-right **Remove Ads** button is a Google Play Billing one-time purchase (`remove_ads`); after purchase or restore it disappears and banners/interstitials stay off. Debug builds can long-press the gear to show ads again for testing.
+- **Settings** — Phone screen rotation defaults **off** (layout still locks portrait or landscape). Per pane (1–4): toolbar position `0–100` (0 bottom, 100 top), **HW decode** (default) or **SW decode**, **Loop** (default) or play once. Stored in SharedPreferences (`tetravideoplayer_settings`) and applied on the next composition; decode mode rebuilds only that pane's player and keeps the current URI and position. SW decode does not add a dependency: legacy AVI stays on the vendored FFmpeg extension, and H.264/HEVC/VP9/AV1 (not in the LGPL FFmpeg allowlist) prefer Android software MediaCodec, with hardware fallback if none exists.
 - **2x2 Grid** — Four independent local videos in a landscape 2×2 grid.
 - **1x4 Stack** — Four players stacked top-to-bottom in portrait, hairline separators, FIT letterbox.
 - **1x2 Vertical** — Two players stacked top-to-bottom in portrait.
@@ -42,9 +43,13 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.4 (`versionCode` 104) -->
 <!-- SMCPKG_SUPPORT>>>Cursor037 -->
-**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
-**Version:** 1.0.5 (`versionCode` 105)
+<!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
+<!-- **Version:** 1.0.5 (`versionCode` 105) -->
 <!-- SMCPKG_SUPPORT<<<Cursor037 -->
+<!-- SMCPKG_SUPPORT>>>Cursor038 -->
+**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
+**Version:** 1.0.6 (`versionCode` 106)
+<!-- SMCPKG_SUPPORT<<<Cursor038 -->
 <!-- SMCPKG_SUPPORT<<<Cursor036 -->
 <!-- SMCPKG_SUPPORT<<<Cursor035 -->
 

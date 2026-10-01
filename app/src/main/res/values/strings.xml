@@ -75,4 +75,20 @@
     <string name="remove_ads_purchase_failed">Purchase could not be started. Please try again.</string>
     <!-- SMCPKG_SUPPORT<<<Cursor033 -->
     <!-- SMCPKG_SUPPORT<<<Cursor021 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor038 -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_open">Settings</string>
+    <string name="settings_rotation">Phone screen rotation</string>
+    <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string>
+    <string name="settings_panes_title">Video panes</string>
+    <string name="settings_toolbar_position">Toolbar position</string>
+    <string name="settings_decode">Decoder</string>
+    <string name="settings_decode_hw">HW decode</string>
+    <string name="settings_decode_sw">SW decode</string>
+    <string name="settings_decode_sw_note">SW uses the bundled FFmpeg decoder for legacy AVI codecs. H.264, HEVC, VP9, and AV1 are not in that LGPL FFmpeg build; they use Android software MediaCodec. If this device has no software decoder, playback falls back to hardware and does not crash.</string>
+    <string name="settings_playback">Playback</string>
+    <string name="settings_loop">Loop</string>
+    <string name="settings_once">Play once</string>
+    <string name="settings_about_section">About</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor038 -->
 </resources>

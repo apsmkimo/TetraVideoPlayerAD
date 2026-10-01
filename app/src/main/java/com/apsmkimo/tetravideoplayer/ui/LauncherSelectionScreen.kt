@@ -51,12 +51,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
+// SMCPKG_SUPPORT>>>Cursor038
+// import androidx.compose.material.icons.Icons
+// SMCPKG_SUPPORT<<<Cursor038
 // SMCPKG_SUPPORT>>>Cursor033
 // import androidx.compose.material.icons.filled.Star
 // import androidx.compose.material.icons.outlined.Star
 // SMCPKG_SUPPORT<<<Cursor033
-import androidx.compose.material.icons.outlined.Info
+// SMCPKG_SUPPORT>>>Cursor038
+// import androidx.compose.material.icons.outlined.Info
+// SMCPKG_SUPPORT<<<Cursor038
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -105,7 +109,10 @@ private val LabelWhite = Color(0xFFFFFFFF)
 fun LauncherSelectionScreen(
     onLayoutSelected: (PlayerLayout) -> Unit,
     onCancel: (() -> Unit)? = null,
-    onAbout: () -> Unit = {},
+    // SMCPKG_SUPPORT>>>Cursor038
+    // onAbout: () -> Unit = {},
+    onSettings: () -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor038
     modifier: Modifier = Modifier,
 ) {
     if (onCancel != null) {
@@ -297,28 +304,42 @@ fun LauncherSelectionScreen(
                         .clip(CircleShape)
                         .background(Color(0x33202A3A))
                         .combinedClickable(
-                            onClick = onAbout,
+                            // SMCPKG_SUPPORT>>>Cursor038
+                            // onClick = onAbout,
+                            onClick = onSettings,
+                            // SMCPKG_SUPPORT<<<Cursor038
                             onLongClick = { billing.restoreAdsForDebug() },
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = stringResource(R.string.about_title),
+                        // SMCPKG_SUPPORT>>>Cursor038
+                        // imageVector = Icons.Outlined.Info,
+                        imageVector = SettingsGearIcon,
+                        // contentDescription = stringResource(R.string.about_title),
+                        contentDescription = stringResource(R.string.settings_open),
+                        // SMCPKG_SUPPORT<<<Cursor038
                         tint = LabelWhite,
                     )
                 }
             } else {
                 IconButton(
-                    onClick = onAbout,
+                    // SMCPKG_SUPPORT>>>Cursor038
+                    // onClick = onAbout,
+                    onClick = onSettings,
+                    // SMCPKG_SUPPORT<<<Cursor038
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(Color(0x33202A3A)),
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = stringResource(R.string.about_title),
+                        // SMCPKG_SUPPORT>>>Cursor038
+                        // imageVector = Icons.Outlined.Info,
+                        imageVector = SettingsGearIcon,
+                        // contentDescription = stringResource(R.string.about_title),
+                        contentDescription = stringResource(R.string.settings_open),
+                        // SMCPKG_SUPPORT<<<Cursor038
                         tint = LabelWhite,
                     )
                 }
