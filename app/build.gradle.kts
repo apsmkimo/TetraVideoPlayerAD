@@ -1,6 +1,23 @@
 // SMCPKG_SUPPORT>>>Cursor034
 import java.util.Properties
 // SMCPKG_SUPPORT<<<Cursor034
+// SMCPKG_SUPPORT>>>Cursor039
+import com.android.build.api.artifact.MultipleArtifact
+import com.android.build.api.artifact.SingleArtifact
+import java.io.File
+import javax.inject.Inject
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.bundling.Zip
+import org.gradle.process.ExecOperations
+// SMCPKG_SUPPORT<<<Cursor039
 
 plugins {
     alias(libs.plugins.android.application)
@@ -42,8 +59,11 @@ plugins {
 // val APP_VERSION_NAME = "1.0.5"
 // SMCPKG_SUPPORT<<<Cursor037
 // SMCPKG_SUPPORT>>>Cursor038
-val APP_VERSION_NAME = "1.0.6"
+// val APP_VERSION_NAME = "1.0.6"
 // SMCPKG_SUPPORT<<<Cursor038
+// SMCPKG_SUPPORT>>>Cursor039
+val APP_VERSION_NAME = "1.0.7"
+// SMCPKG_SUPPORT<<<Cursor039
 // SMCPKG_SUPPORT<<<Cursor036
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
@@ -111,6 +131,11 @@ android {
     // compileSdk = 35
     compileSdk = 36
     // SMCPKG_SUPPORT<<<Cursor001
+    // SMCPKG_SUPPORT>>>Cursor039
+    // AGP 8.7 default. Required so release can extract native debug symbols
+    // from the prebuilt FFmpeg .so files (Play Console native-symbols warning).
+    ndkVersion = "27.0.12077973"
+    // SMCPKG_SUPPORT<<<Cursor039
 
     defaultConfig {
         // SMCPKG_SUPPORT>>>Cursor021
@@ -187,7 +212,20 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
             // SMCPKG_SUPPORT<<<Cursor034
-            isMinifyEnabled = false
+            // SMCPKG_SUPPORT>>>Cursor039
+            // isMinifyEnabled = false
+            // R8 writes mapping.txt and AGP 4.1+ embeds it in the AAB
+            // (BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map).
+            isMinifyEnabled = true
+            isShrinkResources = true
+            // SYMBOL_TABLE: committed libffmpegJNI.so files are already stripped
+            // (no DWARF). This still packages the dynamic symbol table into the
+            // AAB so Play can symbolicate native crashes. FULL would not add
+            // file/line info for these binaries.
+            ndk {
+                debugSymbolLevel = "SYMBOL_TABLE"
+            }
+            // SMCPKG_SUPPORT<<<Cursor039
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -233,6 +271,96 @@ kotlin {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor039
+// Prebuilt libffmpegJNI.so / AndroidX .so files are already stripped, so AGP's
+// extractReleaseNativeSymbolTables skips them and Play Console reports missing
+// native debug symbols. Append .sym files (dynamic symbol table) for every
+// merged native library. AGP packages **/*.sym into the AAB.
+abstract class NativeSymbolTableTask : DefaultTask() {
+    @get:Inject
+    abstract val execOperations: ExecOperations
+
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val mergedNativeLibs: DirectoryProperty
+
+    @get:Input
+    abstract val ndkVersionName: Property<String>
+
+    @get:Input
+    abstract val sdkDir: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDirectory: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val outRoot = outputDirectory.get().asFile
+        outRoot.deleteRecursively()
+        val merged = mergedNativeLibs.get().asFile
+        val libRoot = merged.resolve("lib").takeIf { it.isDirectory } ?: merged
+        val objcopy = findLlvmObjcopy(sdkDir.get(), ndkVersionName.get())
+        libRoot.listFiles()?.filter { it.isDirectory }?.forEach { abiDir ->
+            abiDir.listFiles()?.filter { it.isFile && it.name.endsWith(".so") }?.forEach { so ->
+                val dest = outRoot.resolve(abiDir.name).resolve("${so.name}.sym")
+                dest.parentFile.mkdirs()
+                if (objcopy != null) {
+                    execOperations.exec {
+                        commandLine(objcopy.absolutePath, "--strip-debug", so.absolutePath, dest.absolutePath)
+                        isIgnoreExitValue = true
+                    }
+                }
+                if (!dest.isFile || dest.length() == 0L) {
+                    so.copyTo(dest, overwrite = true)
+                }
+            }
+        }
+    }
+
+    private fun findLlvmObjcopy(sdkDirPath: String, ndkVersionName: String): File? {
+        if (sdkDirPath.isBlank()) return null
+        val sdkDir = File(sdkDirPath)
+        val prebuilt = sdkDir.resolve("ndk/$ndkVersionName/toolchains/llvm/prebuilt")
+        val host = prebuilt.listFiles()?.firstOrNull { it.isDirectory } ?: return null
+        val objcopy = host.resolve("bin/llvm-objcopy")
+        return objcopy.takeIf { it.canExecute() }
+    }
+}
+
+androidComponents {
+    onVariants(selector().withBuildType("release")) { variant ->
+        val symbolTask = tasks.register<NativeSymbolTableTask>(
+            "generate${variant.name.replaceFirstChar { it.uppercase() }}NativeSymbolTables",
+        ) {
+            ndkVersionName.set("27.0.12077973")
+            sdkDir.set(
+                providers.provider {
+                    localProperties.getProperty("sdk.dir")
+                        ?: System.getenv("ANDROID_SDK_ROOT")
+                        ?: System.getenv("ANDROID_HOME")
+                        ?: ""
+                },
+            )
+            mergedNativeLibs.set(variant.artifacts.get(SingleArtifact.MERGED_NATIVE_LIBS))
+        }
+        variant.artifacts.use(symbolTask)
+            .wiredWith { it.outputDirectory }
+            .toAppendTo(MultipleArtifact.NATIVE_SYMBOL_TABLES)
+        tasks.register<Zip>("zip${variant.name.replaceFirstChar { it.uppercase() }}NativeDebugSymbols") {
+            dependsOn(symbolTask)
+            from(symbolTask.flatMap { it.outputDirectory })
+            archiveFileName.set("native-debug-symbols.zip")
+            destinationDirectory.set(layout.buildDirectory.dir("outputs/native-debug-symbols/${variant.name}"))
+            // Stable CI path even when AGP only embeds symbols inside the AAB.
+        }
+    }
+}
+
+tasks.matching { it.name == "bundleRelease" }.configureEach {
+    dependsOn("zipReleaseNativeDebugSymbols")
+}
+// SMCPKG_SUPPORT<<<Cursor039
 
 dependencies {
     implementation(libs.androidx.core.ktx)
