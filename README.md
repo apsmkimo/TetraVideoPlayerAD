@@ -47,9 +47,13 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 <!-- **Version:** 1.0.5 (`versionCode` 105) -->
 <!-- SMCPKG_SUPPORT<<<Cursor037 -->
 <!-- SMCPKG_SUPPORT>>>Cursor038 -->
-**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
-**Version:** 1.0.6 (`versionCode` 106)
+<!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
+<!-- **Version:** 1.0.6 (`versionCode` 106) -->
 <!-- SMCPKG_SUPPORT<<<Cursor038 -->
+<!-- SMCPKG_SUPPORT>>>Cursor039 -->
+**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
+**Version:** 1.0.7 (`versionCode` 107)
+<!-- SMCPKG_SUPPORT<<<Cursor039 -->
 <!-- SMCPKG_SUPPORT<<<Cursor036 -->
 <!-- SMCPKG_SUPPORT<<<Cursor035 -->
 
@@ -184,6 +188,19 @@ Sideload testing still uses the **`app-debug`** APK artifact from the same workf
 2. Enroll in **Play App Signing** if the first upload asks for it. Register this JKS as the **upload key**.
 3. **Testing → Internal testing → Create new release**.
 4. Upload `app-release.aab`, save, and roll out to internal testers.
+
+<!-- SMCPKG_SUPPORT>>>Cursor039 -->
+Release AABs are minified with R8. AGP embeds `mapping.txt` as `BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map`. Native debug symbols use `ndk.debugSymbolLevel = SYMBOL_TABLE` and NDK `27.0.12077973`. The committed `.so` files are already stripped, so AGP would otherwise skip them; the release build writes a `.sym` per library (dynamic symbol table) and AGP embeds those under `BUNDLE-METADATA/com.android.tools.build.debugsymbols/`. Uploading **only** `app-release.aab` should clear Play’s “no deobfuscation file” and “native debug symbols” warnings. Line numbers for native frames are not available because the shipped libraries have no DWARF.
+
+The same CI run also uploads fallback artifacts if Play still asks you to attach them by hand:
+
+| Artifact | File inside the zip | Play Console |
+| --- | --- | --- |
+| `app-release-mapping` | `mapping.txt` | App bundle explorer → the version → **Downloads** → **ReTrace mapping file** (upload), or the deobfuscation upload on the release warning |
+| `app-release-native-debug-symbols` | `native-debug-symbols.zip` | Same version → **Downloads** → **Native debug symbols** |
+
+Do not unzip `native-debug-symbols.zip` before upload. `libffmpegJNI.so` in git is already stripped, so symbols are the dynamic symbol table (function names), not source file and line numbers.
+<!-- SMCPKG_SUPPORT<<<Cursor039 -->
 
 ### Local `bundleRelease` (optional)
 
