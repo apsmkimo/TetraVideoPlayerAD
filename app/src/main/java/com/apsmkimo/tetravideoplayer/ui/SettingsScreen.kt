@@ -67,7 +67,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.apsmkimo.tetravideoplayer.R
-import com.apsmkimo.tetravideoplayer.data.DecodeMode
+// SMCPKG_SUPPORT>>>Cursor040
+// import com.apsmkimo.tetravideoplayer.data.DecodeMode
+// SMCPKG_SUPPORT<<<Cursor040
 import com.apsmkimo.tetravideoplayer.data.PaneSettings
 import com.apsmkimo.tetravideoplayer.data.PlayerSettings
 import com.apsmkimo.tetravideoplayer.data.SETTINGS_PANE_COUNT
@@ -127,6 +129,9 @@ fun SettingsScreen(
                     onSettingsChange(settings.copy(allowRotation = enabled))
                 },
             )
+            // SMCPKG_SUPPORT>>>Cursor040
+            // ContrastSetting was app-wide. Cursor041 moves contrast onto each pane.
+            // SMCPKG_SUPPORT<<<Cursor040
             HorizontalDivider(color = SettingsDivider)
             Text(
                 text = stringResource(R.string.settings_panes_title),
@@ -134,11 +139,13 @@ fun SettingsScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = SettingsText,
             )
-            Text(
-                text = stringResource(R.string.settings_decode_sw_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = SettingsMuted,
-            )
+            // SMCPKG_SUPPORT>>>Cursor040
+            // Text(
+            //     text = stringResource(R.string.settings_decode_sw_note),
+            //     style = MaterialTheme.typography.bodySmall,
+            //     color = SettingsMuted,
+            // )
+            // SMCPKG_SUPPORT<<<Cursor040
             repeat(SETTINGS_PANE_COUNT) { index ->
                 PaneSettingsBlock(
                     index = index,
@@ -230,6 +237,55 @@ private fun RotationSetting(
     }
 }
 
+// SMCPKG_SUPPORT>>>Cursor040
+// @Composable
+// private fun ContrastSetting(...) { app-wide slider, replaced by per-pane sliders }
+// SMCPKG_SUPPORT<<<Cursor040
+
+// SMCPKG_SUPPORT>>>Cursor041
+@Composable
+private fun PercentSlider(
+    title: String,
+    summary: String,
+    value: Int,
+    onValueChange: (Int) -> Unit,
+) {
+    val shown = value.coerceIn(0, 100)
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = SettingsText,
+                )
+                Text(
+                    text = summary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = SettingsMuted,
+                )
+            }
+            Text(
+                text = shown.toString(),
+                color = SettingsMuted,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Slider(
+            value = shown.toFloat(),
+            onValueChange = { next ->
+                onValueChange(next.roundToInt().coerceIn(0, 100))
+            },
+            valueRange = 0f..100f,
+            steps = 99,
+        )
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor041
+
 @Composable
 private fun PaneSettingsBlock(
     index: Int,
@@ -238,7 +294,10 @@ private fun PaneSettingsBlock(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = stringResource(R.string.cell_index, index + 1),
+            // SMCPKG_SUPPORT>>>Cursor041
+            // text = stringResource(R.string.cell_index, index + 1),
+            text = stringResource(R.string.settings_video_pane, index + 1),
+            // SMCPKG_SUPPORT<<<Cursor041
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             color = SettingsText,
@@ -266,23 +325,43 @@ private fun PaneSettingsBlock(
             valueRange = 0f..100f,
             steps = 99,
         )
-        Text(
-            text = stringResource(R.string.settings_decode),
-            color = SettingsMuted,
-            style = MaterialTheme.typography.bodySmall,
+        // SMCPKG_SUPPORT>>>Cursor041
+        PercentSlider(
+            title = stringResource(R.string.settings_contrast),
+            summary = stringResource(R.string.settings_contrast_summary),
+            value = pane.contrast,
+            onValueChange = { contrast ->
+                onPaneChange(pane.copy(contrast = contrast))
+            },
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = pane.decodeMode == DecodeMode.HARDWARE,
-                onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.HARDWARE)) },
-                label = { Text(stringResource(R.string.settings_decode_hw)) },
-            )
-            FilterChip(
-                selected = pane.decodeMode == DecodeMode.SOFTWARE,
-                onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.SOFTWARE)) },
-                label = { Text(stringResource(R.string.settings_decode_sw)) },
-            )
-        }
+        PercentSlider(
+            title = stringResource(R.string.settings_sharpness),
+            summary = stringResource(R.string.settings_sharpness_summary),
+            value = pane.sharpness,
+            onValueChange = { sharpness ->
+                onPaneChange(pane.copy(sharpness = sharpness))
+            },
+        )
+        // SMCPKG_SUPPORT<<<Cursor041
+        // SMCPKG_SUPPORT>>>Cursor040
+        // Text(
+        //     text = stringResource(R.string.settings_decode),
+        //     color = SettingsMuted,
+        //     style = MaterialTheme.typography.bodySmall,
+        // )
+        // Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        //     FilterChip(
+        //         selected = pane.decodeMode == DecodeMode.HARDWARE,
+        //         onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.HARDWARE)) },
+        //         label = { Text(stringResource(R.string.settings_decode_hw)) },
+        //     )
+        //     FilterChip(
+        //         selected = pane.decodeMode == DecodeMode.SOFTWARE,
+        //         onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.SOFTWARE)) },
+        //         label = { Text(stringResource(R.string.settings_decode_sw)) },
+        //     )
+        // }
+        // SMCPKG_SUPPORT<<<Cursor040
         Text(
             text = stringResource(R.string.settings_playback),
             color = SettingsMuted,

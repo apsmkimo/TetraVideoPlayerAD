@@ -35,8 +35,18 @@ package com.apsmkimo.tetravideoplayer.ui
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
 
+import android.app.Activity
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
+import android.graphics.RenderEffect
+import android.graphics.RuntimeShader
+import android.graphics.Shader
 import android.net.Uri
+import android.os.Build
 import android.view.LayoutInflater
+import android.view.TextureView
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -57,6 +67,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -68,6 +79,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 // SMCPKG_SUPPORT>>>Cursor037
@@ -79,13 +91,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 // SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.ui.platform.LocalDensity
 // SMCPKG_SUPPORT<<<Cursor024
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import kotlin.math.abs
+import kotlin.math.roundToInt
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -128,6 +144,13 @@ fun VideoCell(
     // SMCPKG_SUPPORT>>>Cursor038
     toolbarLift: Int = 0,
     // SMCPKG_SUPPORT<<<Cursor038
+    // SMCPKG_SUPPORT>>>Cursor040
+    contrast: Int = 50,
+    // SMCPKG_SUPPORT<<<Cursor040
+    // SMCPKG_SUPPORT>>>Cursor041
+    sharpness: Int = 50,
+    onBrightnessAdjusting: (Int?) -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor041
 ) {
     // SMCPKG_SUPPORT>>>Cursor004
     // val shape = RoundedCornerShape(12.dp)
@@ -150,6 +173,12 @@ fun VideoCell(
     // SMCPKG_SUPPORT>>>Cursor023
     var volumeOverlayVisible by remember { mutableStateOf(false) }
     var overlayVolume by remember { mutableFloatStateOf(player.volume.coerceIn(0f, 1f)) }
+    // SMCPKG_SUPPORT>>>Cursor040
+    var brightnessOverlayVisible by remember { mutableStateOf(false) }
+    var overlayBrightness by remember { mutableIntStateOf(50) }
+    val activity = LocalContext.current as? Activity
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    // SMCPKG_SUPPORT<<<Cursor040
     val screenHeightDp = LocalConfiguration.current.screenHeightDp.dp
     val volumeBarHeight = screenHeightDp * 0.8f
     // SMCPKG_SUPPORT>>>Cursor024
@@ -261,6 +290,15 @@ fun VideoCell(
                     view.player = player
                     onAttachPlayerView(view)
                     // SMCPKG_SUPPORT<<<Cursor018
+                    // SMCPKG_SUPPORT>>>Cursor040
+                    // SMCPKG_SUPPORT>>>Cursor041
+                    // val pictureContrast = contrast
+                    // view.post { applyVideoContrast(view, pictureContrast) }
+                    val pictureContrast = contrast
+                    val pictureSharpness = sharpness
+                    view.post { applyVideoPicture(view, pictureContrast, pictureSharpness) }
+                    // SMCPKG_SUPPORT<<<Cursor041
+                    // SMCPKG_SUPPORT<<<Cursor040
                 },
                 onRelease = { view ->
                     // SMCPKG_SUPPORT>>>Cursor014
@@ -313,7 +351,16 @@ fun VideoCell(
                         awaitEachGesture {
                             val down = awaitFirstDown()
                             var dragged = false
+                            // SMCPKG_SUPPORT>>>Cursor040
+                            // var dragged volume-only: vertical drag set player.volume from Y.
+                            var adjustingVolume = false
+                            var adjustingBrightness = false
+                            // SMCPKG_SUPPORT<<<Cursor040
                             val cellH = size.height.toFloat().coerceAtLeast(1f)
+                            // SMCPKG_SUPPORT>>>Cursor040
+                            val cellW = size.width.toFloat().coerceAtLeast(1f)
+                            val upperHalf = down.position.y < cellH / 2f
+                            // SMCPKG_SUPPORT<<<Cursor040
                             while (true) {
                                 val event = awaitPointerEvent()
                                 val change = event.changes.firstOrNull() ?: break
@@ -322,24 +369,71 @@ fun VideoCell(
                                         controlsVisible = !controlsVisible
                                     }
                                     volumeOverlayVisible = false
+                                    // SMCPKG_SUPPORT>>>Cursor040
+                                    brightnessOverlayVisible = false
+                                    // SMCPKG_SUPPORT<<<Cursor040
+                                    // SMCPKG_SUPPORT>>>Cursor041
+                                    onBrightnessAdjusting(null)
+                                    // SMCPKG_SUPPORT<<<Cursor041
                                     break
                                 }
                                 val dx = change.position.x - down.position.x
                                 val dy = change.position.y - down.position.y
-                                if (!dragged && abs(dy) > slopPx && abs(dy) > abs(dx)) {
-                                    dragged = true
-                                    overlayVolume = player.volume.coerceIn(0f, 1f)
-                                    volumeOverlayVisible = true
+                                // SMCPKG_SUPPORT>>>Cursor040
+                                // if (!dragged && abs(dy) > slopPx && abs(dy) > abs(dx)) {
+                                //     dragged = true
+                                //     overlayVolume = player.volume.coerceIn(0f, 1f)
+                                //     volumeOverlayVisible = true
+                                // }
+                                // if (dragged) {
+                                //     val next = (1f - (change.position.y.coerceIn(0f, cellH) / cellH))
+                                //         .coerceIn(0f, 1f)
+                                //     player.volume = next
+                                //     overlayVolume = next
+                                //     change.consume()
+                                // }
+                                if (!dragged) {
+                                    val vertical = abs(dy) > slopPx && abs(dy) > abs(dx)
+                                    val horizontal = abs(dx) > slopPx && abs(dx) > abs(dy)
+                                    if (vertical) {
+                                        dragged = true
+                                        adjustingVolume = true
+                                        overlayVolume = player.volume.coerceIn(0f, 1f)
+                                        volumeOverlayVisible = true
+                                    } else if (horizontal && upperHalf) {
+                                        dragged = true
+                                        adjustingBrightness = true
+                                        brightnessOverlayVisible = true
+                                    } else if (abs(dx) > slopPx || abs(dy) > slopPx) {
+                                        dragged = true
+                                    }
                                 }
-                                if (dragged) {
+                                if (adjustingVolume) {
                                     val next = (1f - (change.position.y.coerceIn(0f, cellH) / cellH))
                                         .coerceIn(0f, 1f)
                                     player.volume = next
                                     overlayVolume = next
                                     change.consume()
+                                } else if (adjustingBrightness) {
+                                    val percent = (
+                                        (change.position.x.coerceIn(0f, cellW) / cellW) * 100f
+                                        ).roundToInt().coerceIn(0, 100)
+                                    overlayBrightness = percent
+                                    activity?.let { host -> applyWindowBrightness(host, percent) }
+                                    // SMCPKG_SUPPORT>>>Cursor041
+                                    onBrightnessAdjusting(percent)
+                                    // SMCPKG_SUPPORT<<<Cursor041
+                                    change.consume()
                                 }
+                                // SMCPKG_SUPPORT<<<Cursor040
                             }
                             volumeOverlayVisible = false
+                            // SMCPKG_SUPPORT>>>Cursor040
+                            brightnessOverlayVisible = false
+                            // SMCPKG_SUPPORT<<<Cursor040
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            onBrightnessAdjusting(null)
+                            // SMCPKG_SUPPORT<<<Cursor041
                         }
                     },
             ) {
@@ -352,6 +446,43 @@ fun VideoCell(
                             .padding(end = 16.dp),
                     )
                 }
+                // SMCPKG_SUPPORT>>>Cursor040
+                if (brightnessOverlayVisible) {
+                    // SMCPKG_SUPPORT>>>Cursor041
+                    // val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
+                    // Box(Modifier.size(readout)) { Text(overlayBrightness, fontSize = readout * 0.38) }
+                    val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
+                    val edgePad = with(LocalDensity.current) { 10.toDp() }
+                    // SMCPKG_SUPPORT<<<Cursor041
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(start = 8.dp, top = 8.dp)
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // .size(readout)
+                            // SMCPKG_SUPPORT<<<Cursor041
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.72f))
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            .padding(edgePad),
+                            // SMCPKG_SUPPORT<<<Cursor041
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // text = overlayBrightness.toString(),
+                            text = stringResource(R.string.brightness_percent, overlayBrightness),
+                            // SMCPKG_SUPPORT<<<Cursor041
+                            color = androidx.compose.ui.graphics.Color.White,
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // fontSize = (readout.value * 0.38f).sp,
+                            fontSize = (readout.value * 0.38f * 3f).sp,
+                            // SMCPKG_SUPPORT<<<Cursor041
+                            maxLines = 1,
+                        )
+                    }
+                }
+                // SMCPKG_SUPPORT<<<Cursor040
             }
 
             if (controlsVisible) {
@@ -458,6 +589,113 @@ private fun SurfaceVolumeBar(
     }
 }
 // SMCPKG_SUPPORT<<<Cursor023
+
+// SMCPKG_SUPPORT>>>Cursor040
+private fun applyWindowBrightness(activity: Activity, percent: Int) {
+    val window = activity.window
+    val attrs = window.attributes
+    // 0f is darkest. -1f would mean "use the system brightness".
+    attrs.screenBrightness = percent.coerceIn(0, 100) / 100f
+    window.attributes = attrs
+}
+
+/**
+ * Color-matrix contrast on the TextureView. 50 clears the effect so the
+ * picture matches the decoder output. API 31+ uses RenderEffect; older
+ * releases use a hardware-layer color filter (TextureView may ignore it).
+ */
+// SMCPKG_SUPPORT>>>Cursor041
+// @OptIn(UnstableApi::class)
+// private fun applyVideoContrast(root: View, contrast: Int) { ... contrast only ... }
+// SMCPKG_SUPPORT<<<Cursor041
+
+private const val SHARPEN_SHADER = """
+    uniform shader content;
+    uniform float amount;
+    half4 main(float2 coord) {
+        half4 center = content.eval(coord);
+        half4 north = content.eval(coord + float2(0.0, -1.0));
+        half4 south = content.eval(coord + float2(0.0, 1.0));
+        half4 east = content.eval(coord + float2(1.0, 0.0));
+        half4 west = content.eval(coord + float2(-1.0, 0.0));
+        half4 blur = (north + south + east + west) * 0.25;
+        half4 sharpened = center + (center - blur) * amount;
+        return half4(clamp(sharpened.rgb, 0.0, 1.0), center.a);
+    }
+"""
+
+@OptIn(UnstableApi::class)
+private fun applyVideoPicture(root: View, contrast: Int, sharpness: Int) {
+    val host = (root as? PlayerView)?.videoSurfaceView ?: findTextureView(root) ?: root
+    val contrastPercent = contrast.coerceIn(0, 100)
+    val sharpnessPercent = sharpness.coerceIn(0, 100)
+    if (contrastPercent == 50 && sharpnessPercent == 50) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            host.setRenderEffect(null)
+        }
+        host.setLayerType(View.LAYER_TYPE_NONE, null)
+        return
+    }
+    val filter = contrastColorFilter(contrastPercent)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        var effect: RenderEffect? = spatialSharpnessEffect(sharpnessPercent)
+        if (contrastPercent != 50) {
+            val colorEffect = RenderEffect.createColorFilterEffect(filter)
+            effect = if (effect == null) {
+                colorEffect
+            } else {
+                RenderEffect.createChainEffect(colorEffect, effect)
+            }
+        }
+        host.setRenderEffect(effect)
+        host.setLayerType(View.LAYER_TYPE_NONE, null)
+    } else if (contrastPercent != 50) {
+        val paint = Paint().apply { colorFilter = filter }
+        host.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+    } else {
+        host.setLayerType(View.LAYER_TYPE_NONE, null)
+    }
+}
+
+private fun contrastColorFilter(percent: Int): ColorMatrixColorFilter {
+    val scale = percent.coerceIn(0, 100) / 50f
+    val translate = (1f - scale) * 127.5f
+    return ColorMatrixColorFilter(
+        ColorMatrix(
+            floatArrayOf(
+                scale, 0f, 0f, 0f, translate,
+                0f, scale, 0f, 0f, translate,
+                0f, 0f, scale, 0f, translate,
+                0f, 0f, 0f, 1f, 0f,
+            ),
+        ),
+    )
+}
+
+private fun spatialSharpnessEffect(percent: Int): RenderEffect? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || percent == 50) return null
+    if (percent < 50) {
+        val radius = ((50 - percent) / 50f) * 2f
+        if (radius < 0.2f) return null
+        return RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
+    }
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
+    val amount = ((percent - 50) / 50f) * 1.5f
+    val shader = RuntimeShader(SHARPEN_SHADER)
+    shader.setFloatUniform("amount", amount)
+    return RenderEffect.createRuntimeShaderEffect(shader, "content")
+}
+
+private fun findTextureView(view: View): TextureView? {
+    if (view is TextureView) return view
+    if (view is ViewGroup) {
+        for (index in 0 until view.childCount) {
+            findTextureView(view.getChildAt(index))?.let { return it }
+        }
+    }
+    return null
+}
+// SMCPKG_SUPPORT<<<Cursor040
 
 // SMCPKG_SUPPORT>>>Cursor004
 // @Composable

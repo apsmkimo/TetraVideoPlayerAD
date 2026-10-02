@@ -2,20 +2,22 @@
 
 ## Overview
 
-TetraVideoPlayer is an Android app for watching up to four local videos at once. Each launch you pick one of four layouts: a 2×2 landscape grid, a 1×4 portrait stack, a 1×2 portrait stack, or a 2×1 landscape pair. Independent Media3 ExoPlayer instances compare, mix, and review device footage—with simultaneous audio, per-cell controls, and strong support for legacy formats such as older AVI files.
+TetraVideoPlayer is an Android app for watching up to four local videos at once. Each launch you pick a layout: a 2×2 landscape grid, a 1×4 portrait stack, a 1×3 portrait stack, a 1×2 portrait stack, a 1×1 portrait window, or a 2×1 landscape pair. Independent Media3 ExoPlayer instances compare, mix, and review device footage—with simultaneous audio, per-cell controls, and strong support for legacy formats such as older AVI files.
 
 ## Key Features
 
-- **Layout picker every launch** — A 2×2 tile grid cropped from the reference artwork: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The gear button opens **Settings** (screen rotation, per-pane toolbar position, HW/SW decode, loop, plus version, privacy policy, and rate). AdMob banners sit in the empty top and bottom bands; the first layout pick in a process may show an interstitial. The top-right **Remove Ads** button is a Google Play Billing one-time purchase (`remove_ads`); after purchase or restore it disappears and banners/interstitials stay off. Debug builds can long-press the gear to show ads again for testing.
-- **Settings** — Phone screen rotation defaults **off** (layout still locks portrait or landscape). Per pane (1–4): toolbar position `0–100` (0 bottom, 100 top), **HW decode** (default) or **SW decode**, **Loop** (default) or play once. Stored in SharedPreferences (`tetravideoplayer_settings`) and applied on the next composition; decode mode rebuilds only that pane's player and keeps the current URI and position. SW decode does not add a dependency: legacy AVI stays on the vendored FFmpeg extension, and H.264/HEVC/VP9/AV1 (not in the LGPL FFmpeg allowlist) prefer Android software MediaCodec, with hardware fallback if none exists.
+- **Layout picker every launch** — Portrait-locked tiles: **2x2 Grid**, **1x4 Stack**, **2x1 Horizontal**, **1x2 Vertical**, **1x1 Single**, **1x3 Stack**. The choice is in-session only (not stored). Cold start always shows the picker. Tap the layout button in the player (top-right) to return to selection: all playback stops, media is released, and the next layout starts with empty cells. The gear button opens **Settings** (screen rotation, contrast, per-pane toolbar position, loop, plus version, privacy policy, and rate). The layout menu keeps a bottom AdMob banner only; the first layout pick in a process may show an interstitial. The top-right **Remove Ads** button is a Google Play Billing one-time purchase (`remove_ads`); after purchase or restore it disappears and banners/interstitials stay off. Debug builds can long-press the gear to show ads again for testing.
+- **Settings** — Phone screen rotation defaults **off** (playback still locks portrait or landscape; the layout menu stays portrait). Each of Video 1–4 has its own **Contrast** and **Sharpness**, both `0–100`, default **50** (original picture). Per pane also: toolbar position `0–100` (0 bottom, 100 top) and **Loop** (default) or play once. Stored in SharedPreferences (`tetravideoplayer_settings`). Playback stays on hardware decode.
 - **2x2 Grid** — Four independent local videos in a landscape 2×2 grid.
 - **1x4 Stack** — Four players stacked top-to-bottom in portrait, hairline separators, FIT letterbox.
+- **1x3 Stack** — Three players stacked top-to-bottom in portrait.
 - **1x2 Vertical** — Two players stacked top-to-bottom in portrait.
+- **1x1 Single** — One player filling the portrait screen.
 - **2x1 Horizontal** — Two players side-by-side in landscape.
 - **Intelligent Aspect-Ratio Matching** — Each cell uses FIT scaling so videos keep their native aspect ratio, with letterboxing or pillarboxing (black bars) when dimensions do not match the cell.
 - **Folder-Grouped Video Picker** — Browse local videos by device directory (MediaStore buckets) with Coil thumbnails, file names, and durations instead of a flat system file browser.
 - **Ultra-Thin Borders & Clean UI** — No title or action bar; cells maximize the viewing area with hairline separators only.
-- **4-Way Independent Gesture Controls & Simultaneous Audio Mixing** — Single-tap a playing cell to show or hide the overlay toolbar (play/pause, seek, times, mute, folder). Press and vertical-drag on the video maps volume from the cell frame (top = max, bottom = mute); a HUD bar about 80% of screen height appears while dragging. All players can output audio together.
+- **4-Way Independent Gesture Controls & Simultaneous Audio Mixing** — Single-tap a playing cell to show or hide the overlay toolbar (play/pause, seek, times, mute, folder). Vertical-drag on the video maps volume from the cell frame (top = max, bottom = mute); a HUD bar about 80% of screen height appears while dragging. A horizontal swipe on the upper half of a cell sets the activity window brightness (left = 0, right = 100), shows a larger top-left percentage, and a half-opacity brightness bar at the top of the screen while the finger is down. All players can output audio together. Contrast and sharpness are per pane on that pane's TextureView; 50 leaves the picture unchanged.
 - **Built-in High Fault-Tolerance for Legacy Formats** — FFmpeg-prefer software decoding for common old AVI codecs, audio-driven sync, skip/drop of late frames, and generous per-player buffering for smoother legacy playback.
 
 ## Tech Stack
@@ -51,9 +53,17 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 <!-- **Version:** 1.0.6 (`versionCode` 106) -->
 <!-- SMCPKG_SUPPORT<<<Cursor038 -->
 <!-- SMCPKG_SUPPORT>>>Cursor039 -->
-**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
-**Version:** 1.0.7 (`versionCode` 107)
+<!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
+<!-- **Version:** 1.0.7 (`versionCode` 107) -->
 <!-- SMCPKG_SUPPORT<<<Cursor039 -->
+<!-- SMCPKG_SUPPORT>>>Cursor040 -->
+<!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
+<!-- **Version:** 1.0.8 (`versionCode` 108) -->
+<!-- SMCPKG_SUPPORT<<<Cursor040 -->
+<!-- SMCPKG_SUPPORT>>>Cursor041 -->
+**SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
+**Version:** 1.0.9 (`versionCode` 109)
+<!-- SMCPKG_SUPPORT<<<Cursor041 -->
 <!-- SMCPKG_SUPPORT<<<Cursor036 -->
 <!-- SMCPKG_SUPPORT<<<Cursor035 -->
 
@@ -80,7 +90,7 @@ GitHub Actions builds a debug APK on every push to `main` and uploads it as an a
 8. Copy the APK to an Android device or emulator (minSdk 24).
 9. Allow installation from that source if prompted, then open the APK to install TetraVideoPlayer.
 10. Grant video-read permission when asked (`READ_MEDIA_VIDEO` on Android 13+, otherwise `READ_EXTERNAL_STORAGE`).
-11. Every launch, tap one of **2x2 Grid**, **1x4 Stack**, **1x2 Vertical**, or **2x1 Horizontal**. Tap an empty cell, pick a folder, then a video. Tap a playing cell to show overlay controls. Use the top-right layout button to switch modes later.
+11. Every launch, tap one of **2x2 Grid**, **1x4 Stack**, **1x3 Stack**, **1x2 Vertical**, **1x1 Single**, or **2x1 Horizontal**. The menu stays portrait. Tap an empty cell, pick a folder, then a video. Tap a playing cell to show overlay controls. Swipe horizontally on the upper half of a video to set brightness. Use the top-right layout button to switch modes later.
 
 ### Build from source (optional)
 

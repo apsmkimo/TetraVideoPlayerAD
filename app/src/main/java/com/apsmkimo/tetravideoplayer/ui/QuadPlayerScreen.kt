@@ -49,16 +49,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DashboardCustomize
 // SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material.icons.outlined.Info
 // SMCPKG_SUPPORT<<<Cursor022
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 // SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material3.IconButton
 // SMCPKG_SUPPORT<<<Cursor022
@@ -76,7 +80,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -95,6 +101,10 @@ import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
 // SMCPKG_SUPPORT>>>Cursor038
 import com.apsmkimo.tetravideoplayer.data.PlayerSettings
+// SMCPKG_SUPPORT>>>Cursor040
+import com.apsmkimo.tetravideoplayer.data.DecodeMode
+import com.apsmkimo.tetravideoplayer.data.SETTINGS_PANE_COUNT
+// SMCPKG_SUPPORT<<<Cursor040
 // SMCPKG_SUPPORT<<<Cursor038
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT>>>Cursor030
@@ -135,7 +145,12 @@ fun QuadPlayerScreen(
     val controller = remember {
         QuadPlayerController(
             context,
-            initialDecodeModes = settings.panes.map { it.decodeMode },
+            // SMCPKG_SUPPORT>>>Cursor040
+            // initialDecodeModes = settings.panes.map { it.decodeMode },
+            // Decode is no longer a setting. Stay on hardware so a saved
+            // software mode cannot stick with no control to turn it off.
+            initialDecodeModes = List(SETTINGS_PANE_COUNT) { DecodeMode.HARDWARE },
+            // SMCPKG_SUPPORT<<<Cursor040
             initialLoop = settings.panes.map { it.loop },
         )
     }
@@ -144,13 +159,17 @@ fun QuadPlayerScreen(
         controller.onPlayerReplaced = { playerGeneration++ }
         onDispose { controller.onPlayerReplaced = null }
     }
-    val decodeKey = settings.panes.joinToString(separator = ",") { it.decodeMode.name }
+    // SMCPKG_SUPPORT>>>Cursor040
+    // val decodeKey = settings.panes.joinToString(separator = ",") { it.decodeMode.name }
+    // SMCPKG_SUPPORT<<<Cursor040
     val loopKey = settings.panes.joinToString(separator = ",") { it.loop.toString() }
-    LaunchedEffect(decodeKey) {
-        settings.panes.forEachIndexed { index, pane ->
-            controller.applyDecodeMode(index, pane.decodeMode)
-        }
-    }
+    // SMCPKG_SUPPORT>>>Cursor040
+    // LaunchedEffect(decodeKey) {
+    //     settings.panes.forEachIndexed { index, pane ->
+    //         controller.applyDecodeMode(index, pane.decodeMode)
+    //     }
+    // }
+    // SMCPKG_SUPPORT<<<Cursor040
     LaunchedEffect(loopKey) {
         settings.panes.forEachIndexed { index, pane ->
             controller.applyLoop(index, pane.loop)
@@ -173,6 +192,9 @@ fun QuadPlayerScreen(
     // }
     // var isGlobalPlaying by rememberSaveable { mutableStateOf(false) }
     // SMCPKG_SUPPORT<<<Cursor004
+    // SMCPKG_SUPPORT>>>Cursor041
+    var brightnessHud by remember { mutableStateOf<Int?>(null) }
+    // SMCPKG_SUPPORT<<<Cursor041
     var pickingIndex by rememberSaveable { mutableIntStateOf(0) }
     var hasPermission by remember { mutableStateOf(VideoPermissions.hasReadAccess(context)) }
     var showPicker by remember { mutableStateOf(false) }
@@ -420,6 +442,14 @@ fun QuadPlayerScreen(
                 onDetachPlayerView = { view -> controller.detachPlayerView(index, view) },
                 // SMCPKG_SUPPORT>>>Cursor038
                 toolbarLift = settings.pane(index).toolbarLift,
+                // SMCPKG_SUPPORT>>>Cursor040
+                // contrast = settings.contrast,
+                // SMCPKG_SUPPORT>>>Cursor041
+                contrast = settings.pane(index).contrast,
+                sharpness = settings.pane(index).sharpness,
+                onBrightnessAdjusting = { brightnessHud = it },
+                // SMCPKG_SUPPORT<<<Cursor041
+                // SMCPKG_SUPPORT<<<Cursor040
                 // SMCPKG_SUPPORT<<<Cursor038
                 modifier = Modifier.fillMaxSize(),
             )
@@ -433,11 +463,19 @@ fun QuadPlayerScreen(
             // About stays on LauncherSelectionScreen only. Layout chip is 50% of 40.dp.
             // SMCPKG_SUPPORT>>>Cursor038
             // Box( ... DashboardCustomize only ... )
+            // SMCPKG_SUPPORT>>>Cursor040
+            val iconNudge = with(LocalDensity.current) { 10.toDp() }
+            val chromeBg = Color(0x66000000)
+            // was Color(0x99000000)
+            // SMCPKG_SUPPORT<<<Cursor040
             Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .statusBarsPadding()
-                    .padding(end = 8.dp, top = 4.dp),
+                    // SMCPKG_SUPPORT>>>Cursor040
+                    // .padding(end = 8.dp, top = 4.dp),
+                    .padding(end = 8.dp + iconNudge, top = 4.dp),
+                    // SMCPKG_SUPPORT<<<Cursor040
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -445,14 +483,20 @@ fun QuadPlayerScreen(
                     modifier = Modifier
                         .size(20.dp)
                         .clip(CircleShape)
-                        .background(Color(0x99000000))
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // .background(Color(0x99000000))
+                        .background(chromeBg)
+                        // SMCPKG_SUPPORT<<<Cursor040
                         .clickable(onClick = onOpenSettings),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = SettingsGearIcon,
                         contentDescription = stringResource(R.string.settings_open),
-                        tint = Color.White,
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // tint = Color.White,
+                        tint = Color.White.copy(alpha = 0.72f),
+                        // SMCPKG_SUPPORT<<<Cursor040
                         modifier = Modifier.size(12.dp),
                     )
                 }
@@ -460,14 +504,20 @@ fun QuadPlayerScreen(
                     modifier = Modifier
                         .size(20.dp)
                         .clip(CircleShape)
-                        .background(Color(0x99000000))
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // .background(Color(0x99000000))
+                        .background(chromeBg)
+                        // SMCPKG_SUPPORT<<<Cursor040
                         .clickable(onClick = { leaveToSelection() }),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.DashboardCustomize,
                         contentDescription = stringResource(R.string.change_layout),
-                        tint = Color.White,
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // tint = Color.White,
+                        tint = Color.White.copy(alpha = 0.72f),
+                        // SMCPKG_SUPPORT<<<Cursor040
                         modifier = Modifier.size(12.dp),
                     )
                 }
@@ -487,6 +537,42 @@ fun QuadPlayerScreen(
                     .fillMaxWidth(),
             )
         }
+
+        // SMCPKG_SUPPORT>>>Cursor041
+        val shownBrightness = brightnessHud
+        if (shownBrightness != null && !showPicker) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .zIndex(4f)
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.brightness_bar, shownBrightness),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 6.dp)
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(Color.White.copy(alpha = 0.28f)),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(shownBrightness.coerceIn(0, 100) / 100f)
+                            .background(Color.White),
+                    )
+                }
+            }
+        }
+        // SMCPKG_SUPPORT<<<Cursor041
 
         if (showPicker) {
             VideoPickerScreen(
@@ -586,6 +672,31 @@ private fun PlayerPaneGrid(
             }
         }
         // SMCPKG_SUPPORT<<<Cursor019
+
+        // SMCPKG_SUPPORT>>>Cursor040
+        PlayerLayout.VERTICAL_1X1 -> {
+            Box(modifier = modifier) {
+                key(0) { cell(0) }
+            }
+        }
+
+        PlayerLayout.VERTICAL_1X3 -> {
+            Column(
+                modifier = modifier,
+                verticalArrangement = Arrangement.spacedBy(Hairline),
+            ) {
+                repeat(3) { index ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                    ) {
+                        key(index) { cell(index) }
+                    }
+                }
+            }
+        }
+        // SMCPKG_SUPPORT<<<Cursor040
     }
 }
 // SMCPKG_SUPPORT<<<Cursor013
