@@ -40,6 +40,8 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.graphics.RenderEffect
+import android.graphics.RuntimeShader
+import android.graphics.Shader
 import android.net.Uri
 import android.os.Build
 import android.view.LayoutInflater
@@ -90,6 +92,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 // SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.ui.platform.LocalDensity
 // SMCPKG_SUPPORT<<<Cursor024
@@ -144,6 +147,10 @@ fun VideoCell(
     // SMCPKG_SUPPORT>>>Cursor040
     contrast: Int = 50,
     // SMCPKG_SUPPORT<<<Cursor040
+    // SMCPKG_SUPPORT>>>Cursor041
+    sharpness: Int = 50,
+    onBrightnessAdjusting: (Int?) -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor041
 ) {
     // SMCPKG_SUPPORT>>>Cursor004
     // val shape = RoundedCornerShape(12.dp)
@@ -284,8 +291,13 @@ fun VideoCell(
                     onAttachPlayerView(view)
                     // SMCPKG_SUPPORT<<<Cursor018
                     // SMCPKG_SUPPORT>>>Cursor040
+                    // SMCPKG_SUPPORT>>>Cursor041
+                    // val pictureContrast = contrast
+                    // view.post { applyVideoContrast(view, pictureContrast) }
                     val pictureContrast = contrast
-                    view.post { applyVideoContrast(view, pictureContrast) }
+                    val pictureSharpness = sharpness
+                    view.post { applyVideoPicture(view, pictureContrast, pictureSharpness) }
+                    // SMCPKG_SUPPORT<<<Cursor041
                     // SMCPKG_SUPPORT<<<Cursor040
                 },
                 onRelease = { view ->
@@ -360,6 +372,9 @@ fun VideoCell(
                                     // SMCPKG_SUPPORT>>>Cursor040
                                     brightnessOverlayVisible = false
                                     // SMCPKG_SUPPORT<<<Cursor040
+                                    // SMCPKG_SUPPORT>>>Cursor041
+                                    onBrightnessAdjusting(null)
+                                    // SMCPKG_SUPPORT<<<Cursor041
                                     break
                                 }
                                 val dx = change.position.x - down.position.x
@@ -405,6 +420,9 @@ fun VideoCell(
                                         ).roundToInt().coerceIn(0, 100)
                                     overlayBrightness = percent
                                     activity?.let { host -> applyWindowBrightness(host, percent) }
+                                    // SMCPKG_SUPPORT>>>Cursor041
+                                    onBrightnessAdjusting(percent)
+                                    // SMCPKG_SUPPORT<<<Cursor041
                                     change.consume()
                                 }
                                 // SMCPKG_SUPPORT<<<Cursor040
@@ -413,6 +431,9 @@ fun VideoCell(
                             // SMCPKG_SUPPORT>>>Cursor040
                             brightnessOverlayVisible = false
                             // SMCPKG_SUPPORT<<<Cursor040
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            onBrightnessAdjusting(null)
+                            // SMCPKG_SUPPORT<<<Cursor041
                         }
                     },
             ) {
@@ -427,20 +448,36 @@ fun VideoCell(
                 }
                 // SMCPKG_SUPPORT>>>Cursor040
                 if (brightnessOverlayVisible) {
+                    // SMCPKG_SUPPORT>>>Cursor041
+                    // val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
+                    // Box(Modifier.size(readout)) { Text(overlayBrightness, fontSize = readout * 0.38) }
                     val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
+                    val edgePad = with(LocalDensity.current) { 10.toDp() }
+                    // SMCPKG_SUPPORT<<<Cursor041
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(start = 8.dp, top = 8.dp)
-                            .size(readout)
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // .size(readout)
+                            // SMCPKG_SUPPORT<<<Cursor041
                             .clip(RoundedCornerShape(6.dp))
-                            .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.72f)),
+                            .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.72f))
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            .padding(edgePad),
+                            // SMCPKG_SUPPORT<<<Cursor041
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = overlayBrightness.toString(),
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // text = overlayBrightness.toString(),
+                            text = stringResource(R.string.brightness_percent, overlayBrightness),
+                            // SMCPKG_SUPPORT<<<Cursor041
                             color = androidx.compose.ui.graphics.Color.White,
-                            fontSize = (readout.value * 0.38f).sp,
+                            // SMCPKG_SUPPORT>>>Cursor041
+                            // fontSize = (readout.value * 0.38f).sp,
+                            fontSize = (readout.value * 0.38f * 3f).sp,
+                            // SMCPKG_SUPPORT<<<Cursor041
                             maxLines = 1,
                         )
                     }
@@ -567,34 +604,86 @@ private fun applyWindowBrightness(activity: Activity, percent: Int) {
  * picture matches the decoder output. API 31+ uses RenderEffect; older
  * releases use a hardware-layer color filter (TextureView may ignore it).
  */
+// SMCPKG_SUPPORT>>>Cursor041
+// @OptIn(UnstableApi::class)
+// private fun applyVideoContrast(root: View, contrast: Int) { ... contrast only ... }
+// SMCPKG_SUPPORT<<<Cursor041
+
+private const val SHARPEN_SHADER = """
+    uniform shader content;
+    uniform float amount;
+    half4 main(float2 coord) {
+        half4 center = content.eval(coord);
+        half4 north = content.eval(coord + float2(0.0, -1.0));
+        half4 south = content.eval(coord + float2(0.0, 1.0));
+        half4 east = content.eval(coord + float2(1.0, 0.0));
+        half4 west = content.eval(coord + float2(-1.0, 0.0));
+        half4 blur = (north + south + east + west) * 0.25;
+        half4 sharpened = center + (center - blur) * amount;
+        return half4(clamp(sharpened.rgb, 0.0, 1.0), center.a);
+    }
+"""
+
 @OptIn(UnstableApi::class)
-private fun applyVideoContrast(root: View, contrast: Int) {
+private fun applyVideoPicture(root: View, contrast: Int, sharpness: Int) {
     val host = (root as? PlayerView)?.videoSurfaceView ?: findTextureView(root) ?: root
-    val percent = contrast.coerceIn(0, 100)
-    if (percent == 50) {
+    val contrastPercent = contrast.coerceIn(0, 100)
+    val sharpnessPercent = sharpness.coerceIn(0, 100)
+    if (contrastPercent == 50 && sharpnessPercent == 50) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             host.setRenderEffect(null)
         }
         host.setLayerType(View.LAYER_TYPE_NONE, null)
         return
     }
-    val scale = percent / 50f
-    val translate = (1f - scale) * 127.5f
-    val matrix = ColorMatrix(
-        floatArrayOf(
-            scale, 0f, 0f, 0f, translate,
-            0f, scale, 0f, 0f, translate,
-            0f, 0f, scale, 0f, translate,
-            0f, 0f, 0f, 1f, 0f,
-        ),
-    )
-    val filter = ColorMatrixColorFilter(matrix)
+    val filter = contrastColorFilter(contrastPercent)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        host.setRenderEffect(RenderEffect.createColorFilterEffect(filter))
-    } else {
+        var effect: RenderEffect? = spatialSharpnessEffect(sharpnessPercent)
+        if (contrastPercent != 50) {
+            val colorEffect = RenderEffect.createColorFilterEffect(filter)
+            effect = if (effect == null) {
+                colorEffect
+            } else {
+                RenderEffect.createChainEffect(colorEffect, effect)
+            }
+        }
+        host.setRenderEffect(effect)
+        host.setLayerType(View.LAYER_TYPE_NONE, null)
+    } else if (contrastPercent != 50) {
         val paint = Paint().apply { colorFilter = filter }
         host.setLayerType(View.LAYER_TYPE_HARDWARE, paint)
+    } else {
+        host.setLayerType(View.LAYER_TYPE_NONE, null)
     }
+}
+
+private fun contrastColorFilter(percent: Int): ColorMatrixColorFilter {
+    val scale = percent.coerceIn(0, 100) / 50f
+    val translate = (1f - scale) * 127.5f
+    return ColorMatrixColorFilter(
+        ColorMatrix(
+            floatArrayOf(
+                scale, 0f, 0f, 0f, translate,
+                0f, scale, 0f, 0f, translate,
+                0f, 0f, scale, 0f, translate,
+                0f, 0f, 0f, 1f, 0f,
+            ),
+        ),
+    )
+}
+
+private fun spatialSharpnessEffect(percent: Int): RenderEffect? {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || percent == 50) return null
+    if (percent < 50) {
+        val radius = ((50 - percent) / 50f) * 2f
+        if (radius < 0.2f) return null
+        return RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
+    }
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
+    val amount = ((percent - 50) / 50f) * 1.5f
+    val shader = RuntimeShader(SHARPEN_SHADER)
+    shader.setFloatUniform("amount", amount)
+    return RenderEffect.createRuntimeShaderEffect(shader, "content")
 }
 
 private fun findTextureView(view: View): TextureView? {

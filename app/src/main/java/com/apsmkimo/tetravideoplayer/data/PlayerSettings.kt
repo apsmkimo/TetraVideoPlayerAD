@@ -58,17 +58,20 @@ data class PaneSettings(
     val decodeMode: DecodeMode = DecodeMode.HARDWARE,
     /** True = repeat the current item. False = play once. */
     val loop: Boolean = true,
+    // SMCPKG_SUPPORT>>>Cursor041
+    /** 50 leaves this pane's picture unchanged. 0 is flat, 100 is stronger. */
+    val contrast: Int = 50,
+    /** 50 is the original picture. Below 50 softens; above 50 sharpens. */
+    val sharpness: Int = 50,
+    // SMCPKG_SUPPORT<<<Cursor041
 )
 
 data class PlayerSettings(
     /** Off locks the layout orientation. On follows the rotation sensor. */
     val allowRotation: Boolean = false,
     // SMCPKG_SUPPORT>>>Cursor040
-    /**
-     * App-wide picture contrast. 50 is the original image.
-     * 0 is flat, 100 is stronger. Not per pane.
-     */
-    val contrast: Int = 50,
+    // App-wide contrast moved onto each pane (Cursor041).
+    // val contrast: Int = 50,
     // SMCPKG_SUPPORT<<<Cursor040
     val panes: List<PaneSettings> = List(SETTINGS_PANE_COUNT) { PaneSettings() },
 ) {
@@ -100,21 +103,41 @@ object PlayerSettingsStore {
     private fun keyLift(index: Int) = "pane_${index}_toolbar_lift"
     private fun keyDecode(index: Int) = "pane_${index}_decode"
     private fun keyLoop(index: Int) = "pane_${index}_loop"
+    // SMCPKG_SUPPORT>>>Cursor041
+    private fun keyContrast(index: Int) = "pane_${index}_contrast"
+    private fun keySharpness(index: Int) = "pane_${index}_sharpness"
+    // SMCPKG_SUPPORT<<<Cursor041
 
     fun load(context: Context): PlayerSettings {
         val prefs = context.applicationContext
             .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        // SMCPKG_SUPPORT>>>Cursor041
+        // val legacyContrast = prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100)
+        val legacyContrast = if (prefs.contains(KEY_CONTRAST)) {
+            prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100)
+        } else {
+            50
+        }
+        // SMCPKG_SUPPORT<<<Cursor041
         val panes = List(SETTINGS_PANE_COUNT) { index ->
             PaneSettings(
                 toolbarLift = prefs.getInt(keyLift(index), 0).coerceIn(0, 100),
                 decodeMode = DecodeMode.fromPref(prefs.getString(keyDecode(index), null)),
                 loop = prefs.getBoolean(keyLoop(index), true),
+                // SMCPKG_SUPPORT>>>Cursor041
+                contrast = if (prefs.contains(keyContrast(index))) {
+                    prefs.getInt(keyContrast(index), 50).coerceIn(0, 100)
+                } else {
+                    legacyContrast
+                },
+                sharpness = prefs.getInt(keySharpness(index), 50).coerceIn(0, 100),
+                // SMCPKG_SUPPORT<<<Cursor041
             )
         }
         return PlayerSettings(
             allowRotation = prefs.getBoolean(KEY_ROTATION, false),
             // SMCPKG_SUPPORT>>>Cursor040
-            contrast = prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100),
+            // contrast = prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100),
             // SMCPKG_SUPPORT<<<Cursor040
             panes = panes,
         )
@@ -126,13 +149,17 @@ object PlayerSettingsStore {
             .edit()
             .putBoolean(KEY_ROTATION, settings.allowRotation)
             // SMCPKG_SUPPORT>>>Cursor040
-            .putInt(KEY_CONTRAST, settings.contrast.coerceIn(0, 100))
+            // .putInt(KEY_CONTRAST, settings.contrast.coerceIn(0, 100))
             // SMCPKG_SUPPORT<<<Cursor040
         settings.panes.take(SETTINGS_PANE_COUNT).forEachIndexed { index, pane ->
             editor
                 .putInt(keyLift(index), pane.toolbarLift.coerceIn(0, 100))
                 .putString(keyDecode(index), pane.decodeMode.prefValue())
                 .putBoolean(keyLoop(index), pane.loop)
+                // SMCPKG_SUPPORT>>>Cursor041
+                .putInt(keyContrast(index), pane.contrast.coerceIn(0, 100))
+                .putInt(keySharpness(index), pane.sharpness.coerceIn(0, 100))
+                // SMCPKG_SUPPORT<<<Cursor041
         }
         editor.apply()
     }

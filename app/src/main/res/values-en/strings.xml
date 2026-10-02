@@ -96,8 +96,16 @@
     <!-- <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string> -->
     <string name="settings_rotation_summary">Off locks portrait or landscape during playback. On follows the rotation sensor. The layout menu stays portrait.</string>
     <string name="settings_contrast">Contrast</string>
-    <string name="settings_contrast_summary">50 is the original picture. Lower is flatter; higher is stronger.</string>
+    <!-- <string name="settings_contrast_summary">50 is the original picture. Lower is flatter; higher is stronger.</string> -->
     <!-- SMCPKG_SUPPORT<<<Cursor040 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor041 -->
+    <string name="settings_contrast_summary">Per video. 50 is the original picture. Lower is flatter; higher is stronger.</string>
+    <string name="settings_sharpness">Sharpness</string>
+    <string name="settings_sharpness_summary">Per video. 50 is the original picture. Lower is softer; higher is sharper.</string>
+    <string name="settings_video_pane">Video %1$d</string>
+    <string name="brightness_percent">%1$d%%</string>
+    <string name="brightness_bar">Brightness %1$d%%</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor041 -->
     <string name="settings_panes_title">Video panes</string>
     <string name="settings_toolbar_position">Toolbar position</string>
     <!-- SMCPKG_SUPPORT>>>Cursor040 -->

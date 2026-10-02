@@ -49,16 +49,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DashboardCustomize
 // SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material.icons.outlined.Info
 // SMCPKG_SUPPORT<<<Cursor022
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 // SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material3.IconButton
 // SMCPKG_SUPPORT<<<Cursor022
@@ -76,6 +80,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -187,6 +192,9 @@ fun QuadPlayerScreen(
     // }
     // var isGlobalPlaying by rememberSaveable { mutableStateOf(false) }
     // SMCPKG_SUPPORT<<<Cursor004
+    // SMCPKG_SUPPORT>>>Cursor041
+    var brightnessHud by remember { mutableStateOf<Int?>(null) }
+    // SMCPKG_SUPPORT<<<Cursor041
     var pickingIndex by rememberSaveable { mutableIntStateOf(0) }
     var hasPermission by remember { mutableStateOf(VideoPermissions.hasReadAccess(context)) }
     var showPicker by remember { mutableStateOf(false) }
@@ -435,7 +443,12 @@ fun QuadPlayerScreen(
                 // SMCPKG_SUPPORT>>>Cursor038
                 toolbarLift = settings.pane(index).toolbarLift,
                 // SMCPKG_SUPPORT>>>Cursor040
-                contrast = settings.contrast,
+                // contrast = settings.contrast,
+                // SMCPKG_SUPPORT>>>Cursor041
+                contrast = settings.pane(index).contrast,
+                sharpness = settings.pane(index).sharpness,
+                onBrightnessAdjusting = { brightnessHud = it },
+                // SMCPKG_SUPPORT<<<Cursor041
                 // SMCPKG_SUPPORT<<<Cursor040
                 // SMCPKG_SUPPORT<<<Cursor038
                 modifier = Modifier.fillMaxSize(),
@@ -524,6 +537,42 @@ fun QuadPlayerScreen(
                     .fillMaxWidth(),
             )
         }
+
+        // SMCPKG_SUPPORT>>>Cursor041
+        val shownBrightness = brightnessHud
+        if (shownBrightness != null && !showPicker) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .zIndex(4f)
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.brightness_bar, shownBrightness),
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 6.dp)
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(Color.White.copy(alpha = 0.28f)),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(shownBrightness.coerceIn(0, 100) / 100f)
+                            .background(Color.White),
+                    )
+                }
+            }
+        }
+        // SMCPKG_SUPPORT<<<Cursor041
 
         if (showPicker) {
             VideoPickerScreen(

@@ -130,12 +130,7 @@ fun SettingsScreen(
                 },
             )
             // SMCPKG_SUPPORT>>>Cursor040
-            ContrastSetting(
-                contrast = settings.contrast,
-                onContrastChange = { contrast ->
-                    onSettingsChange(settings.copy(contrast = contrast))
-                },
-            )
+            // ContrastSetting was app-wide. Cursor041 moves contrast onto each pane.
             // SMCPKG_SUPPORT<<<Cursor040
             HorizontalDivider(color = SettingsDivider)
             Text(
@@ -243,12 +238,19 @@ private fun RotationSetting(
 }
 
 // SMCPKG_SUPPORT>>>Cursor040
+// @Composable
+// private fun ContrastSetting(...) { app-wide slider, replaced by per-pane sliders }
+// SMCPKG_SUPPORT<<<Cursor040
+
+// SMCPKG_SUPPORT>>>Cursor041
 @Composable
-private fun ContrastSetting(
-    contrast: Int,
-    onContrastChange: (Int) -> Unit,
+private fun PercentSlider(
+    title: String,
+    summary: String,
+    value: Int,
+    onValueChange: (Int) -> Unit,
 ) {
-    val value = contrast.coerceIn(0, 100)
+    val shown = value.coerceIn(0, 100)
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -256,33 +258,33 @@ private fun ContrastSetting(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.settings_contrast),
+                    text = title,
                     style = MaterialTheme.typography.titleMedium,
                     color = SettingsText,
                 )
                 Text(
-                    text = stringResource(R.string.settings_contrast_summary),
+                    text = summary,
                     style = MaterialTheme.typography.bodySmall,
                     color = SettingsMuted,
                 )
             }
             Text(
-                text = value.toString(),
+                text = shown.toString(),
                 color = SettingsMuted,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
         Slider(
-            value = value.toFloat(),
+            value = shown.toFloat(),
             onValueChange = { next ->
-                onContrastChange(next.roundToInt().coerceIn(0, 100))
+                onValueChange(next.roundToInt().coerceIn(0, 100))
             },
             valueRange = 0f..100f,
             steps = 99,
         )
     }
 }
-// SMCPKG_SUPPORT<<<Cursor040
+// SMCPKG_SUPPORT<<<Cursor041
 
 @Composable
 private fun PaneSettingsBlock(
@@ -292,7 +294,10 @@ private fun PaneSettingsBlock(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = stringResource(R.string.cell_index, index + 1),
+            // SMCPKG_SUPPORT>>>Cursor041
+            // text = stringResource(R.string.cell_index, index + 1),
+            text = stringResource(R.string.settings_video_pane, index + 1),
+            // SMCPKG_SUPPORT<<<Cursor041
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
             color = SettingsText,
@@ -320,6 +325,24 @@ private fun PaneSettingsBlock(
             valueRange = 0f..100f,
             steps = 99,
         )
+        // SMCPKG_SUPPORT>>>Cursor041
+        PercentSlider(
+            title = stringResource(R.string.settings_contrast),
+            summary = stringResource(R.string.settings_contrast_summary),
+            value = pane.contrast,
+            onValueChange = { contrast ->
+                onPaneChange(pane.copy(contrast = contrast))
+            },
+        )
+        PercentSlider(
+            title = stringResource(R.string.settings_sharpness),
+            summary = stringResource(R.string.settings_sharpness_summary),
+            value = pane.sharpness,
+            onValueChange = { sharpness ->
+                onPaneChange(pane.copy(sharpness = sharpness))
+            },
+        )
+        // SMCPKG_SUPPORT<<<Cursor041
         // SMCPKG_SUPPORT>>>Cursor040
         // Text(
         //     text = stringResource(R.string.settings_decode),
