@@ -67,7 +67,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.apsmkimo.tetravideoplayer.R
-import com.apsmkimo.tetravideoplayer.data.DecodeMode
+// SMCPKG_SUPPORT>>>Cursor040
+// import com.apsmkimo.tetravideoplayer.data.DecodeMode
+// SMCPKG_SUPPORT<<<Cursor040
 import com.apsmkimo.tetravideoplayer.data.PaneSettings
 import com.apsmkimo.tetravideoplayer.data.PlayerSettings
 import com.apsmkimo.tetravideoplayer.data.SETTINGS_PANE_COUNT
@@ -127,6 +129,14 @@ fun SettingsScreen(
                     onSettingsChange(settings.copy(allowRotation = enabled))
                 },
             )
+            // SMCPKG_SUPPORT>>>Cursor040
+            ContrastSetting(
+                contrast = settings.contrast,
+                onContrastChange = { contrast ->
+                    onSettingsChange(settings.copy(contrast = contrast))
+                },
+            )
+            // SMCPKG_SUPPORT<<<Cursor040
             HorizontalDivider(color = SettingsDivider)
             Text(
                 text = stringResource(R.string.settings_panes_title),
@@ -134,11 +144,13 @@ fun SettingsScreen(
                 fontWeight = FontWeight.SemiBold,
                 color = SettingsText,
             )
-            Text(
-                text = stringResource(R.string.settings_decode_sw_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = SettingsMuted,
-            )
+            // SMCPKG_SUPPORT>>>Cursor040
+            // Text(
+            //     text = stringResource(R.string.settings_decode_sw_note),
+            //     style = MaterialTheme.typography.bodySmall,
+            //     color = SettingsMuted,
+            // )
+            // SMCPKG_SUPPORT<<<Cursor040
             repeat(SETTINGS_PANE_COUNT) { index ->
                 PaneSettingsBlock(
                     index = index,
@@ -230,6 +242,48 @@ private fun RotationSetting(
     }
 }
 
+// SMCPKG_SUPPORT>>>Cursor040
+@Composable
+private fun ContrastSetting(
+    contrast: Int,
+    onContrastChange: (Int) -> Unit,
+) {
+    val value = contrast.coerceIn(0, 100)
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.settings_contrast),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = SettingsText,
+                )
+                Text(
+                    text = stringResource(R.string.settings_contrast_summary),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = SettingsMuted,
+                )
+            }
+            Text(
+                text = value.toString(),
+                color = SettingsMuted,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Slider(
+            value = value.toFloat(),
+            onValueChange = { next ->
+                onContrastChange(next.roundToInt().coerceIn(0, 100))
+            },
+            valueRange = 0f..100f,
+            steps = 99,
+        )
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor040
+
 @Composable
 private fun PaneSettingsBlock(
     index: Int,
@@ -266,23 +320,25 @@ private fun PaneSettingsBlock(
             valueRange = 0f..100f,
             steps = 99,
         )
-        Text(
-            text = stringResource(R.string.settings_decode),
-            color = SettingsMuted,
-            style = MaterialTheme.typography.bodySmall,
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = pane.decodeMode == DecodeMode.HARDWARE,
-                onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.HARDWARE)) },
-                label = { Text(stringResource(R.string.settings_decode_hw)) },
-            )
-            FilterChip(
-                selected = pane.decodeMode == DecodeMode.SOFTWARE,
-                onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.SOFTWARE)) },
-                label = { Text(stringResource(R.string.settings_decode_sw)) },
-            )
-        }
+        // SMCPKG_SUPPORT>>>Cursor040
+        // Text(
+        //     text = stringResource(R.string.settings_decode),
+        //     color = SettingsMuted,
+        //     style = MaterialTheme.typography.bodySmall,
+        // )
+        // Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        //     FilterChip(
+        //         selected = pane.decodeMode == DecodeMode.HARDWARE,
+        //         onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.HARDWARE)) },
+        //         label = { Text(stringResource(R.string.settings_decode_hw)) },
+        //     )
+        //     FilterChip(
+        //         selected = pane.decodeMode == DecodeMode.SOFTWARE,
+        //         onClick = { onPaneChange(pane.copy(decodeMode = DecodeMode.SOFTWARE)) },
+        //         label = { Text(stringResource(R.string.settings_decode_sw)) },
+        //     )
+        // }
+        // SMCPKG_SUPPORT<<<Cursor040
         Text(
             text = stringResource(R.string.settings_playback),
             color = SettingsMuted,

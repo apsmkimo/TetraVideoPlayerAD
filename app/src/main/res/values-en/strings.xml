@@ -45,6 +45,10 @@
     <string name="layout_1x2_vertical">1x2 Vertical</string>
     <string name="layout_2x1_horizontal">2x1 Horizontal</string>
     <!-- SMCPKG_SUPPORT<<<Cursor019 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor040 -->
+    <string name="layout_1x1">1x1 Single</string>
+    <string name="layout_1x3">1x3 Stack</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor040 -->
     <!-- SMCPKG_SUPPORT>>>Cursor021 -->
     <string name="about_title">About</string>
     <string name="about_close">Back</string>
@@ -88,13 +92,20 @@
     <string name="settings_title">Settings</string>
     <string name="settings_open">Settings</string>
     <string name="settings_rotation">Phone screen rotation</string>
-    <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor040 -->
+    <!-- <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string> -->
+    <string name="settings_rotation_summary">Off locks portrait or landscape during playback. On follows the rotation sensor. The layout menu stays portrait.</string>
+    <string name="settings_contrast">Contrast</string>
+    <string name="settings_contrast_summary">50 is the original picture. Lower is flatter; higher is stronger.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor040 -->
     <string name="settings_panes_title">Video panes</string>
     <string name="settings_toolbar_position">Toolbar position</string>
-    <string name="settings_decode">Decoder</string>
-    <string name="settings_decode_hw">HW decode</string>
-    <string name="settings_decode_sw">SW decode</string>
-    <string name="settings_decode_sw_note">SW uses the bundled FFmpeg decoder for legacy AVI codecs. H.264, HEVC, VP9, and AV1 are not in that LGPL FFmpeg build; they use Android software MediaCodec. If this device has no software decoder, playback falls back to hardware and does not crash.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor040 -->
+    <!-- <string name="settings_decode">Decoder</string> -->
+    <!-- <string name="settings_decode_hw">HW decode</string> -->
+    <!-- <string name="settings_decode_sw">SW decode</string> -->
+    <!-- <string name="settings_decode_sw_note">SW uses the bundled FFmpeg decoder for legacy AVI codecs. H.264, HEVC, VP9, and AV1 are not in that LGPL FFmpeg build; they use Android software MediaCodec. If this device has no software decoder, playback falls back to hardware and does not crash.</string> -->
+    <!-- SMCPKG_SUPPORT<<<Cursor040 -->
     <string name="settings_playback">Playback</string>
     <string name="settings_loop">Loop</string>
     <string name="settings_once">Play once</string>

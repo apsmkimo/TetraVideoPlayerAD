@@ -63,6 +63,13 @@ data class PaneSettings(
 data class PlayerSettings(
     /** Off locks the layout orientation. On follows the rotation sensor. */
     val allowRotation: Boolean = false,
+    // SMCPKG_SUPPORT>>>Cursor040
+    /**
+     * App-wide picture contrast. 50 is the original image.
+     * 0 is flat, 100 is stronger. Not per pane.
+     */
+    val contrast: Int = 50,
+    // SMCPKG_SUPPORT<<<Cursor040
     val panes: List<PaneSettings> = List(SETTINGS_PANE_COUNT) { PaneSettings() },
 ) {
     fun pane(index: Int): PaneSettings = panes.getOrElse(index) { PaneSettings() }
@@ -86,6 +93,9 @@ data class PlayerSettings(
 object PlayerSettingsStore {
     private const val PREFS_NAME = "tetravideoplayer_settings"
     private const val KEY_ROTATION = "allow_rotation"
+    // SMCPKG_SUPPORT>>>Cursor040
+    private const val KEY_CONTRAST = "contrast"
+    // SMCPKG_SUPPORT<<<Cursor040
 
     private fun keyLift(index: Int) = "pane_${index}_toolbar_lift"
     private fun keyDecode(index: Int) = "pane_${index}_decode"
@@ -103,6 +113,9 @@ object PlayerSettingsStore {
         }
         return PlayerSettings(
             allowRotation = prefs.getBoolean(KEY_ROTATION, false),
+            // SMCPKG_SUPPORT>>>Cursor040
+            contrast = prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100),
+            // SMCPKG_SUPPORT<<<Cursor040
             panes = panes,
         )
     }
@@ -112,6 +125,9 @@ object PlayerSettingsStore {
             .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(KEY_ROTATION, settings.allowRotation)
+            // SMCPKG_SUPPORT>>>Cursor040
+            .putInt(KEY_CONTRAST, settings.contrast.coerceIn(0, 100))
+            // SMCPKG_SUPPORT<<<Cursor040
         settings.panes.take(SETTINGS_PANE_COUNT).forEachIndexed { index, pane ->
             editor
                 .putInt(keyLift(index), pane.toolbarLift.coerceIn(0, 100))

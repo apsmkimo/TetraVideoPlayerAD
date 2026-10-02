@@ -38,8 +38,8 @@ package com.apsmkimo.tetravideoplayer.data
 import android.content.pm.ActivityInfo
 
 /**
- * In-session player grid. Not persisted. Portrait for stacked modes;
- * landscape for 2x2 and 2x1.
+ * In-session player grid. Not persisted. Portrait for stacked modes
+ * (1x1, 1x2, 1x3, 1x4); landscape for 2x2 and 2x1.
  */
 enum class PlayerLayout(
     val columns: Int,
@@ -74,8 +74,22 @@ enum class PlayerLayout(
         rows = 1,
         paneCount = 2,
         orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE,
-    );
+    ),
     // SMCPKG_SUPPORT<<<Cursor019
+    // SMCPKG_SUPPORT>>>Cursor040
+    VERTICAL_1X1(
+        columns = 1,
+        rows = 1,
+        paneCount = 1,
+        orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+    ),
+    VERTICAL_1X3(
+        columns = 1,
+        rows = 3,
+        paneCount = 3,
+        orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT,
+    );
+    // SMCPKG_SUPPORT<<<Cursor040
 
     companion object {
         // SMCPKG_SUPPORT>>>Cursor019
