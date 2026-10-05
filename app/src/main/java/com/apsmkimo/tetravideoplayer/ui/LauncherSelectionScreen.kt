@@ -46,6 +46,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -73,12 +74,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -168,9 +171,12 @@ fun LauncherSelectionScreen(
                 .statusBarsPadding()
                 .navigationBarsPadding(),
         ) {
-            if (!adsRemoved) {
-                BannerAd(Modifier.fillMaxWidth())
-            }
+            // SMCPKG_SUPPORT>>>Cursor040
+            // if (!adsRemoved) {
+            //     BannerAd(Modifier.fillMaxWidth())
+            // }
+            // Selection keeps the bottom banner only.
+            // SMCPKG_SUPPORT<<<Cursor040
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -180,9 +186,22 @@ fun LauncherSelectionScreen(
             ) {
                 BoxWithConstraints {
                     val gap = 18.dp
-                    val tile = min((maxWidth - gap) / 2, (maxHeight - gap) / 2)
-                        .coerceIn(128.dp, 220.dp)
+                    // SMCPKG_SUPPORT>>>Cursor040
+                    // val tile = min((maxWidth - gap) / 2, (maxHeight - gap) / 2)
+                    //     .coerceIn(128.dp, 220.dp)
+                    val rowCount = 3
+                    val tile = min(
+                        (maxWidth - gap) / 2,
+                        (maxHeight - gap * (rowCount - 1)) / rowCount,
+                    ).coerceIn(72.dp, 168.dp)
+                    val iconNudge = with(LocalDensity.current) { 10.toDp() }
+                    // SMCPKG_SUPPORT<<<Cursor040
                     Column(
+                        modifier = Modifier
+                            // SMCPKG_SUPPORT>>>Cursor040
+                            .offset(x = -iconNudge)
+                            .alpha(0.88f),
+                            // SMCPKG_SUPPORT<<<Cursor040
                         verticalArrangement = Arrangement.spacedBy(gap),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
@@ -214,6 +233,22 @@ fun LauncherSelectionScreen(
                                 onClick = { pick(PlayerLayout.VERTICAL_1X2) },
                             )
                         }
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+                            LayoutTile(
+                                tile = tile,
+                                label = stringResource(R.string.layout_1x1),
+                                artwork = R.drawable.layout_1x1,
+                                onClick = { pick(PlayerLayout.VERTICAL_1X1) },
+                            )
+                            LayoutTile(
+                                tile = tile,
+                                label = stringResource(R.string.layout_1x3),
+                                artwork = R.drawable.layout_1x3,
+                                onClick = { pick(PlayerLayout.VERTICAL_1X3) },
+                            )
+                        }
+                        // SMCPKG_SUPPORT<<<Cursor040
                     }
                 }
             }
@@ -222,11 +257,19 @@ fun LauncherSelectionScreen(
             }
         }
 
+        // SMCPKG_SUPPORT>>>Cursor040
+        val iconNudge = with(LocalDensity.current) { 10.toDp() }
+        val chromeBg = Color(0x22202A3A)
+        // was Color(0x33202A3A)
+        // SMCPKG_SUPPORT<<<Cursor040
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .statusBarsPadding()
-                .padding(end = 4.dp, top = 4.dp),
+                // SMCPKG_SUPPORT>>>Cursor040
+                // .padding(end = 4.dp, top = 4.dp),
+                .padding(end = 4.dp + iconNudge, top = 4.dp),
+                // SMCPKG_SUPPORT<<<Cursor040
             verticalAlignment = Alignment.CenterVertically,
         ) {
             // SMCPKG_SUPPORT>>>Cursor033
@@ -288,7 +331,10 @@ fun LauncherSelectionScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0x33202A3A)),
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // .background(Color(0x33202A3A)),
+                        .background(chromeBg),
+                        // SMCPKG_SUPPORT<<<Cursor040
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_remove_ads),
@@ -302,7 +348,10 @@ fun LauncherSelectionScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0x33202A3A))
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // .background(Color(0x33202A3A))
+                        .background(chromeBg)
+                        // SMCPKG_SUPPORT<<<Cursor040
                         .combinedClickable(
                             // SMCPKG_SUPPORT>>>Cursor038
                             // onClick = onAbout,
@@ -319,7 +368,10 @@ fun LauncherSelectionScreen(
                         // contentDescription = stringResource(R.string.about_title),
                         contentDescription = stringResource(R.string.settings_open),
                         // SMCPKG_SUPPORT<<<Cursor038
-                        tint = LabelWhite,
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // tint = LabelWhite,
+                        tint = LabelWhite.copy(alpha = 0.72f),
+                        // SMCPKG_SUPPORT<<<Cursor040
                     )
                 }
             } else {
@@ -331,7 +383,10 @@ fun LauncherSelectionScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0x33202A3A)),
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // .background(Color(0x33202A3A)),
+                        .background(chromeBg),
+                        // SMCPKG_SUPPORT<<<Cursor040
                 ) {
                     Icon(
                         // SMCPKG_SUPPORT>>>Cursor038
@@ -340,7 +395,10 @@ fun LauncherSelectionScreen(
                         // contentDescription = stringResource(R.string.about_title),
                         contentDescription = stringResource(R.string.settings_open),
                         // SMCPKG_SUPPORT<<<Cursor038
-                        tint = LabelWhite,
+                        // SMCPKG_SUPPORT>>>Cursor040
+                        // tint = LabelWhite,
+                        tint = LabelWhite.copy(alpha = 0.72f),
+                        // SMCPKG_SUPPORT<<<Cursor040
                     )
                 }
             }

@@ -106,13 +106,23 @@ fun TetraViewApp() {
     }
 
     fun orientationFor(selected: PlayerLayout?, atSelection: Boolean): Int {
+        // SMCPKG_SUPPORT>>>Cursor040
+        // if (settings.allowRotation) {
+        //     return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        // }
+        // if (atSelection && selected == null) {
+        //     return ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        // }
+        // return selected?.orientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        // The layout menu stays portrait even when playback rotation is on.
+        if (atSelection || selected == null) {
+            return ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
         if (settings.allowRotation) {
             return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         }
-        if (atSelection && selected == null) {
-            return ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
-        return selected?.orientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        return selected.orientation
+        // SMCPKG_SUPPORT<<<Cursor040
     }
     // SMCPKG_SUPPORT<<<Cursor038
 
