@@ -152,6 +152,11 @@ fun QuadPlayerScreen(
             initialDecodeModes = List(SETTINGS_PANE_COUNT) { DecodeMode.HARDWARE },
             // SMCPKG_SUPPORT<<<Cursor040
             initialLoop = settings.panes.map { it.loop },
+            // SMCPKG_SUPPORT>>>Cursor042
+            // Read once. LoadControl cannot change on a live ExoPlayer, so a
+            // settings toggle applies the next time this screen is created.
+            strongBuffering = settings.strongBuffering,
+            // SMCPKG_SUPPORT<<<Cursor042
         )
     }
     var playerGeneration by remember { mutableIntStateOf(0) }

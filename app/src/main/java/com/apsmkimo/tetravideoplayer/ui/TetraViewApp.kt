@@ -156,6 +156,10 @@ fun TetraViewApp() {
     // if (persisted == null && showSelection) {
     //     LauncherSelectionScreen(onLayoutSelected = ::applyLayout)
     // } else { ... overlay picker ... }
+    // SMCPKG_SUPPORT>>>Cursor042
+    // Selection, playback, and settings were emitted directly on the window.
+    ScreenMarginFrame(progress = settings.screenMargin) {
+    // SMCPKG_SUPPORT<<<Cursor042
     val selected = layout
     if (selected == null) {
         LauncherSelectionScreen(
@@ -225,4 +229,7 @@ fun TetraViewApp() {
     // SMCPKG_SUPPORT<<<Cursor038
     // SMCPKG_SUPPORT<<<Cursor036
     // SMCPKG_SUPPORT<<<Cursor021
+    // SMCPKG_SUPPORT>>>Cursor042
+    }
+    // SMCPKG_SUPPORT<<<Cursor042
 }

@@ -57,6 +57,7 @@ import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.decoder.ffmpeg.FfmpegLibrary
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.ExtractorsFactory
 import androidx.media3.extractor.avi.AviExtractor
 import androidx.media3.extractor.text.DefaultSubtitleParserFactory
@@ -80,6 +81,13 @@ class QuadPlayerController(
     initialDecodeModes: List<DecodeMode> = emptyList(),
     initialLoop: List<Boolean> = emptyList(),
     // SMCPKG_SUPPORT<<<Cursor038
+    // SMCPKG_SUPPORT>>>Cursor042
+    /**
+     * When true, new ExoPlayers use the stronger LoadControl and a longer
+     * progressive read slice. Existing instances are not rebuilt.
+     */
+    private val strongBuffering: Boolean = false,
+    // SMCPKG_SUPPORT<<<Cursor042
 ) {
     private val appContext = context.applicationContext
     private val dataSourceFactory = DefaultDataSource.Factory(appContext)
@@ -87,7 +95,31 @@ class QuadPlayerController(
     private val aviMediaSourceFactory = ProgressiveMediaSource.Factory(
         dataSourceFactory,
         ExtractorsFactory { arrayOf(AviExtractor(0, DefaultSubtitleParserFactory())) },
-    )
+    ).apply {
+        // SMCPKG_SUPPORT>>>Cursor042
+        // Default check interval (1 MiB) stays when stronger buffering is off.
+        if (strongBuffering) {
+            setContinueLoadingCheckIntervalBytes(STRONG_LOADING_CHECK_INTERVAL_BYTES)
+        }
+        // SMCPKG_SUPPORT<<<Cursor042
+    }
+    // SMCPKG_SUPPORT>>>Cursor042
+    /**
+     * Non-AVI playback keeps [defaultMediaSourceFactory] when the switch is off.
+     * When on, plain progressive files use this factory so the read slice matches
+     * the AVI path. [MediaItem]s here are a single URI (no clipping or side-loaded
+     * subtitles), which is the same progressive fallback DefaultMediaSourceFactory uses.
+     */
+    private val strongProgressiveMediaSourceFactory: ProgressiveMediaSource.Factory? =
+        if (strongBuffering) {
+            ProgressiveMediaSource.Factory(
+                dataSourceFactory,
+                DefaultExtractorsFactory(),
+            ).setContinueLoadingCheckIntervalBytes(STRONG_LOADING_CHECK_INTERVAL_BYTES)
+        } else {
+            null
+        }
+    // SMCPKG_SUPPORT<<<Cursor042
 
     // SMCPKG_SUPPORT>>>Cursor038
     // val players: List<ExoPlayer> = List(playerCount) { index ->
@@ -188,7 +220,10 @@ class QuadPlayerController(
         repeatMode: Int,
         volume: Float,
     ): ExoPlayer {
-        return createHardwareFirstPlayer(appContext, decodeMode).apply {
+        // SMCPKG_SUPPORT>>>Cursor042
+        // return createHardwareFirstPlayer(appContext, decodeMode).apply {
+        return createHardwareFirstPlayer(appContext, decodeMode, strongBuffering).apply {
+        // SMCPKG_SUPPORT<<<Cursor042
             this.repeatMode = repeatMode
             this.volume = volume
             setAudioAttributes(concurrentMediaAttributes(), /* handleAudioFocus = */ false)
@@ -587,11 +622,21 @@ class QuadPlayerController(
 
     private fun createMediaSource(uri: Uri): MediaSource {
         val mediaItem = MediaItem.fromUri(uri)
+        // SMCPKG_SUPPORT>>>Cursor042
+        // return if (isAviUri(uri)) {
+        //     aviMediaSourceFactory.createMediaSource(mediaItem)
+        // } else {
+        //     defaultMediaSourceFactory.createMediaSource(mediaItem)
+        // }
+        val strongProgressive = strongProgressiveMediaSourceFactory
         return if (isAviUri(uri)) {
             aviMediaSourceFactory.createMediaSource(mediaItem)
+        } else if (strongProgressive != null) {
+            strongProgressive.createMediaSource(mediaItem)
         } else {
             defaultMediaSourceFactory.createMediaSource(mediaItem)
         }
+        // SMCPKG_SUPPORT<<<Cursor042
     }
 
     private fun isAviUri(uri: Uri): Boolean {
@@ -666,6 +711,23 @@ class QuadPlayerController(
         const val BUFFER_FOR_PLAYBACK_MS = 2_500
         const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = 5_000
         const val TARGET_BUFFER_BYTES = 6 * 1024 * 1024
+        // SMCPKG_SUPPORT>>>Cursor042
+        // Stronger profile. setBufferDurationsMs writes both the streaming and
+        // the local (file / content / asset) durations, so internal storage,
+        // SD, USB/OTG, SAF content://, and network shares share one policy.
+        // Time stays prioritized, same as the 1.0.9 path: a size-first target
+        // left some devices in BUFFERING at 00:00 (Cursor018).
+        // 4 players × 12MB target = 48MB after the 15s floor is filled.
+        // Until that floor, time-priority can hold ~15s of media per pane
+        // (about 15MB at 8 Mbps, ~60MB for four 1080p panes).
+        const val STRONG_MIN_BUFFER_MS = 15_000
+        const val STRONG_MAX_BUFFER_MS = 40_000
+        const val STRONG_BUFFER_FOR_PLAYBACK_MS = 5_000
+        const val STRONG_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = 10_000
+        const val STRONG_TARGET_BUFFER_BYTES = 12 * 1024 * 1024
+        /** Media3's default progressive check interval is 1 MiB. */
+        const val STRONG_LOADING_CHECK_INTERVAL_BYTES = 2 * 1024 * 1024
+        // SMCPKG_SUPPORT<<<Cursor042
         const val SWAP_TEARDOWN_MS = 48L
         // SMCPKG_SUPPORT>>>Cursor017
         // private const val SURFACE_WAIT_FRAMES = 32
@@ -716,6 +778,9 @@ class QuadPlayerController(
         fun createHardwareFirstPlayer(
             context: Context,
             decodeMode: DecodeMode = DecodeMode.HARDWARE,
+            // SMCPKG_SUPPORT>>>Cursor042
+            strongBuffering: Boolean = false,
+            // SMCPKG_SUPPORT<<<Cursor042
         ): ExoPlayer {
         // SMCPKG_SUPPORT<<<Cursor038
             val appContext = context.applicationContext
@@ -745,26 +810,53 @@ class QuadPlayerController(
                     LATE_THRESHOLD_TO_DROP_DECODER_INPUT_US,
                 )
                 // SMCPKG_SUPPORT<<<Cursor011
-            val loadControl = DefaultLoadControl.Builder()
-                .setBufferDurationsMs(
-                    MIN_BUFFER_MS,
-                    MAX_BUFFER_MS,
-                    BUFFER_FOR_PLAYBACK_MS,
-                    BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
-                )
-                // SMCPKG_SUPPORT>>>Cursor011
-                // .setPrioritizeTimeOverSizeThresholds(true)
-                // SMCPKG_SUPPORT<<<Cursor011
-                // SMCPKG_SUPPORT>>>Cursor014
-                .setTargetBufferBytes(TARGET_BUFFER_BYTES)
-                // SMCPKG_SUPPORT>>>Cursor018
-                // .setPrioritizeTimeOverSizeThresholds(false)
-                // Size-first + 6MB target kept shouldStartPlayback false on some
-                // devices → forever BUFFERING at 00:00. Time thresholds can start.
-                .setPrioritizeTimeOverSizeThresholds(true)
-                // SMCPKG_SUPPORT<<<Cursor018
-                // SMCPKG_SUPPORT<<<Cursor014
-                .build()
+            // SMCPKG_SUPPORT>>>Cursor042
+            // val loadControl = DefaultLoadControl.Builder()
+            //     .setBufferDurationsMs(
+            //         MIN_BUFFER_MS,
+            //         MAX_BUFFER_MS,
+            //         BUFFER_FOR_PLAYBACK_MS,
+            //         BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
+            //     )
+            //     .setTargetBufferBytes(TARGET_BUFFER_BYTES)
+            //     .setPrioritizeTimeOverSizeThresholds(true)
+            //     .build()
+            val loadControl = if (strongBuffering) {
+                DefaultLoadControl.Builder()
+                    .setBufferDurationsMs(
+                        STRONG_MIN_BUFFER_MS,
+                        STRONG_MAX_BUFFER_MS,
+                        STRONG_BUFFER_FOR_PLAYBACK_MS,
+                        STRONG_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
+                    )
+                    .setTargetBufferBytes(STRONG_TARGET_BUFFER_BYTES)
+                    // No back-buffer: the extra memory stays in front of the playhead.
+                    .setBackBuffer(0, /* retainBackBufferFromKeyframe = */ false)
+                    .setPrioritizeTimeOverSizeThresholds(true)
+                    .build()
+            } else {
+                DefaultLoadControl.Builder()
+                    .setBufferDurationsMs(
+                        MIN_BUFFER_MS,
+                        MAX_BUFFER_MS,
+                        BUFFER_FOR_PLAYBACK_MS,
+                        BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
+                    )
+                    // SMCPKG_SUPPORT>>>Cursor011
+                    // .setPrioritizeTimeOverSizeThresholds(true)
+                    // SMCPKG_SUPPORT<<<Cursor011
+                    // SMCPKG_SUPPORT>>>Cursor014
+                    .setTargetBufferBytes(TARGET_BUFFER_BYTES)
+                    // SMCPKG_SUPPORT>>>Cursor018
+                    // .setPrioritizeTimeOverSizeThresholds(false)
+                    // Size-first + 6MB target kept shouldStartPlayback false on some
+                    // devices → forever BUFFERING at 00:00. Time thresholds can start.
+                    .setPrioritizeTimeOverSizeThresholds(true)
+                    // SMCPKG_SUPPORT<<<Cursor018
+                    // SMCPKG_SUPPORT<<<Cursor014
+                    .build()
+            }
+            // SMCPKG_SUPPORT<<<Cursor042
             // SMCPKG_SUPPORT>>>Cursor038
             // HW keeps the factory above: FFmpeg only for allowlisted legacy codecs,
             // H.264/HEVC/VP9/AV1 on hardware MediaCodec (default selector order).
@@ -773,7 +865,10 @@ class QuadPlayerController(
             if (decodeMode == DecodeMode.SOFTWARE) {
                 renderersFactory.setMediaCodecSelector(preferSoftwareMediaCodecSelector())
             }
-            Log.i(TAG, "create player decodeMode=$decodeMode")
+            // SMCPKG_SUPPORT>>>Cursor042
+            // Log.i(TAG, "create player decodeMode=$decodeMode")
+            Log.i(TAG, "create player decodeMode=$decodeMode strongBuffering=$strongBuffering")
+            // SMCPKG_SUPPORT<<<Cursor042
             // SMCPKG_SUPPORT<<<Cursor038
             return ExoPlayer.Builder(appContext, renderersFactory)
                 .setLoadControl(loadControl)

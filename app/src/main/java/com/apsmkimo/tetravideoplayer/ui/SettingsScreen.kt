@@ -129,6 +129,22 @@ fun SettingsScreen(
                     onSettingsChange(settings.copy(allowRotation = enabled))
                 },
             )
+            // SMCPKG_SUPPORT>>>Cursor042
+            StrongBufferingSetting(
+                enabled = settings.strongBuffering,
+                onEnabledChange = { enabled ->
+                    onSettingsChange(settings.copy(strongBuffering = enabled))
+                },
+            )
+            PercentSlider(
+                title = stringResource(R.string.settings_screen_margin),
+                summary = stringResource(R.string.settings_screen_margin_summary),
+                value = settings.screenMargin,
+                onValueChange = { margin ->
+                    onSettingsChange(settings.copy(screenMargin = margin))
+                },
+            )
+            // SMCPKG_SUPPORT<<<Cursor042
             // SMCPKG_SUPPORT>>>Cursor040
             // ContrastSetting was app-wide. Cursor041 moves contrast onto each pane.
             // SMCPKG_SUPPORT<<<Cursor040
@@ -236,6 +252,37 @@ private fun RotationSetting(
         )
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor042
+@Composable
+private fun StrongBufferingSetting(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_strong_buffering),
+                style = MaterialTheme.typography.titleMedium,
+                color = SettingsText,
+            )
+            Text(
+                text = stringResource(R.string.settings_strong_buffering_summary),
+                style = MaterialTheme.typography.bodySmall,
+                color = SettingsMuted,
+            )
+        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onEnabledChange,
+        )
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor042
 
 // SMCPKG_SUPPORT>>>Cursor040
 // @Composable
