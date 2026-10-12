@@ -95,6 +95,12 @@
     <!-- SMCPKG_SUPPORT>>>Cursor040 -->
     <!-- <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string> -->
     <string name="settings_rotation_summary">Off locks portrait or landscape during playback. On follows the rotation sensor. The layout menu stays portrait.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor042 -->
+    <string name="settings_strong_buffering">Stronger buffering</string>
+    <string name="settings_strong_buffering_summary">On reads further ahead so slow or bursty storage is less likely to stall. Applies to every pane the next time playback starts.</string>
+    <string name="settings_screen_margin">Screen margin</string>
+    <string name="settings_screen_margin_summary">0 is no extra border. Higher adds an equal black margin on every side, inside the system bars and cutout. Menus, video, and gestures stay inside it.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor042 -->
     <string name="settings_contrast">Contrast</string>
     <!-- <string name="settings_contrast_summary">50 is the original picture. Lower is flatter; higher is stronger.</string> -->
     <!-- SMCPKG_SUPPORT<<<Cursor040 -->

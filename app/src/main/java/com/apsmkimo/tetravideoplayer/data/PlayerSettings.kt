@@ -66,6 +66,12 @@ data class PaneSettings(
     // SMCPKG_SUPPORT<<<Cursor041
 )
 
+/**
+ * Equal black border, in dp, at progress 100.
+ * Inset per side is `progress / 100f * SCREEN_MARGIN_MAX_DP`.
+ */
+const val SCREEN_MARGIN_MAX_DP = 96
+
 data class PlayerSettings(
     /** Off locks the layout orientation. On follows the rotation sensor. */
     val allowRotation: Boolean = false,
@@ -73,6 +79,17 @@ data class PlayerSettings(
     // App-wide contrast moved onto each pane (Cursor041).
     // val contrast: Int = 50,
     // SMCPKG_SUPPORT<<<Cursor040
+    // SMCPKG_SUPPORT>>>Cursor042
+    /**
+     * Larger read-ahead on every pane. ExoPlayer bakes [androidx.media3.exoplayer.LoadControl]
+     * in at construction, so this applies the next time the playback screen creates
+     * its players (leave playback and open a layout again). It does not rebuild
+     * players that are already running.
+     */
+    val strongBuffering: Boolean = false,
+    /** 0–100. 0 keeps today's full-bleed layout. */
+    val screenMargin: Int = 0,
+    // SMCPKG_SUPPORT<<<Cursor042
     val panes: List<PaneSettings> = List(SETTINGS_PANE_COUNT) { PaneSettings() },
 ) {
     fun pane(index: Int): PaneSettings = panes.getOrElse(index) { PaneSettings() }
@@ -99,6 +116,10 @@ object PlayerSettingsStore {
     // SMCPKG_SUPPORT>>>Cursor040
     private const val KEY_CONTRAST = "contrast"
     // SMCPKG_SUPPORT<<<Cursor040
+    // SMCPKG_SUPPORT>>>Cursor042
+    private const val KEY_STRONG_BUFFERING = "strong_buffering"
+    private const val KEY_SCREEN_MARGIN = "screen_margin"
+    // SMCPKG_SUPPORT<<<Cursor042
 
     private fun keyLift(index: Int) = "pane_${index}_toolbar_lift"
     private fun keyDecode(index: Int) = "pane_${index}_decode"
@@ -139,6 +160,10 @@ object PlayerSettingsStore {
             // SMCPKG_SUPPORT>>>Cursor040
             // contrast = prefs.getInt(KEY_CONTRAST, 50).coerceIn(0, 100),
             // SMCPKG_SUPPORT<<<Cursor040
+            // SMCPKG_SUPPORT>>>Cursor042
+            strongBuffering = prefs.getBoolean(KEY_STRONG_BUFFERING, false),
+            screenMargin = prefs.getInt(KEY_SCREEN_MARGIN, 0).coerceIn(0, 100),
+            // SMCPKG_SUPPORT<<<Cursor042
             panes = panes,
         )
     }
@@ -151,6 +176,10 @@ object PlayerSettingsStore {
             // SMCPKG_SUPPORT>>>Cursor040
             // .putInt(KEY_CONTRAST, settings.contrast.coerceIn(0, 100))
             // SMCPKG_SUPPORT<<<Cursor040
+            // SMCPKG_SUPPORT>>>Cursor042
+            .putBoolean(KEY_STRONG_BUFFERING, settings.strongBuffering)
+            .putInt(KEY_SCREEN_MARGIN, settings.screenMargin.coerceIn(0, 100))
+            // SMCPKG_SUPPORT<<<Cursor042
         settings.panes.take(SETTINGS_PANE_COUNT).forEachIndexed { index, pane ->
             editor
                 .putInt(keyLift(index), pane.toolbarLift.coerceIn(0, 100))
