@@ -403,4 +403,10 @@ dependencies {
     // SMCPKG_SUPPORT>>>Cursor033
     implementation(libs.billing.ktx)
     // SMCPKG_SUPPORT<<<Cursor033
+
+    // SMCPKG_SUPPORT>>>Cursor045
+    // Play Console flags transitive androidx.fragment:fragment:1.1.0 (below 1.2.1).
+    // A direct 1.8.9 dependency wins Gradle highest-version resolution.
+    implementation(libs.androidx.fragment)
+    // SMCPKG_SUPPORT<<<Cursor045
 }
