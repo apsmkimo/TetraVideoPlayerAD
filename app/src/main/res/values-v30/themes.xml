@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SMCPKG_SUPPORT>>>Cursor045 -->
+    <!-- API 30+: ALWAYS replaces deprecated shortEdges. Bar colors stay unset;
+         enableEdgeToEdge() owns system-bar appearance. -->
+    <style name="Theme.QuadVideoPlayer" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF0B0D12</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+    </style>
+    <!-- SMCPKG_SUPPORT<<<Cursor045 -->
+</resources>

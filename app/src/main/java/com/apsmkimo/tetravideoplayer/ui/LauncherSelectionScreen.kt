@@ -43,13 +43,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 // SMCPKG_SUPPORT>>>Cursor038
@@ -188,8 +195,13 @@ fun LauncherSelectionScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding(),
+                // SMCPKG_SUPPORT>>>Cursor045
+                // .statusBarsPadding()
+                // .navigationBarsPadding(),
+                .windowInsetsPadding(
+                    WindowInsets.systemBars.union(WindowInsets.displayCutout),
+                ),
+                // SMCPKG_SUPPORT<<<Cursor045
         ) {
             // SMCPKG_SUPPORT>>>Cursor040
             // if (!adsRemoved) {
@@ -290,7 +302,15 @@ fun LauncherSelectionScreen(
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .statusBarsPadding()
+                // SMCPKG_SUPPORT>>>Cursor045
+                // .statusBarsPadding()
+                .windowInsetsPadding(
+                    WindowInsets.statusBars
+                        .union(WindowInsets.navigationBars)
+                        .union(WindowInsets.displayCutout)
+                        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
+                )
+                // SMCPKG_SUPPORT<<<Cursor045
                 // SMCPKG_SUPPORT>>>Cursor040
                 // .padding(end = 4.dp, top = 4.dp),
                 .padding(end = 4.dp + iconNudge, top = 4.dp),

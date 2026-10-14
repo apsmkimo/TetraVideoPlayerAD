@@ -21,6 +21,9 @@ billing = "9.1.0"
 checkerQual = "3.43.0"
 annotation = "1.9.1"
 # SMCPKG_SUPPORT<<<Cursor009
+# SMCPKG_SUPPORT>>>Cursor045
+fragment = "1.8.9"
+# SMCPKG_SUPPORT<<<Cursor045
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +54,9 @@ user-messaging-platform = { group = "com.google.android.ump", name = "user-messa
 # SMCPKG_SUPPORT>>>Cursor033
 billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
 # SMCPKG_SUPPORT<<<Cursor033
+# SMCPKG_SUPPORT>>>Cursor045
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+# SMCPKG_SUPPORT<<<Cursor045
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
