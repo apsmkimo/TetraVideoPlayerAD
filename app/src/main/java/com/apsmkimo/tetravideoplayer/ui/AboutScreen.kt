@@ -94,8 +94,12 @@ private val AboutMuted = Color(0xFFB4C0D0)
 // SMCPKG_SUPPORT>>>Cursor038
 // private const val PRIVACY_POLICY_URL =
 //     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+// SMCPKG_SUPPORT>>>Cursor043
+// internal const val PRIVACY_POLICY_URL =
+//     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
 internal const val PRIVACY_POLICY_URL =
-    "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+    "https://apsmkimo.github.io/privacy-tetravideoplayerad.html"
+// SMCPKG_SUPPORT<<<Cursor043
 // SMCPKG_SUPPORT<<<Cursor038
 private const val PLAY_STORE_PACKAGE = "com.apsmkimo.tetravideoplayer"
 private const val PLAY_STORE_MARKET_URI = "market://details?id=$PLAY_STORE_PACKAGE"
