@@ -45,13 +45,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 // SMCPKG_SUPPORT>>>Cursor038
@@ -74,6 +81,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -93,6 +101,7 @@ import com.apsmkimo.tetravideoplayer.BuildConfig
 import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.TetraVideoPlayerApp
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
+import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 // SMCPKG_SUPPORT>>>Cursor033
 // import com.apsmkimo.tetravideoplayer.ads.AdSession
 // SMCPKG_SUPPORT<<<Cursor033
@@ -129,6 +138,11 @@ fun LauncherSelectionScreen(
     val scope = rememberCoroutineScope()
     var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
     var gating by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor043
+    val consent = remember(context) { AdsConsentManager.getInstance(context) }
+    val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
+    val adsSdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
+    // SMCPKG_SUPPORT<<<Cursor043
     // SMCPKG_SUPPORT>>>Cursor033
     val billing = (context.applicationContext as TetraVideoPlayerApp).removeAdsBilling
     DisposableEffect(billing) {
@@ -141,10 +155,18 @@ fun LauncherSelectionScreen(
     }
     // SMCPKG_SUPPORT<<<Cursor033
 
-    LaunchedEffect(adsRemoved) {
-        if (!adsRemoved) {
-            preloadInterstitial(context)
+    LaunchedEffect(adsRemoved, canRequestAds, adsSdkReady) {
+        // SMCPKG_SUPPORT>>>Cursor043
+        // if (!adsRemoved) {
+        //     preloadInterstitial(context)
+        // }
+        if (!adsRemoved && canRequestAds) {
+            consent.ensureMobileAdsInitialized(context)
+            if (adsSdkReady) {
+                preloadInterstitial(context)
+            }
         }
+        // SMCPKG_SUPPORT<<<Cursor043
     }
 
     fun pick(layout: PlayerLayout) {
@@ -152,9 +174,14 @@ fun LauncherSelectionScreen(
         scope.launch {
             gating = true
             try {
-                if (!AdPreferences.isAdRemoved(context)) {
+                // SMCPKG_SUPPORT>>>Cursor043
+                // if (!AdPreferences.isAdRemoved(context)) {
+                //     maybeShowInterstitialOnce(activity)
+                // }
+                if (!AdPreferences.isAdRemoved(context) && canRequestAds && adsSdkReady) {
                     maybeShowInterstitialOnce(activity)
                 }
+                // SMCPKG_SUPPORT<<<Cursor043
                 onLayoutSelected(layout)
             } finally {
                 gating = false
@@ -170,8 +197,13 @@ fun LauncherSelectionScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .navigationBarsPadding(),
+                // SMCPKG_SUPPORT>>>Cursor045
+                // .statusBarsPadding()
+                // .navigationBarsPadding(),
+                .windowInsetsPadding(
+                    WindowInsets.systemBars.union(WindowInsets.displayCutout),
+                ),
+                // SMCPKG_SUPPORT<<<Cursor045
         ) {
             // SMCPKG_SUPPORT>>>Cursor040
             // if (!adsRemoved) {
@@ -254,9 +286,14 @@ fun LauncherSelectionScreen(
                     }
                 }
             }
-            if (!adsRemoved) {
+            // SMCPKG_SUPPORT>>>Cursor043
+            // if (!adsRemoved) {
+            //     BannerAd(Modifier.fillMaxWidth())
+            // }
+            if (!adsRemoved && canRequestAds && adsSdkReady) {
                 BannerAd(Modifier.fillMaxWidth())
             }
+            // SMCPKG_SUPPORT<<<Cursor043
         }
 
         // SMCPKG_SUPPORT>>>Cursor040
@@ -267,7 +304,15 @@ fun LauncherSelectionScreen(
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .statusBarsPadding()
+                // SMCPKG_SUPPORT>>>Cursor045
+                // .statusBarsPadding()
+                .windowInsetsPadding(
+                    WindowInsets.statusBars
+                        .union(WindowInsets.navigationBars)
+                        .union(WindowInsets.displayCutout)
+                        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
+                )
+                // SMCPKG_SUPPORT<<<Cursor045
                 // SMCPKG_SUPPORT>>>Cursor040
                 // .padding(end = 4.dp, top = 4.dp),
                 .padding(end = 4.dp + iconNudge, top = 4.dp),

@@ -61,6 +61,9 @@
     <!-- unused About copy (GPL / license / repository / components) removed from UI -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
     <string name="about_privacy_policy">Privacy Policy</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor043 -->
+    <string name="privacy_options">Privacy options</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor043 -->
     <string name="about_rate_us">Rate Us</string>
     <!-- SMCPKG_SUPPORT<<<Cursor036 -->
     <!-- SMCPKG_SUPPORT>>>Cursor033 -->

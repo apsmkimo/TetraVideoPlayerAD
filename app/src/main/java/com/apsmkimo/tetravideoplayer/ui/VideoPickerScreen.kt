@@ -73,6 +73,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -111,6 +112,7 @@ import com.apsmkimo.tetravideoplayer.data.LocalVideoStore
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
+import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 import com.apsmkimo.tetravideoplayer.ads.BannerAd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -128,6 +130,11 @@ fun VideoPickerScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    // SMCPKG_SUPPORT>>>Cursor043
+    val consent = remember(context) { AdsConsentManager.getInstance(context) }
+    val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
+    val adsSdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
+    // SMCPKG_SUPPORT<<<Cursor043
     var videos by remember { mutableStateOf<List<LocalVideo>?>(null) }
     // SMCPKG_SUPPORT>>>Cursor006
     // Flat all-videos grid replaced by folder-first navigation.
@@ -248,9 +255,14 @@ fun VideoPickerScreen(
                                 )
                             }
                         }
-                        if (!adsRemoved) {
+                        // SMCPKG_SUPPORT>>>Cursor043
+                        // if (!adsRemoved) {
+                        //     BannerAd(Modifier.fillMaxWidth())
+                        // }
+                        if (!adsRemoved && canRequestAds && adsSdkReady) {
                             BannerAd(Modifier.fillMaxWidth())
                         }
+                        // SMCPKG_SUPPORT<<<Cursor043
                     }
                 }
 

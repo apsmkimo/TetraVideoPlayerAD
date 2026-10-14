@@ -65,10 +65,18 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -153,6 +161,9 @@ fun VideoCell(
     sharpness: Int = 50,
     onBrightnessAdjusting: (Int?) -> Unit = {},
     // SMCPKG_SUPPORT<<<Cursor041
+    // SMCPKG_SUPPORT>>>Cursor045
+    safeEdges: WindowInsetsSides? = null,
+    // SMCPKG_SUPPORT<<<Cursor045
 ) {
     // SMCPKG_SUPPORT>>>Cursor004
     // val shape = RoundedCornerShape(12.dp)
@@ -495,6 +506,22 @@ fun VideoCell(
                 val liftFraction = toolbarLift.coerceIn(0, 100) / 100f
                 val lift = (maxHeight - CellPlaybackBarHeight).coerceAtLeast(0.dp) * liftFraction
                 // SMCPKG_SUPPORT<<<Cursor038
+                // SMCPKG_SUPPORT>>>Cursor045
+                // Video stays full-bleed. Only the bar moves off the nav bar / cutout.
+                // Once lift already clears the bottom inset, do not push the bar further.
+                val edgeInsets = if (safeEdges == null) {
+                    WindowInsets(0, 0, 0, 0)
+                } else {
+                    WindowInsets.navigationBars
+                        .union(WindowInsets.displayCutout)
+                        .only(safeEdges)
+                }
+                val bottomInset = edgeInsets
+                    .only(WindowInsetsSides.Bottom)
+                    .asPaddingValues()
+                    .calculateBottomPadding()
+                val bottomOverlap = (bottomInset - lift).coerceAtLeast(0.dp)
+                // SMCPKG_SUPPORT<<<Cursor045
                 CellPlaybackBar(
                     player = player,
                     onPickVideo = onPickVideo,
@@ -504,8 +531,12 @@ fun VideoCell(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         // SMCPKG_SUPPORT>>>Cursor038
-                        .offset(y = -lift)
+                        // .offset(y = -lift)
                         // SMCPKG_SUPPORT<<<Cursor038
+                        // SMCPKG_SUPPORT>>>Cursor045
+                        .offset(y = -(lift + bottomOverlap))
+                        .windowInsetsPadding(edgeInsets.only(WindowInsetsSides.Horizontal))
+                        // SMCPKG_SUPPORT<<<Cursor045
                         .zIndex(2f),
                 )
             }

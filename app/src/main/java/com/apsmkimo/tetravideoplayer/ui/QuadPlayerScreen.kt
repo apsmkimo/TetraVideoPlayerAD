@@ -52,9 +52,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -122,6 +129,41 @@ import kotlinx.coroutines.delay
 
 private val Hairline = 1.dp
 private val HairlineColor = Color(0xFF5A5A5A)
+
+// SMCPKG_SUPPORT>>>Cursor045
+/** Top and side system bars / cutout. Bottom stays with the playback bar. */
+@Composable
+private fun Modifier.playerChromePadding(): Modifier = windowInsetsPadding(
+    WindowInsets.statusBars
+        .union(WindowInsets.navigationBars)
+        .union(WindowInsets.displayCutout)
+        .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
+)
+
+/**
+ * Edges of this pane that can sit under a system bar or cutout.
+ * Parents that already consumed those insets (ScreenMarginFrame when
+ * the margin is above 0) leave a zero inset, so this does not pad twice.
+ */
+private fun paneSafeEdges(index: Int, layout: PlayerLayout): WindowInsetsSides? {
+    val column = index % layout.columns
+    val atStart = column == 0
+    val atEnd = column == layout.columns - 1
+    val onBottom = index / layout.columns == layout.rows - 1
+    val horizontal = when {
+        atStart && atEnd -> WindowInsetsSides.Horizontal
+        atStart -> WindowInsetsSides.Start
+        atEnd -> WindowInsetsSides.End
+        else -> null
+    }
+    return when {
+        horizontal != null && onBottom -> horizontal + WindowInsetsSides.Bottom
+        horizontal != null -> horizontal
+        onBottom -> WindowInsetsSides.Bottom
+        else -> null
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor045
 
 // SMCPKG_SUPPORT>>>Cursor012
 // @Composable
@@ -455,6 +497,9 @@ fun QuadPlayerScreen(
                 contrast = settings.pane(index).contrast,
                 sharpness = settings.pane(index).sharpness,
                 onBrightnessAdjusting = { brightnessHud = it },
+                // SMCPKG_SUPPORT>>>Cursor045
+                safeEdges = paneSafeEdges(index, layout),
+                // SMCPKG_SUPPORT<<<Cursor045
                 // SMCPKG_SUPPORT<<<Cursor041
                 // SMCPKG_SUPPORT<<<Cursor040
                 // SMCPKG_SUPPORT<<<Cursor038
@@ -478,7 +523,10 @@ fun QuadPlayerScreen(
             Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .statusBarsPadding()
+                    // SMCPKG_SUPPORT>>>Cursor045
+                    // .statusBarsPadding()
+                    .playerChromePadding()
+                    // SMCPKG_SUPPORT<<<Cursor045
                     // SMCPKG_SUPPORT>>>Cursor040
                     // .padding(end = 8.dp, top = 4.dp),
                     .padding(end = 8.dp + iconNudge, top = 4.dp),
@@ -540,7 +588,10 @@ fun QuadPlayerScreen(
                 onSettingsClick = { openAppSettings() },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .statusBarsPadding()
+                    // SMCPKG_SUPPORT>>>Cursor045
+                    // .statusBarsPadding()
+                    .playerChromePadding()
+                    // SMCPKG_SUPPORT<<<Cursor045
                     .fillMaxWidth(),
             )
         }
@@ -552,7 +603,10 @@ fun QuadPlayerScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()
-                    .statusBarsPadding()
+                    // SMCPKG_SUPPORT>>>Cursor045
+                    // .statusBarsPadding()
+                    .playerChromePadding()
+                    // SMCPKG_SUPPORT<<<Cursor045
                     .zIndex(4f)
                     .background(Color.Black.copy(alpha = 0.5f))
                     .padding(horizontal = 16.dp, vertical = 10.dp),
