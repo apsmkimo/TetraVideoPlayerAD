@@ -9,23 +9,25 @@
  * permitted in writing by the copyright holder.
  */
 // SMCPKG_SUPPORT<<<Cursor030
-/*
- * TetraView / FreeQuadPlayer
- * Copyright (C) 2026 apsmkimo
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
+// SMCPKG_SUPPORT>>>Cursor044
+// /*
+//  * TetraView / FreeQuadPlayer
+//  * Copyright (C) 2026 apsmkimo
+//  *
+//  * This program is free software: you can redistribute it and/or modify
+//  * it under the terms of the GNU General Public License as published by
+//  * the Free Software Foundation, either version 3 of the License, or
+//  * (at your option) any later version.
+//  *
+//  * This program is distributed in the hope that it will be useful,
+//  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  * GNU General Public License for more details.
+//  *
+//  * You should have received a copy of the GNU General Public License
+//  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//  */
+// SMCPKG_SUPPORT<<<Cursor044
 
 // SMCPKG_SUPPORT>>>Cursor021
 // SMCPKG_SUPPORT>>>Cursor030
@@ -94,8 +96,12 @@ private val AboutMuted = Color(0xFFB4C0D0)
 // SMCPKG_SUPPORT>>>Cursor038
 // private const val PRIVACY_POLICY_URL =
 //     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+// SMCPKG_SUPPORT>>>Cursor043
+// internal const val PRIVACY_POLICY_URL =
+//     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
 internal const val PRIVACY_POLICY_URL =
-    "https://sites.google.com/view/tetravideoplayerprivacypolicy"
+    "https://apsmkimo.github.io/privacy-tetravideoplayerad.html"
+// SMCPKG_SUPPORT<<<Cursor043
 // SMCPKG_SUPPORT<<<Cursor038
 private const val PLAY_STORE_PACKAGE = "com.apsmkimo.tetravideoplayer"
 private const val PLAY_STORE_MARKET_URI = "market://details?id=$PLAY_STORE_PACKAGE"
