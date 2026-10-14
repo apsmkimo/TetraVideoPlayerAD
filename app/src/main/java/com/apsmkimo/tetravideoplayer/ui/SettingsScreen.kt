@@ -30,7 +30,9 @@
 // SMCPKG_SUPPORT>>>Cursor038
 package com.apsmkimo.tetravideoplayer.ui
 
+import android.app.Activity
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -57,7 +59,9 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,6 +71,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.apsmkimo.tetravideoplayer.R
+import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 // SMCPKG_SUPPORT>>>Cursor040
 // import com.apsmkimo.tetravideoplayer.data.DecodeMode
 // SMCPKG_SUPPORT<<<Cursor040
@@ -107,6 +112,10 @@ fun SettingsScreen(
         }
         context.getString(R.string.about_version_line, name, code)
     }
+    // SMCPKG_SUPPORT>>>Cursor043
+    val consent = remember(context) { AdsConsentManager.getInstance(context) }
+    val privacyOptionsRequired by consent.privacyOptionsRequired.collectAsStateWithLifecycle()
+    // SMCPKG_SUPPORT<<<Cursor043
 
     Column(
         modifier = modifier
@@ -191,6 +200,24 @@ fun SettingsScreen(
             ) {
                 Text(stringResource(R.string.about_privacy_policy))
             }
+            // SMCPKG_SUPPORT>>>Cursor043
+            if (privacyOptionsRequired) {
+                OutlinedButton(
+                    onClick = {
+                        val activity = context as? Activity ?: return@OutlinedButton
+                        consent.showPrivacyOptionsForm(activity) { formError ->
+                            val message = formError?.message
+                            if (!message.isNullOrBlank()) {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.privacy_options))
+                }
+            }
+            // SMCPKG_SUPPORT<<<Cursor043
             OutlinedButton(
                 onClick = { openPlayStoreListing(context) },
                 modifier = Modifier.fillMaxWidth(),
