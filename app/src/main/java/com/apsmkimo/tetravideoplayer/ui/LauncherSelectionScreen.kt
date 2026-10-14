@@ -72,6 +72,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -91,6 +92,7 @@ import com.apsmkimo.tetravideoplayer.BuildConfig
 import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.TetraVideoPlayerApp
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
+import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 // SMCPKG_SUPPORT>>>Cursor033
 // import com.apsmkimo.tetravideoplayer.ads.AdSession
 // SMCPKG_SUPPORT<<<Cursor033
@@ -127,6 +129,11 @@ fun LauncherSelectionScreen(
     val scope = rememberCoroutineScope()
     var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
     var gating by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor043
+    val consent = remember(context) { AdsConsentManager.getInstance(context) }
+    val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
+    val adsSdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
+    // SMCPKG_SUPPORT<<<Cursor043
     // SMCPKG_SUPPORT>>>Cursor033
     val billing = (context.applicationContext as TetraVideoPlayerApp).removeAdsBilling
     DisposableEffect(billing) {
@@ -139,10 +146,18 @@ fun LauncherSelectionScreen(
     }
     // SMCPKG_SUPPORT<<<Cursor033
 
-    LaunchedEffect(adsRemoved) {
-        if (!adsRemoved) {
-            preloadInterstitial(context)
+    LaunchedEffect(adsRemoved, canRequestAds, adsSdkReady) {
+        // SMCPKG_SUPPORT>>>Cursor043
+        // if (!adsRemoved) {
+        //     preloadInterstitial(context)
+        // }
+        if (!adsRemoved && canRequestAds) {
+            consent.ensureMobileAdsInitialized(context)
+            if (adsSdkReady) {
+                preloadInterstitial(context)
+            }
         }
+        // SMCPKG_SUPPORT<<<Cursor043
     }
 
     fun pick(layout: PlayerLayout) {
@@ -150,9 +165,14 @@ fun LauncherSelectionScreen(
         scope.launch {
             gating = true
             try {
-                if (!AdPreferences.isAdRemoved(context)) {
+                // SMCPKG_SUPPORT>>>Cursor043
+                // if (!AdPreferences.isAdRemoved(context)) {
+                //     maybeShowInterstitialOnce(activity)
+                // }
+                if (!AdPreferences.isAdRemoved(context) && canRequestAds && adsSdkReady) {
                     maybeShowInterstitialOnce(activity)
                 }
+                // SMCPKG_SUPPORT<<<Cursor043
                 onLayoutSelected(layout)
             } finally {
                 gating = false
@@ -252,9 +272,14 @@ fun LauncherSelectionScreen(
                     }
                 }
             }
-            if (!adsRemoved) {
+            // SMCPKG_SUPPORT>>>Cursor043
+            // if (!adsRemoved) {
+            //     BannerAd(Modifier.fillMaxWidth())
+            // }
+            if (!adsRemoved && canRequestAds && adsSdkReady) {
                 BannerAd(Modifier.fillMaxWidth())
             }
+            // SMCPKG_SUPPORT<<<Cursor043
         }
 
         // SMCPKG_SUPPORT>>>Cursor040

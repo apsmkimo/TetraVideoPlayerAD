@@ -56,6 +56,9 @@ import com.apsmkimo.tetravideoplayer.ui.TetraViewApp
 import com.apsmkimo.tetravideoplayer.ui.theme.QuadVideoPlayerTheme
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor021
+// SMCPKG_SUPPORT>>>Cursor043
+import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
+// SMCPKG_SUPPORT<<<Cursor043
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,5 +88,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        // SMCPKG_SUPPORT>>>Cursor043
+        // The consent form needs an Activity. MobileAds.initialize runs from
+        // AdsConsentManager only after ConsentInformation.canRequestAds() is true.
+        AdsConsentManager.getInstance(this).gatherConsent(this)
+        // SMCPKG_SUPPORT<<<Cursor043
     }
 }

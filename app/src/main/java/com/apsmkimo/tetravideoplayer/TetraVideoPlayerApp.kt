@@ -14,7 +14,9 @@ import android.app.Application
 // SMCPKG_SUPPORT>>>Cursor033
 import com.apsmkimo.tetravideoplayer.ads.RemoveAdsBilling
 // SMCPKG_SUPPORT<<<Cursor033
-import com.google.android.gms.ads.MobileAds
+// SMCPKG_SUPPORT>>>Cursor043
+// import com.google.android.gms.ads.MobileAds
+// SMCPKG_SUPPORT<<<Cursor043
 
 class TetraVideoPlayerApp : Application() {
     // SMCPKG_SUPPORT>>>Cursor033
@@ -24,7 +26,9 @@ class TetraVideoPlayerApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        MobileAds.initialize(this)
+        // SMCPKG_SUPPORT>>>Cursor043
+        // MobileAds.initialize(this)
+        // SMCPKG_SUPPORT<<<Cursor043
         // SMCPKG_SUPPORT>>>Cursor033
         removeAdsBilling = RemoveAdsBilling(this).also { it.start() }
         // SMCPKG_SUPPORT<<<Cursor033

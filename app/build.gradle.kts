@@ -71,8 +71,11 @@ plugins {
 // val APP_VERSION_NAME = "1.0.9"
 // SMCPKG_SUPPORT<<<Cursor041
 // SMCPKG_SUPPORT>>>Cursor042
-val APP_VERSION_NAME = "1.0.10"
+// val APP_VERSION_NAME = "1.0.10"
 // SMCPKG_SUPPORT<<<Cursor042
+// SMCPKG_SUPPORT>>>Cursor043
+val APP_VERSION_NAME = "1.0.11"
+// SMCPKG_SUPPORT<<<Cursor043
 // SMCPKG_SUPPORT<<<Cursor036
 // SMCPKG_SUPPORT<<<Cursor030
 // SMCPKG_SUPPORT<<<Cursor024
@@ -400,6 +403,9 @@ dependencies {
     // SMCPKG_SUPPORT<<<Cursor005
 
     implementation(libs.play.services.ads)
+    // SMCPKG_SUPPORT>>>Cursor043
+    implementation(libs.user.messaging.platform)
+    // SMCPKG_SUPPORT<<<Cursor043
     // SMCPKG_SUPPORT>>>Cursor033
     implementation(libs.billing.ktx)
     // SMCPKG_SUPPORT<<<Cursor033

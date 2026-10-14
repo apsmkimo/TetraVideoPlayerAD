@@ -69,6 +69,9 @@
     <!-- <string name="about_components_title">Open-source components</string> -->
     <!-- previous about_components_body omitted from XML comments: double-hyphen is illegal in comments -->
     <string name="about_privacy_policy">Privacy Policy</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor043 -->
+    <string name="privacy_options">Privacy options</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor043 -->
     <string name="about_rate_us">Rate Us</string>
     <!-- SMCPKG_SUPPORT<<<Cursor036 -->
     <!-- SMCPKG_SUPPORT>>>Cursor033 -->

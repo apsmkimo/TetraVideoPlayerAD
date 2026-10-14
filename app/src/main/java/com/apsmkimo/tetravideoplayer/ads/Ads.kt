@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +26,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -80,9 +82,16 @@ object AdSession {
 }
 
 fun preloadInterstitial(context: Context) {
-    if (AdPreferences.isAdRemoved(context) || AdSession.interstitialConsumed) {
+    // SMCPKG_SUPPORT>>>Cursor043
+    // if (AdPreferences.isAdRemoved(context) || AdSession.interstitialConsumed) {
+    //     return
+    // }
+    if (!AdsConsentManager.getInstance(context).mayRequestAds(context) ||
+        AdSession.interstitialConsumed
+    ) {
         return
     }
+    // SMCPKG_SUPPORT<<<Cursor043
     if (AdSession.loadedInterstitial != null) {
         return
     }
@@ -92,7 +101,14 @@ fun preloadInterstitial(context: Context) {
         AdRequest.Builder().build(),
         object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(ad: InterstitialAd) {
-                AdSession.loadedInterstitial = ad
+                // SMCPKG_SUPPORT>>>Cursor043
+                // AdSession.loadedInterstitial = ad
+                if (AdsConsentManager.getInstance(context).mayRequestAds(context)) {
+                    AdSession.loadedInterstitial = ad
+                } else {
+                    AdSession.loadedInterstitial = null
+                }
+                // SMCPKG_SUPPORT<<<Cursor043
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
@@ -103,9 +119,16 @@ fun preloadInterstitial(context: Context) {
 }
 
 suspend fun maybeShowInterstitialOnce(activity: Activity) {
-    if (AdPreferences.isAdRemoved(activity) || AdSession.interstitialConsumed) {
+    // SMCPKG_SUPPORT>>>Cursor043
+    // if (AdPreferences.isAdRemoved(activity) || AdSession.interstitialConsumed) {
+    //     return
+    // }
+    if (!AdsConsentManager.getInstance(activity).mayRequestAds(activity) ||
+        AdSession.interstitialConsumed
+    ) {
         return
     }
+    // SMCPKG_SUPPORT<<<Cursor043
     val ad = withTimeoutOrNull(2_500) {
         while (AdSession.loadedInterstitial == null) {
             delay(50)
@@ -137,6 +160,14 @@ suspend fun maybeShowInterstitialOnce(activity: Activity) {
 @Composable
 fun BannerAd(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    // SMCPKG_SUPPORT>>>Cursor043
+    val consent = remember(context) { AdsConsentManager.getInstance(context) }
+    val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
+    val sdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
+    if (!canRequestAds || !sdkReady || AdPreferences.isAdRemoved(context)) {
+        return
+    }
+    // SMCPKG_SUPPORT<<<Cursor043
     val activity = context as? Activity
     val lifecycleOwner = LocalLifecycleOwner.current
     val adView = remember {
