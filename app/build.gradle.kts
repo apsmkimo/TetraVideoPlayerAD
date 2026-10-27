@@ -23,6 +23,15 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // SMCPKG_SUPPORT>>>Cursor046
+    // Renders the layout menu to a PNG without an emulator (recordPaparazziDebug).
+    // id("app.cash.paparazzi") version "2.0.0-alpha05"
+    // SMCPKG_SUPPORT<<<Cursor046
+    // SMCPKG_SUPPORT>>>Cursor047
+    // Paparazzi 2.0.0-alpha05 needs JVM 21. The Debug APK job runs assembleDebug
+    // on JDK 17, and applying the plugin fails configuration before compilation.
+    // The recorded menu PNG stays in app/src/test/snapshots.
+    // SMCPKG_SUPPORT<<<Cursor047
 }
 
 // SMCPKG_SUPPORT>>>Cursor009
@@ -415,4 +424,8 @@ dependencies {
     // A direct 1.8.9 dependency wins Gradle highest-version resolution.
     implementation(libs.androidx.fragment)
     // SMCPKG_SUPPORT<<<Cursor045
+    // SMCPKG_SUPPORT>>>Cursor048
+    // Per-app locales: AppCompatDelegate.setApplicationLocales and autoStoreLocales.
+    implementation(libs.androidx.appcompat)
+    // SMCPKG_SUPPORT<<<Cursor048
 }

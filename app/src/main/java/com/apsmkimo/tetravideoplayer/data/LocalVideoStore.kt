@@ -41,6 +41,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.os.Build
 import android.provider.MediaStore
+import com.apsmkimo.tetravideoplayer.R
 
 object LocalVideoStore {
     fun queryAll(context: Context): List<LocalVideo> {
@@ -79,10 +80,20 @@ object LocalVideoStore {
                 videos += LocalVideo(
                     id = id,
                     uri = ContentUris.withAppendedId(collection, id),
-                    displayName = cursor.getString(nameColumn).orEmpty().ifBlank { "video_$id" },
+                    // SMCPKG_SUPPORT>>>Cursor048
+                    // displayName = cursor.getString(nameColumn).orEmpty().ifBlank { "video_$id" },
+                    displayName = cursor.getString(nameColumn).orEmpty().ifBlank {
+                        context.getString(R.string.video_unnamed, id)
+                    },
+                    // SMCPKG_SUPPORT<<<Cursor048
                     durationMs = cursor.getLong(durationColumn).coerceAtLeast(0L),
                     bucketId = cursor.getLong(bucketIdColumn),
-                    bucketDisplayName = cursor.getString(bucketNameColumn).orEmpty().ifBlank { "Folder" },
+                    // SMCPKG_SUPPORT>>>Cursor048
+                    // bucketDisplayName = cursor.getString(bucketNameColumn).orEmpty().ifBlank { "Folder" },
+                    bucketDisplayName = cursor.getString(bucketNameColumn).orEmpty().ifBlank {
+                        context.getString(R.string.folder_unknown)
+                    },
+                    // SMCPKG_SUPPORT<<<Cursor048
                 )
             }
         }

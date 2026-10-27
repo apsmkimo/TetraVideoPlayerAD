@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 // SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.ui.Modifier
@@ -83,13 +84,25 @@ fun TetraViewApp() {
     // var persisted by remember { mutableStateOf(LayoutPreferences.load(context)) }
     // var layout by remember { mutableStateOf(persisted ?: PlayerLayout.LANDSCAPE_2X2) }
     // var showSelection by remember { mutableStateOf(persisted == null) }
-    var layout by remember { mutableStateOf<PlayerLayout?>(null) }
-    var showSelection by remember { mutableStateOf(true) }
+    // var layout by remember { mutableStateOf<PlayerLayout?>(null) }
+    // var showSelection by remember { mutableStateOf(true) }
     // SMCPKG_SUPPORT<<<Cursor019
+    // SMCPKG_SUPPORT>>>Cursor048
+    // A language change recreates the activity. Save the session so playback
+    // and the open Settings screen survive that recreation.
+    var layoutName by rememberSaveable { mutableStateOf<String?>(null) }
+    var showSelection by rememberSaveable { mutableStateOf(true) }
+    val layout = layoutName?.let { name ->
+        PlayerLayout.entries.firstOrNull { it.name == name }
+    }
+    // SMCPKG_SUPPORT<<<Cursor048
     // SMCPKG_SUPPORT>>>Cursor021
     // SMCPKG_SUPPORT>>>Cursor038
     // var showAbout by remember { mutableStateOf(false) }
-    var showSettings by remember { mutableStateOf(false) }
+    // var showSettings by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor048
+    var showSettings by rememberSaveable { mutableStateOf(false) }
+    // SMCPKG_SUPPORT<<<Cursor048
     var settings by remember { mutableStateOf(PlayerSettingsStore.load(context)) }
     // SMCPKG_SUPPORT<<<Cursor038
     // SMCPKG_SUPPORT>>>Cursor036
@@ -133,7 +146,10 @@ fun TetraViewApp() {
         // LayoutPreferences.save(context, newLayout)
         // persisted = newLayout
         // SMCPKG_SUPPORT<<<Cursor019
-        layout = newLayout
+        // SMCPKG_SUPPORT>>>Cursor048
+        // layout = newLayout
+        layoutName = newLayout.name
+        // SMCPKG_SUPPORT<<<Cursor048
         showSelection = false
         // SMCPKG_SUPPORT>>>Cursor038
         // activity.requestedOrientation = newLayout.orientation
@@ -191,7 +207,10 @@ fun TetraViewApp() {
         QuadPlayerScreen(
             layout = selected,
             onChangeLayout = {
-                layout = null
+                // SMCPKG_SUPPORT>>>Cursor048
+                // layout = null
+                layoutName = null
+                // SMCPKG_SUPPORT<<<Cursor048
                 showSelection = true
             },
             // SMCPKG_SUPPORT>>>Cursor022

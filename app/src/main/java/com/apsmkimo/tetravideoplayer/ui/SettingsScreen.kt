@@ -37,6 +37,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,12 +58,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,6 +75,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
@@ -134,6 +139,9 @@ fun SettingsScreen(
                 .padding(horizontal = 20.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            // SMCPKG_SUPPORT>>>Cursor048
+            LanguageSetting()
+            // SMCPKG_SUPPORT<<<Cursor048
             RotationSetting(
                 enabled = settings.allowRotation,
                 onEnabledChange = { enabled ->
@@ -252,6 +260,64 @@ private fun SettingsTopBar(onClose: () -> Unit) {
         )
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor048
+@Composable
+internal fun LanguageSetting() {
+    var selected by remember { mutableStateOf(AppLanguage.current()) }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = stringResource(R.string.settings_language),
+            style = MaterialTheme.typography.titleMedium,
+            color = SettingsText,
+        )
+        Text(
+            text = stringResource(R.string.settings_language_summary),
+            style = MaterialTheme.typography.bodySmall,
+            color = SettingsMuted,
+        )
+        AppLanguage.entries.forEach { language ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        selected = language
+                        language.apply()
+                    }
+                    .padding(vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(
+                    selected = selected == language,
+                    onClick = {
+                        selected = language
+                        language.apply()
+                    },
+                )
+                Text(
+                    text = stringResource(language.labelRes),
+                    color = SettingsText,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        }
+    }
+}
+
+@Preview(widthDp = 390, heightDp = 520, showBackground = true)
+@Composable
+internal fun SettingsLanguagePreview() {
+    MaterialTheme {
+        Column(
+            modifier = Modifier
+                .background(SettingsBackground)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+        ) {
+            LanguageSetting()
+        }
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor048
 
 @Composable
 private fun RotationSetting(

@@ -3,7 +3,10 @@
     <!-- SMCPKG_SUPPORT>>>Cursor045 -->
     <!-- API 30+: ALWAYS replaces deprecated shortEdges. Bar colors stay unset;
          enableEdgeToEdge() owns system-bar appearance. -->
-    <style name="Theme.QuadVideoPlayer" parent="android:Theme.Material.NoActionBar">
+    <!-- SMCPKG_SUPPORT>>>Cursor048 -->
+    <!-- <style name="Theme.QuadVideoPlayer" parent="android:Theme.Material.NoActionBar"> -->
+    <style name="Theme.QuadVideoPlayer" parent="Theme.AppCompat.NoActionBar">
+    <!-- SMCPKG_SUPPORT<<<Cursor048 -->
         <item name="android:windowBackground">#FF0B0D12</item>
         <item name="android:windowLayoutInDisplayCutoutMode">always</item>
     </style>
