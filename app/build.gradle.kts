@@ -23,6 +23,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    // SMCPKG_SUPPORT>>>Cursor046
+    // Renders the layout menu to a PNG without an emulator (recordPaparazziDebug).
+    id("app.cash.paparazzi") version "2.0.0-alpha05"
+    // SMCPKG_SUPPORT<<<Cursor046
 }
 
 // SMCPKG_SUPPORT>>>Cursor009
