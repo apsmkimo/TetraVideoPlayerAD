@@ -424,4 +424,8 @@ dependencies {
     // A direct 1.8.9 dependency wins Gradle highest-version resolution.
     implementation(libs.androidx.fragment)
     // SMCPKG_SUPPORT<<<Cursor045
+    // SMCPKG_SUPPORT>>>Cursor048
+    // Per-app locales: AppCompatDelegate.setApplicationLocales and autoStoreLocales.
+    implementation(libs.androidx.appcompat)
+    // SMCPKG_SUPPORT<<<Cursor048
 }

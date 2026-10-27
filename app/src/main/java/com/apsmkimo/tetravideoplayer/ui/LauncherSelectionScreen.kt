@@ -626,8 +626,13 @@ private fun LayoutSelectionGrid(
         // height on large screens so a tablet does not grow huge slabs.
         val usable = (maxHeight - buttonClearance - bottomPad - gaps).coerceAtLeast(0.dp)
         val fillHeight = usable / rowCount
-        val heightCap = maxOf(cardWidth * 1.45f, 120.dp)
-        val cardHeight = fillHeight.coerceIn(120.dp, heightCap)
+        // SMCPKG_SUPPORT>>>Cursor048
+        // val heightCap = maxOf(cardWidth * 1.45f, 120.dp)
+        // val cardHeight = fillHeight.coerceIn(120.dp, heightCap)
+        // Taller floor so a wrapped title plus a two-line subtitle still fits.
+        val heightCap = maxOf(cardWidth * 1.45f, 148.dp)
+        val cardHeight = fillHeight.coerceIn(148.dp, heightCap)
+        // SMCPKG_SUPPORT<<<Cursor048
         val gridHeight = cardHeight * rows.size + gap * (rows.size - 1)
         val needsScroll = gridHeight + buttonClearance > maxHeight + 0.5.dp
         val leftover = (maxHeight - gridHeight).coerceAtLeast(0.dp)
@@ -732,8 +737,13 @@ private fun LayoutOptionCard(
             )
             .clickable(role = Role.Button, onClick = onClick),
     ) {
-        val titleSize = (maxWidth.value * 0.092f).coerceIn(13f, 17f).sp
-        val subtitleSize = (maxWidth.value * 0.066f).coerceIn(10f, 12.5f).sp
+        // SMCPKG_SUPPORT>>>Cursor048
+        // val titleSize = (maxWidth.value * 0.092f).coerceIn(13f, 17f).sp
+        // val subtitleSize = (maxWidth.value * 0.066f).coerceIn(10f, 12.5f).sp
+        // Spanish and Japanese subtitles wrap; keep the floor small enough for a narrow card.
+        val titleSize = (maxWidth.value * 0.088f).coerceIn(12f, 17f).sp
+        val subtitleSize = (maxWidth.value * 0.062f).coerceIn(10f, 12.5f).sp
+        // SMCPKG_SUPPORT<<<Cursor048
         val iconSize = minOf(maxWidth * 0.42f, maxHeight * 0.34f)
         Column(
             modifier = Modifier
@@ -756,7 +766,10 @@ private fun LayoutOptionCard(
                         fontWeight = FontWeight.Bold,
                         fontSize = titleSize,
                         lineHeight = titleSize * 1.15f,
-                        maxLines = 1,
+                        // SMCPKG_SUPPORT>>>Cursor048
+                        // maxLines = 1,
+                        maxLines = 2,
+                        // SMCPKG_SUPPORT<<<Cursor048
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(

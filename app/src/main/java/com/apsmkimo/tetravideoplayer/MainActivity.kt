@@ -40,7 +40,10 @@ package com.apsmkimo.tetravideoplayer
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
-import androidx.activity.ComponentActivity
+// SMCPKG_SUPPORT>>>Cursor048
+// import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
+// SMCPKG_SUPPORT<<<Cursor048
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 // SMCPKG_SUPPORT>>>Cursor045
@@ -65,7 +68,10 @@ import com.apsmkimo.tetravideoplayer.ui.theme.QuadVideoPlayerTheme
 import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 // SMCPKG_SUPPORT<<<Cursor043
 
-class MainActivity : ComponentActivity() {
+// SMCPKG_SUPPORT>>>Cursor048
+// class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+// SMCPKG_SUPPORT<<<Cursor048
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Edge-to-edge before setContent. androidx.activity.enableEdgeToEdge

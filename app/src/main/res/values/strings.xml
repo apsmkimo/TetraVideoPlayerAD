@@ -5,8 +5,11 @@
     <string name="app_name">TetraVideoPlayer</string>
     <!-- SMCPKG_SUPPORT<<<Cursor030 -->
     <!-- SMCPKG_SUPPORT>>>Cursor036 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor048 -->
     <!-- Default locale is English-only. Do not put Chinese (or any values-zh*) here:
          a zh-locale phone must still resolve these English strings. -->
+    <!-- Default values/ stays English. zh-Hant, zh-Hans, ja, and es live in their own resource directories. -->
+    <!-- SMCPKG_SUPPORT<<<Cursor048 -->
     <string name="master_play">Play all</string>
     <string name="master_pause">Pause all</string>
     <string name="pick_video">Pick video</string>
@@ -136,4 +139,17 @@
     <string name="settings_once">Play once</string>
     <string name="settings_about_section">About</string>
     <!-- SMCPKG_SUPPORT<<<Cursor038 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor048 -->
+    <string name="settings_language">Language</string>
+    <string name="settings_language_summary">Applies immediately and is kept after a restart.</string>
+    <string name="settings_language_system">Follow system</string>
+    <!-- Native names. Do not translate these in other locales. -->
+    <string name="language_name_en">English</string>
+    <string name="language_name_zh_hant">繁體中文</string>
+    <string name="language_name_zh_hans">简体中文</string>
+    <string name="language_name_ja">日本語</string>
+    <string name="language_name_es">Español</string>
+    <string name="video_unnamed">video_%1$d</string>
+    <string name="folder_unknown">Folder</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor048 -->
 </resources>

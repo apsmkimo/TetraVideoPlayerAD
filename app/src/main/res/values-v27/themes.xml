@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.QuadVideoPlayer" parent="android:Theme.Material.NoActionBar">
+    <!-- SMCPKG_SUPPORT>>>Cursor048 -->
+    <!-- <style name="Theme.QuadVideoPlayer" parent="android:Theme.Material.NoActionBar"> -->
+    <style name="Theme.QuadVideoPlayer" parent="Theme.AppCompat.NoActionBar">
+    <!-- SMCPKG_SUPPORT<<<Cursor048 -->
         <!-- SMCPKG_SUPPORT>>>Cursor045
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
