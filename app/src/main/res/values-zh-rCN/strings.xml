@@ -73,6 +73,12 @@
     <string name="settings_language">语言</string>
     <string name="settings_language_summary">立即生效，并在重新打开后保留。</string>
     <string name="settings_language_system">跟随系统</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">显示布局与设置按钮</string>
+    <string name="settings_show_player_chrome_summary">关闭后，播放画面会隐藏这两个按钮。用返回回到布局菜单，再从那里打开设置。</string>
+    <string name="back_again_to_return">再按一次返回以回到菜单</string>
+    <string name="back_again_to_exit">再按一次返回以退出</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

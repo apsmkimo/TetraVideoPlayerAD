@@ -94,6 +94,10 @@ private val SettingsBackground = Color(0xFF000000)
 private val SettingsText = Color(0xFFE8EEF6)
 private val SettingsMuted = Color(0xFFB4C0D0)
 private val SettingsDivider = Color(0xFF2A3340)
+// SMCPKG_SUPPORT>>>Cursor051
+/** Settings-only accent. The rest of the app keeps AccentGreen. */
+private val SettingsAccent = Color(0xFF007979)
+// SMCPKG_SUPPORT<<<Cursor051
 
 @Composable
 fun SettingsScreen(
@@ -124,6 +128,21 @@ fun SettingsScreen(
     val privacyOptionsRequired by consent.privacyOptionsRequired.collectAsStateWithLifecycle()
     // SMCPKG_SUPPORT<<<Cursor043
 
+    // SMCPKG_SUPPORT>>>Cursor051
+    // Switches, selected chips/radios, sliders, and buttons on this screen only.
+    val settingsScheme = MaterialTheme.colorScheme.copy(
+        primary = SettingsAccent,
+        onPrimary = Color.White,
+        primaryContainer = SettingsAccent,
+        onPrimaryContainer = Color.White,
+        inversePrimary = SettingsAccent,
+        secondary = SettingsAccent,
+        onSecondary = Color.White,
+        secondaryContainer = SettingsAccent,
+        onSecondaryContainer = Color.White,
+    )
+    MaterialTheme(colorScheme = settingsScheme) {
+    // SMCPKG_SUPPORT<<<Cursor051
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -142,6 +161,14 @@ fun SettingsScreen(
             // SMCPKG_SUPPORT>>>Cursor048
             LanguageSetting()
             // SMCPKG_SUPPORT<<<Cursor048
+            // SMCPKG_SUPPORT>>>Cursor051
+            PlayerChromeSetting(
+                enabled = settings.showPlayerChrome,
+                onEnabledChange = { enabled ->
+                    onSettingsChange(settings.copy(showPlayerChrome = enabled))
+                },
+            )
+            // SMCPKG_SUPPORT<<<Cursor051
             RotationSetting(
                 enabled = settings.allowRotation,
                 onEnabledChange = { enabled ->
@@ -236,6 +263,9 @@ fun SettingsScreen(
             }
         }
     }
+    // SMCPKG_SUPPORT>>>Cursor051
+    }
+    // SMCPKG_SUPPORT<<<Cursor051
 }
 
 @Composable
@@ -318,6 +348,37 @@ internal fun SettingsLanguagePreview() {
     }
 }
 // SMCPKG_SUPPORT<<<Cursor048
+
+// SMCPKG_SUPPORT>>>Cursor051
+@Composable
+private fun PlayerChromeSetting(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_show_player_chrome),
+                style = MaterialTheme.typography.titleMedium,
+                color = SettingsText,
+            )
+            Text(
+                text = stringResource(R.string.settings_show_player_chrome_summary),
+                style = MaterialTheme.typography.bodySmall,
+                color = SettingsMuted,
+            )
+        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onEnabledChange,
+        )
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor051
 
 @Composable
 private fun RotationSetting(

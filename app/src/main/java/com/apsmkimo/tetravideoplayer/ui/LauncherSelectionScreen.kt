@@ -170,12 +170,19 @@ fun LauncherSelectionScreen(
     // SMCPKG_SUPPORT<<<Cursor038
     modifier: Modifier = Modifier,
 ) {
-    if (onCancel != null) {
-        BackHandler(onBack = onCancel)
-    }
-
     val context = LocalContext.current
     val activity = context as Activity
+    if (onCancel != null) {
+        BackHandler(onBack = onCancel)
+    } else {
+        // SMCPKG_SUPPORT>>>Cursor051
+        ConfirmBackHandler(
+            message = stringResource(R.string.back_again_to_exit),
+            onConfirmed = { activity.finish() },
+        )
+        // SMCPKG_SUPPORT<<<Cursor051
+    }
+
     val scope = rememberCoroutineScope()
     var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
     var gating by remember { mutableStateOf(false) }

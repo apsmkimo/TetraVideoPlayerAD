@@ -149,6 +149,12 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_summary">Applies immediately and is kept after a restart.</string>
     <string name="settings_language_system">Follow system</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">Show layout and settings buttons</string>
+    <string name="settings_show_player_chrome_summary">Off hides both buttons on the player. Use Back to return to the layout menu, then open Settings from there.</string>
+    <string name="back_again_to_return">Press back again to return</string>
+    <string name="back_again_to_exit">Press back again to exit</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

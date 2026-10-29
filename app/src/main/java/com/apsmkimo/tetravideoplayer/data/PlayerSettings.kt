@@ -92,6 +92,10 @@ data class PlayerSettings(
     /** 0–100. 0 keeps today's full-bleed layout. */
     val screenMargin: Int = 0,
     // SMCPKG_SUPPORT<<<Cursor042
+    // SMCPKG_SUPPORT>>>Cursor051
+    /** Off hides the layout and settings buttons on the player together. */
+    val showPlayerChrome: Boolean = true,
+    // SMCPKG_SUPPORT<<<Cursor051
     val panes: List<PaneSettings> = List(SETTINGS_PANE_COUNT) { PaneSettings() },
 ) {
     fun pane(index: Int): PaneSettings = panes.getOrElse(index) { PaneSettings() }
@@ -122,6 +126,9 @@ object PlayerSettingsStore {
     private const val KEY_STRONG_BUFFERING = "strong_buffering"
     private const val KEY_SCREEN_MARGIN = "screen_margin"
     // SMCPKG_SUPPORT<<<Cursor042
+    // SMCPKG_SUPPORT>>>Cursor051
+    private const val KEY_SHOW_PLAYER_CHROME = "show_player_chrome"
+    // SMCPKG_SUPPORT<<<Cursor051
 
     private fun keyLift(index: Int) = "pane_${index}_toolbar_lift"
     private fun keyDecode(index: Int) = "pane_${index}_decode"
@@ -166,6 +173,9 @@ object PlayerSettingsStore {
             strongBuffering = prefs.getBoolean(KEY_STRONG_BUFFERING, false),
             screenMargin = prefs.getInt(KEY_SCREEN_MARGIN, 0).coerceIn(0, 100),
             // SMCPKG_SUPPORT<<<Cursor042
+            // SMCPKG_SUPPORT>>>Cursor051
+            showPlayerChrome = prefs.getBoolean(KEY_SHOW_PLAYER_CHROME, true),
+            // SMCPKG_SUPPORT<<<Cursor051
             panes = panes,
         )
     }
@@ -182,6 +192,9 @@ object PlayerSettingsStore {
             .putBoolean(KEY_STRONG_BUFFERING, settings.strongBuffering)
             .putInt(KEY_SCREEN_MARGIN, settings.screenMargin.coerceIn(0, 100))
             // SMCPKG_SUPPORT<<<Cursor042
+            // SMCPKG_SUPPORT>>>Cursor051
+            .putBoolean(KEY_SHOW_PLAYER_CHROME, settings.showPlayerChrome)
+            // SMCPKG_SUPPORT<<<Cursor051
         settings.panes.take(SETTINGS_PANE_COUNT).forEachIndexed { index, pane ->
             editor
                 .putInt(keyLift(index), pane.toolbarLift.coerceIn(0, 100))

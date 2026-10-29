@@ -72,6 +72,12 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_summary">すぐに反映され、再起動後も保持されます。</string>
     <string name="settings_language_system">システムに従う</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">レイアウトと設定ボタンを表示</string>
+    <string name="settings_show_player_chrome_summary">オフにすると再生画面の両方のボタンを隠します。戻るでレイアウト選択に戻り、そこから設定を開きます。</string>
+    <string name="back_again_to_return">もう一度戻ると選択画面に戻ります</string>
+    <string name="back_again_to_exit">もう一度戻ると終了します</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

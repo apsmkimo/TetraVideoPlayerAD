@@ -489,6 +489,15 @@ fun QuadPlayerScreen(
         onChangeLayout()
     }
     // SMCPKG_SUPPORT<<<Cursor024
+    // SMCPKG_SUPPORT>>>Cursor051
+    // Picker handles its own back while a folder is open. At the picker root,
+    // back still dismisses nothing here so the existing close control stays.
+    ConfirmBackHandler(
+        enabled = !showPicker,
+        message = stringResource(R.string.back_again_to_return),
+        onConfirmed = { leaveToSelection() },
+    )
+    // SMCPKG_SUPPORT<<<Cursor051
 
     // SMCPKG_SUPPORT>>>Cursor004
     // Scaffold(topBar = { TopAppBar(...) }) { innerPadding ->
@@ -589,6 +598,10 @@ fun QuadPlayerScreen(
             // Settings was left of the layout icon. Layout is now left, gear right.
             // 20.dp chips / 12.dp glyphs grew to a 48.dp target and a 44.dp glyph.
             // The row fades to 0.3 after 10s idle. The playback bar does not.
+            // SMCPKG_SUPPORT>>>Cursor051
+            // if (settings.showPlayerChrome) {
+            // SMCPKG_SUPPORT<<<Cursor051
+            if (settings.showPlayerChrome) {
             PlayerTopChrome(
                 chromeOpacity = chromeOpacity,
                 onChangeLayout = { leaveToSelection() },
@@ -597,6 +610,9 @@ fun QuadPlayerScreen(
                     .align(Alignment.TopEnd)
                     .playerChromePadding(),
             )
+            // SMCPKG_SUPPORT>>>Cursor051
+            }
+            // SMCPKG_SUPPORT<<<Cursor051
             // SMCPKG_SUPPORT<<<Cursor049
             // SMCPKG_SUPPORT<<<Cursor038
             // SMCPKG_SUPPORT<<<Cursor022
