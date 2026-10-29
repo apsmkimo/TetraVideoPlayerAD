@@ -37,7 +37,9 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT>>>Cursor053
+// import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT<<<Cursor053
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,13 +54,21 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.OutlinedTextField
+// SMCPKG_SUPPORT>>>Cursor053
+// import androidx.compose.material3.RadioButton
+// SMCPKG_SUPPORT<<<Cursor053
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -292,9 +302,13 @@ private fun SettingsTopBar(onClose: () -> Unit) {
 }
 
 // SMCPKG_SUPPORT>>>Cursor048
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LanguageSetting() {
     var selected by remember { mutableStateOf(AppLanguage.current()) }
+    // SMCPKG_SUPPORT>>>Cursor053
+    var expanded by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT<<<Cursor053
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = stringResource(R.string.settings_language),
@@ -306,31 +320,83 @@ internal fun LanguageSetting() {
             style = MaterialTheme.typography.bodySmall,
             color = SettingsMuted,
         )
-        AppLanguage.entries.forEach { language ->
-            Row(
+        // SMCPKG_SUPPORT>>>Cursor053
+        // AppLanguage.entries.forEach { language ->
+        //     Row(
+        //         modifier = Modifier
+        //             .fillMaxWidth()
+        //             .clickable {
+        //                 selected = language
+        //                 language.apply()
+        //             }
+        //             .padding(vertical = 2.dp),
+        //         verticalAlignment = Alignment.CenterVertically,
+        //     ) {
+        //         RadioButton(
+        //             selected = selected == language,
+        //             onClick = {
+        //                 selected = language
+        //                 language.apply()
+        //             },
+        //         )
+        //         Text(
+        //             text = stringResource(language.labelRes),
+        //             color = SettingsText,
+        //             style = MaterialTheme.typography.bodyLarge,
+        //         )
+        //     }
+        // }
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            OutlinedTextField(
+                value = stringResource(selected.labelRes),
+                onValueChange = {},
+                readOnly = true,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = SettingsText),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedTextColor = SettingsText,
+                    unfocusedTextColor = SettingsText,
+                    focusedBorderColor = SettingsAccent,
+                    unfocusedBorderColor = SettingsMuted,
+                    focusedTrailingIconColor = SettingsAccent,
+                    unfocusedTrailingIconColor = SettingsMuted,
+                    cursorColor = SettingsAccent,
+                ),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        selected = language
-                        language.apply()
-                    }
-                    .padding(vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
             ) {
-                RadioButton(
-                    selected = selected == language,
-                    onClick = {
-                        selected = language
-                        language.apply()
-                    },
-                )
-                Text(
-                    text = stringResource(language.labelRes),
-                    color = SettingsText,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                AppLanguage.entries.forEach { language ->
+                    val isSelected = language == selected
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(language.labelRes),
+                                color = if (isSelected) SettingsAccent else SettingsText,
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            if (language != selected) {
+                                selected = language
+                                language.apply()
+                            }
+                        },
+                    )
+                }
             }
         }
+        // SMCPKG_SUPPORT<<<Cursor053
     }
 }
 
