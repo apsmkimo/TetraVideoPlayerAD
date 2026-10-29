@@ -84,6 +84,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -99,6 +100,10 @@ import androidx.compose.ui.zIndex
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+// SMCPKG_SUPPORT>>>Cursor052
+import android.os.SystemClock
+import androidx.media3.exoplayer.SeekParameters
+// SMCPKG_SUPPORT<<<Cursor052
 // SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.R
 // import com.example.quadvideoplayer.data.LocalVideoStore
@@ -127,11 +132,18 @@ fun CellPlaybackBar(
     // SMCPKG_SUPPORT>>>Cursor017
     onTogglePlay: (() -> Unit)? = null,
     // SMCPKG_SUPPORT<<<Cursor017
+    // SMCPKG_SUPPORT>>>Cursor052
+    onScrubbingChange: (Boolean) -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor052
 ) {
     var isPlaying by remember(player) { mutableStateOf(player.isPlaying) }
     var durationMs by remember(player) { mutableLongStateOf(resolvedDuration(player)) }
     var sliderValue by remember(player) { mutableFloatStateOf(player.currentPosition.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT>>>Cursor052
+    val scrub = remember(player) { ScrubSession() }
+    val currentScrubbingChange = rememberUpdatedState(onScrubbingChange)
+    // SMCPKG_SUPPORT<<<Cursor052
     var volume by remember(player) { mutableFloatStateOf(player.volume.coerceIn(0f, 1f)) }
     var lastAudibleVolume by remember(player) {
         mutableFloatStateOf(player.volume.takeIf { it > 0f } ?: 1f)
@@ -140,12 +152,21 @@ fun CellPlaybackBar(
     DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
-                isPlaying = player.isPlaying
+                // SMCPKG_SUPPORT>>>Cursor052
+                // isPlaying = player.isPlaying
+                // Keep the play/pause icon stable while this pane is scrubbing.
+                if (!scrub.active) {
+                    isPlaying = player.isPlaying
+                }
+                // SMCPKG_SUPPORT<<<Cursor052
                 val duration = resolvedDuration(player)
                 if (duration > 0L) {
                     durationMs = duration
                 }
-                if (!isSeeking) {
+                // SMCPKG_SUPPORT>>>Cursor052
+                // if (!isSeeking) {
+                if (!scrub.active) {
+                // SMCPKG_SUPPORT<<<Cursor052
                     sliderValue = player.currentPosition.toFloat()
                 }
                 volume = player.volume.coerceIn(0f, 1f)
@@ -155,8 +176,90 @@ fun CellPlaybackBar(
             }
         }
         player.addListener(listener)
-        onDispose { player.removeListener(listener) }
+        onDispose {
+            player.removeListener(listener)
+            // SMCPKG_SUPPORT>>>Cursor052
+            if (scrub.active) {
+                scrub.active = false
+                scrub.pendingMs = -1L
+                runCatching { player.setSeekParameters(SeekParameters.DEFAULT) }
+                currentScrubbingChange.value(false)
+                if (scrub.resume) {
+                    runCatching {
+                        player.playWhenReady = true
+                        player.play()
+                    }
+                }
+            }
+            // SMCPKG_SUPPORT<<<Cursor052
+        }
     }
+
+    // SMCPKG_SUPPORT>>>Cursor052
+    LaunchedEffect(player, isSeeking) {
+        if (!isSeeking) return@LaunchedEffect
+        while (isActive && scrub.active) {
+            delay(ScrubSeek.PREVIEW_INTERVAL_MS)
+            if (!scrub.active) break
+            val pending = scrub.pendingMs
+            if (pending >= 0L) {
+                scrub.pendingMs = -1L
+                scrub.lastPreviewAtMs = SystemClock.uptimeMillis()
+                runCatching {
+                    player.setSeekParameters(SeekParameters.CLOSEST_SYNC)
+                    player.seekTo(pending)
+                }
+            }
+        }
+    }
+
+    fun beginScrub() {
+        if (scrub.active) return
+        scrub.active = true
+        scrub.resume = player.playWhenReady
+        scrub.pendingMs = -1L
+        scrub.lastPreviewAtMs = 0L
+        isSeeking = true
+        runCatching { player.setSeekParameters(SeekParameters.CLOSEST_SYNC) }
+        currentScrubbingChange.value(true)
+        player.pause()
+    }
+
+    fun previewScrub(positionMs: Long) {
+        val target = positionMs.coerceAtLeast(0L)
+        val now = SystemClock.uptimeMillis()
+        if (ScrubSeek.shouldPreview(now, scrub.lastPreviewAtMs)) {
+            scrub.lastPreviewAtMs = now
+            scrub.pendingMs = -1L
+            runCatching {
+                player.setSeekParameters(SeekParameters.CLOSEST_SYNC)
+                player.seekTo(target)
+            }
+        } else {
+            scrub.pendingMs = target
+        }
+    }
+
+    fun finishScrub() {
+        if (!scrub.active) return
+        val target = sliderValue.toLong().coerceAtLeast(0L)
+        val resume = scrub.resume
+        scrub.active = false
+        scrub.pendingMs = -1L
+        scrub.lastPreviewAtMs = 0L
+        runCatching {
+            player.setSeekParameters(SeekParameters.EXACT)
+            player.seekTo(target)
+            player.setSeekParameters(SeekParameters.DEFAULT)
+        }
+        isSeeking = false
+        currentScrubbingChange.value(false)
+        if (resume) {
+            player.playWhenReady = true
+            runCatching { player.play() }
+        }
+    }
+    // SMCPKG_SUPPORT<<<Cursor052
 
     LaunchedEffect(player, isPlaying, isSeeking) {
         while (isActive && isPlaying && !isSeeking) {
@@ -296,14 +399,23 @@ fun CellPlaybackBar(
 
         Slider(
             value = sliderValue.coerceIn(0f, maxValue),
+            // SMCPKG_SUPPORT>>>Cursor052
+            // onValueChange = { value ->
+            //     isSeeking = true
+            //     sliderValue = value
+            // },
+            // onValueChangeFinished = {
+            //     player.seekTo(sliderValue.toLong().coerceAtLeast(0L))
+            //     isSeeking = false
+            // },
+            // Drag previews with CLOSEST_SYNC. Release seeks EXACT, then restores DEFAULT.
             onValueChange = { value ->
-                isSeeking = true
+                beginScrub()
                 sliderValue = value
+                previewScrub(value.toLong())
             },
-            onValueChangeFinished = {
-                player.seekTo(sliderValue.toLong().coerceAtLeast(0L))
-                isSeeking = false
-            },
+            onValueChangeFinished = { finishScrub() },
+            // SMCPKG_SUPPORT<<<Cursor052
             valueRange = 0f..maxValue,
             enabled = durationMs > 0L,
             modifier = Modifier
@@ -557,6 +669,15 @@ private fun CompactBarIconButton(
     }
 }
 // SMCPKG_SUPPORT<<<Cursor022
+
+// SMCPKG_SUPPORT>>>Cursor052
+private class ScrubSession {
+    var active: Boolean = false
+    var resume: Boolean = false
+    var pendingMs: Long = -1L
+    var lastPreviewAtMs: Long = 0L
+}
+// SMCPKG_SUPPORT<<<Cursor052
 
 private fun resolvedDuration(player: Player): Long {
     val duration = player.duration

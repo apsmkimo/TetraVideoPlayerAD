@@ -166,6 +166,9 @@ fun VideoCell(
         }
     },
     // SMCPKG_SUPPORT<<<Cursor017
+    // SMCPKG_SUPPORT>>>Cursor052
+    onScrubbingChange: (Boolean) -> Unit = {},
+    // SMCPKG_SUPPORT<<<Cursor052
     // SMCPKG_SUPPORT>>>Cursor038
     toolbarLift: Int = 0,
     // SMCPKG_SUPPORT<<<Cursor038
@@ -591,6 +594,9 @@ fun VideoCell(
                     // SMCPKG_SUPPORT>>>Cursor017
                     onTogglePlay = onTogglePlay,
                     // SMCPKG_SUPPORT<<<Cursor017
+                    // SMCPKG_SUPPORT>>>Cursor052
+                    onScrubbingChange = onScrubbingChange,
+                    // SMCPKG_SUPPORT<<<Cursor052
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         // SMCPKG_SUPPORT>>>Cursor038

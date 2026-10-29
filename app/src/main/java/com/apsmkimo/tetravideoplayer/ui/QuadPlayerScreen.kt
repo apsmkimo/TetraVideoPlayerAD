@@ -558,6 +558,9 @@ fun QuadPlayerScreen(
                 attachSurface = true,
                 onTogglePlay = { controller.togglePlay(index) },
                 // SMCPKG_SUPPORT<<<Cursor017
+                // SMCPKG_SUPPORT>>>Cursor052
+                onScrubbingChange = { active -> controller.setScrubbing(index, active) },
+                // SMCPKG_SUPPORT<<<Cursor052
                 onAttachPlayerView = { view -> controller.attachPlayerView(index, view) },
                 onDetachPlayerView = { view -> controller.detachPlayerView(index, view) },
                 // SMCPKG_SUPPORT>>>Cursor038

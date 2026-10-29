@@ -171,6 +171,10 @@ class QuadPlayerController(
     // SMCPKG_SUPPORT>>>Cursor017
     // True after a pick (or Play) until the user pauses that cell.
     private val autoplayWanted = BooleanArray(playerCount)
+    // SMCPKG_SUPPORT>>>Cursor052
+    /** True while this pane's seek bar is being dragged. Blocks auto-resume. */
+    private val scrubbing = BooleanArray(playerCount)
+    // SMCPKG_SUPPORT<<<Cursor052
     // SMCPKG_SUPPORT<<<Cursor017
     // SMCPKG_SUPPORT>>>Cursor018
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -364,6 +368,20 @@ class QuadPlayerController(
      * Play/Pause overlay: always the live ExoPlayer for [index], after re-binding
      * its TextureView. Isolation: never touches other cells.
      */
+    // SMCPKG_SUPPORT>>>Cursor052
+    /**
+     * Marks one pane as scrubbing so buffering recovery and the ready-to-play
+     * listener do not resume it. Other panes are unchanged.
+     */
+    fun setScrubbing(index: Int, active: Boolean) {
+        if (index !in players.indices) return
+        scrubbing[index] = active
+        if (active) {
+            cancelBufferingRecovery(index)
+        }
+    }
+    // SMCPKG_SUPPORT<<<Cursor052
+
     fun togglePlay(index: Int) {
         if (released || index !in players.indices) return
         val player = players[index]
@@ -536,7 +554,10 @@ class QuadPlayerController(
     private fun scheduleBufferingRecovery(index: Int) {
         cancelBufferingRecovery(index)
         val task = Runnable {
-            if (released || !autoplayWanted[index]) return@Runnable
+            // SMCPKG_SUPPORT>>>Cursor052
+            // if (released || !autoplayWanted[index]) return@Runnable
+            if (released || scrubbing[index] || !autoplayWanted[index]) return@Runnable
+            // SMCPKG_SUPPORT<<<Cursor052
             val player = players[index]
             if (player.playbackState != Player.STATE_BUFFERING) return@Runnable
             Log.w(TAG, "ExoPlayer[$index] BUFFERING >${BUFFERING_RECOVERY_MS}ms; retry prepare/play")
@@ -610,6 +631,9 @@ class QuadPlayerController(
                 cancelBufferingRecovery(playerIndex)
             }
             // SMCPKG_SUPPORT<<<Cursor018
+            // SMCPKG_SUPPORT>>>Cursor052
+            if (scrubbing[playerIndex]) return
+            // SMCPKG_SUPPORT<<<Cursor052
             if (!autoplayWanted[playerIndex]) return
             if (playbackState != Player.STATE_READY) return
             val player = players[playerIndex]
