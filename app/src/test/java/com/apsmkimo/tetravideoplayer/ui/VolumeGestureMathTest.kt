@@ -36,13 +36,24 @@ class VolumeGestureMathTest {
         assertEquals(0f, VolumeGestureMath.fractionAfterDrag(0.2f, travel * 2f, travel), 0.0001f)
     }
 
+    // SMCPKG_SUPPORT>>>Cursor050
+    // @Test
+    // fun streamIndexMatchesFractionEnds() {
+    //     assertEquals(0, VolumeGestureMath.streamIndexForFraction(0f, 15))
+    //     assertEquals(15, VolumeGestureMath.streamIndexForFraction(1f, 15))
+    //     assertEquals(8, VolumeGestureMath.streamIndexForFraction(0.5f, 15))
+    //     assertEquals(0, VolumeGestureMath.streamIndexForFraction(-1f, 10))
+    //     assertEquals(0, VolumeGestureMath.streamIndexForFraction(1f, 0))
+    // }
+
     @Test
-    fun streamIndexMatchesFractionEnds() {
-        assertEquals(0, VolumeGestureMath.streamIndexForFraction(0f, 15))
-        assertEquals(15, VolumeGestureMath.streamIndexForFraction(1f, 15))
-        assertEquals(8, VolumeGestureMath.streamIndexForFraction(0.5f, 15))
-        assertEquals(0, VolumeGestureMath.streamIndexForFraction(-1f, 10))
-        assertEquals(0, VolumeGestureMath.streamIndexForFraction(1f, 0))
+    fun nextSwipeContinuesFromThePaneLevel() {
+        val travel = 400f
+        val afterFirst = VolumeGestureMath.fractionAfterDrag(1f, 100f, travel)
+        val afterSecond = VolumeGestureMath.fractionAfterDrag(afterFirst, -50f, travel)
+        assertEquals(0.75f, afterFirst, 0.0001f)
+        assertEquals(0.875f, afterSecond, 0.0001f)
     }
+    // SMCPKG_SUPPORT<<<Cursor050
 }
 // SMCPKG_SUPPORT<<<Cursor049

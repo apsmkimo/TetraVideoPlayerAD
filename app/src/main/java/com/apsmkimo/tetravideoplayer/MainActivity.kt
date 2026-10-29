@@ -39,7 +39,9 @@ package com.apsmkimo.tetravideoplayer
 
 import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
+// SMCPKG_SUPPORT>>>Cursor050
+// import android.view.KeyEvent
+// SMCPKG_SUPPORT<<<Cursor050
 import android.view.MotionEvent
 import android.view.WindowManager
 // SMCPKG_SUPPORT>>>Cursor048
@@ -132,21 +134,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     // SMCPKG_SUPPORT>>>Cursor049
-    // Observe every touch and volume key. Neither call consumes the event.
+    // Observe every touch so the top icons can fade. The event is not consumed.
+    // Volume keys are not intercepted; they change system volume only.
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         PlayerChromeSignals.onTouch?.invoke(ev.actionMasked, ev.pointerCount)
         return super.dispatchTouchEvent(ev)
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        val isVolumeKey = event.keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
-            event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
-            event.keyCode == KeyEvent.KEYCODE_VOLUME_MUTE
-        val handled = super.dispatchKeyEvent(event)
-        if (isVolumeKey && event.action == KeyEvent.ACTION_DOWN) {
-            PlayerChromeSignals.onVolumeKey?.invoke()
-        }
-        return handled
-    }
+    // SMCPKG_SUPPORT>>>Cursor050
+    // override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+    //     val isVolumeKey = event.keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+    //         event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+    //         event.keyCode == KeyEvent.KEYCODE_VOLUME_MUTE
+    //     val handled = super.dispatchKeyEvent(event)
+    //     if (isVolumeKey && event.action == KeyEvent.ACTION_DOWN) {
+    //         PlayerChromeSignals.onVolumeKey?.invoke()
+    //     }
+    //     return handled
+    // }
+    // Hardware volume keys stay with the system. Pane volumes are independent.
+    // SMCPKG_SUPPORT<<<Cursor050
     // SMCPKG_SUPPORT<<<Cursor049
 }

@@ -10,15 +10,18 @@
  */
 package com.apsmkimo.tetravideoplayer.ui
 
-import kotlin.math.roundToInt
+// SMCPKG_SUPPORT>>>Cursor050
+// import kotlin.math.roundToInt
+// SMCPKG_SUPPORT<<<Cursor050
 
 /**
- * Relative system-volume drag.
+ * Relative per-pane volume drag.
  *
- * A physical travel of [FULL_RANGE_CM] maps onto the whole 0–100% range.
- * Pixels come from the display's ydpi so the same finger distance feels the
- * same on different screens. The result depends only on the level where the
- * finger landed plus how far it has moved — never on where it sits on screen.
+ * A physical travel of [FULL_RANGE_CM] maps onto the whole 0–100% of that
+ * pane's ExoPlayer volume. Pixels come from the display's ydpi so the same
+ * finger distance feels the same on different screens. The result depends only
+ * on the level where the finger landed plus how far it has moved — never on
+ * where it sits on screen, and never on the system music stream.
  */
 object VolumeGestureMath {
     const val FULL_RANGE_CM = 4f
@@ -42,9 +45,12 @@ object VolumeGestureMath {
         return (startFraction - (deltaYPx / travel)).coerceIn(0f, 1f)
     }
 
-    fun streamIndexForFraction(fraction: Float, maxIndex: Int): Int {
-        if (maxIndex <= 0) return 0
-        return (fraction.coerceIn(0f, 1f) * maxIndex).roundToInt().coerceIn(0, maxIndex)
-    }
+    // SMCPKG_SUPPORT>>>Cursor050
+    // fun streamIndexForFraction(fraction: Float, maxIndex: Int): Int {
+    //     if (maxIndex <= 0) return 0
+    //     return (fraction.coerceIn(0f, 1f) * maxIndex).roundToInt().coerceIn(0, maxIndex)
+    // }
+    // Pane volume is already a 0–1 fraction. No AudioManager stream index.
+    // SMCPKG_SUPPORT<<<Cursor050
 }
 // SMCPKG_SUPPORT<<<Cursor049

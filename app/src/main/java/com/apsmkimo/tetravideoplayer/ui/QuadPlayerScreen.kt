@@ -51,6 +51,9 @@ import androidx.compose.foundation.background
 // import androidx.compose.foundation.clickable
 // Top chrome uses tapWithoutConsumingDown so a swipe can still change volume.
 // SMCPKG_SUPPORT<<<Cursor049
+// SMCPKG_SUPPORT>>>Cursor050
+import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -98,7 +101,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-import androidx.compose.ui.platform.LocalConfiguration
+// SMCPKG_SUPPORT>>>Cursor050
+// import androidx.compose.ui.platform.LocalConfiguration
+// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -139,8 +144,12 @@ import kotlinx.coroutines.delay
 private val Hairline = 1.dp
 private val HairlineColor = Color(0xFF5A5A5A)
 // SMCPKG_SUPPORT>>>Cursor049
-private val TopChromeTouch = 48.dp
-private val TopChromeIcon = 44.dp
+// private val TopChromeTouch = 48.dp
+// private val TopChromeIcon = 44.dp
+// SMCPKG_SUPPORT>>>Cursor050
+private val TopChromeTouch = 33.dp
+private val TopChromeIcon = 22.dp
+// SMCPKG_SUPPORT<<<Cursor050
 private const val TOP_CHROME_IDLE_MS = 10_000L
 private const val TOP_CHROME_FADE_MS = 350
 // SMCPKG_SUPPORT<<<Cursor049
@@ -200,7 +209,10 @@ fun QuadPlayerScreen(
 // SMCPKG_SUPPORT<<<Cursor012
     val context = LocalContext.current
     // SMCPKG_SUPPORT>>>Cursor049
-    val systemVolume = rememberSystemMusicVolume()
+    // val systemVolume = rememberSystemMusicVolume()
+    // SMCPKG_SUPPORT>>>Cursor050
+    // Volume is per pane. The activity touch relay only restarts the icon fade.
+    // SMCPKG_SUPPORT<<<Cursor050
     val topChromeAlpha = remember { Animatable(1f) }
     val fingersDown = remember { mutableIntStateOf(0) }
     DisposableEffect(Unit) {
@@ -488,14 +500,16 @@ fun QuadPlayerScreen(
             .fillMaxSize()
             .background(HairlineColor)
             // SMCPKG_SUPPORT>>>Cursor049
-            // Fallback volume swipe for contacts no pane claimed (icons, bar
-            // buttons, empty panes). Playing panes consume the down themselves.
-            .relativeSystemVolumeSwipe(
-                volume = systemVolume,
-                acceptConsumedDown = false,
-                driveScreenHud = true,
-            ),
+            // .relativeSystemVolumeSwipe(
+            //     volume = systemVolume,
+            //     acceptConsumedDown = false,
+            //     driveScreenHud = true,
+            // ),
             // SMCPKG_SUPPORT<<<Cursor049
+            // SMCPKG_SUPPORT>>>Cursor050
+            // Screen-level STREAM_MUSIC swipe removed. Only a playing pane adjusts
+            // its own ExoPlayer volume.
+            // SMCPKG_SUPPORT<<<Cursor050
     ) {
         // SMCPKG_SUPPORT>>>Cursor013
         // BoxWithConstraints + LazyVerticalGrid used computed cellHeight. In 1x4
@@ -526,7 +540,7 @@ fun QuadPlayerScreen(
                 videoUri = uri,
                 onPickVideo = { pickVideo(index) },
                 // SMCPKG_SUPPORT>>>Cursor049
-                systemVolume = systemVolume,
+                // systemVolume = systemVolume,
                 // SMCPKG_SUPPORT<<<Cursor049
                 // SMCPKG_SUPPORT>>>Cursor017
                 // attachSurface = !(showPicker && index == pickingIndex),
@@ -643,19 +657,13 @@ fun QuadPlayerScreen(
         // SMCPKG_SUPPORT<<<Cursor041
 
         // SMCPKG_SUPPORT>>>Cursor049
-        // Same SurfaceVolumeBar the pane already draws during an in-pane swipe.
-        // This copy covers hardware keys and swipes that did not start on a pane.
-        if (!showPicker && (systemVolume.hudVisible || systemVolume.flashVisible)) {
-            SurfaceVolumeBar(
-                volume = systemVolume.fraction,
-                barHeight = LocalConfiguration.current.screenHeightDp.dp * 0.8f,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 16.dp)
-                    .zIndex(6f),
-            )
-        }
+        // if (!showPicker && (systemVolume.hudVisible || systemVolume.flashVisible)) {
+        //     SurfaceVolumeBar(volume = systemVolume.fraction, ...)
+        // }
         // SMCPKG_SUPPORT<<<Cursor049
+        // SMCPKG_SUPPORT>>>Cursor050
+        // The pane under the finger draws its own volume bar from player.volume.
+        // SMCPKG_SUPPORT<<<Cursor050
 
         if (showPicker) {
             VideoPickerScreen(
@@ -798,7 +806,10 @@ internal fun PlayerTopChrome(
         modifier = modifier
             .padding(end = 8.dp + iconNudge, top = 4.dp)
             .alpha(chromeOpacity),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        // SMCPKG_SUPPORT>>>Cursor050
+        // horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        // SMCPKG_SUPPORT<<<Cursor050
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -806,7 +817,10 @@ internal fun PlayerTopChrome(
                 .size(TopChromeTouch)
                 .clip(CircleShape)
                 .background(chromeBg)
-                .tapWithoutConsumingDown(onChangeLayout),
+                // SMCPKG_SUPPORT>>>Cursor050
+                // .tapWithoutConsumingDown(onChangeLayout),
+                .clickable(onClick = onChangeLayout),
+                // SMCPKG_SUPPORT<<<Cursor050
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -821,7 +835,10 @@ internal fun PlayerTopChrome(
                 .size(TopChromeTouch)
                 .clip(CircleShape)
                 .background(chromeBg)
-                .tapWithoutConsumingDown(onOpenSettings),
+                // SMCPKG_SUPPORT>>>Cursor050
+                // .tapWithoutConsumingDown(onOpenSettings),
+                .clickable(onClick = onOpenSettings),
+                // SMCPKG_SUPPORT<<<Cursor050
             contentAlignment = Alignment.Center,
         ) {
             Icon(

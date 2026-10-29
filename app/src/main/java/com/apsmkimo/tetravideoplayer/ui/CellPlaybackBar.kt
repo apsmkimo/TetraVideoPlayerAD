@@ -43,6 +43,9 @@ import androidx.compose.foundation.background
 // Bar buttons use tapWithoutConsumingDown so a vertical swipe that starts on
 // an icon still reaches the screen-level volume gesture.
 // SMCPKG_SUPPORT<<<Cursor049
+// SMCPKG_SUPPORT>>>Cursor050
+import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -193,9 +196,11 @@ fun CellPlaybackBar(
             .height(BarHeight)
             .background(Color.Black.copy(alpha = 0.72f))
             // SMCPKG_SUPPORT>>>Cursor049
-            // .padding(horizontal = 2.dp),
-            .padding(horizontal = 4.dp),
+            // .padding(horizontal = 4.dp),
             // SMCPKG_SUPPORT<<<Cursor049
+            // SMCPKG_SUPPORT>>>Cursor050
+            .padding(horizontal = 2.dp),
+            // SMCPKG_SUPPORT<<<Cursor050
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // SMCPKG_SUPPORT>>>Cursor049
@@ -207,8 +212,8 @@ fun CellPlaybackBar(
         // SMCPKG_SUPPORT>>>Cursor006
         // SMCPKG_SUPPORT>>>Cursor023
         // VolumeGestureIcon(... onVolumeDelta ... hold + swipe on speaker)
-        // Speaker is mute/unmute only. Level is the system music stream,
-        // changed by a vertical swipe on the pane.
+        // Speaker mutes and unmutes only this pane. The level is this pane's
+        // ExoPlayer volume, changed by a vertical swipe on the video.
         CompactBarIconButton(
             onClick = {
                 if (player.volume > 0f) {
@@ -279,11 +284,13 @@ fun CellPlaybackBar(
             textAlign = TextAlign.End,
             modifier = Modifier
                 // SMCPKG_SUPPORT>>>Cursor049
-                // .widthIn(min = 32.dp)
-                // .padding(end = 2.dp),
-                .widthIn(min = BarTimeMinWidth)
-                .padding(end = 4.dp),
+                // .widthIn(min = BarTimeMinWidth)
+                // .padding(end = 4.dp),
                 // SMCPKG_SUPPORT<<<Cursor049
+                // SMCPKG_SUPPORT>>>Cursor050
+                .widthIn(min = BarTimeMinWidth)
+                .padding(end = 2.dp),
+                // SMCPKG_SUPPORT<<<Cursor050
         )
         // SMCPKG_SUPPORT<<<Cursor006
 
@@ -341,11 +348,13 @@ fun CellPlaybackBar(
             textAlign = TextAlign.Start,
             modifier = Modifier
                 // SMCPKG_SUPPORT>>>Cursor049
-                // .widthIn(min = 32.dp)
-                // .padding(start = 2.dp),
-                .widthIn(min = BarTimeMinWidth)
-                .padding(start = 4.dp),
+                // .widthIn(min = BarTimeMinWidth)
+                // .padding(start = 4.dp),
                 // SMCPKG_SUPPORT<<<Cursor049
+                // SMCPKG_SUPPORT>>>Cursor050
+                .widthIn(min = BarTimeMinWidth)
+                .padding(start = 2.dp),
+                // SMCPKG_SUPPORT<<<Cursor050
         )
         // SMCPKG_SUPPORT<<<Cursor006
 
@@ -493,16 +502,28 @@ private fun VerticalVolumeOverlay(
 // private val VolumeOverlayLift = 56.dp
 // Toolbar grows to ~64dp. Icons, type, and the seek thumb scale with it.
 // Button width stays 48dp so a phone-width pane still keeps a seek bar.
-internal val CellPlaybackBarHeight = 64.dp
+// internal val CellPlaybackBarHeight = 64.dp
+// private val BarButtonSize = 48.dp
+// private val BarIconSize = 40.dp
+// private val BarTimeFontSize = 20.sp
+// private val BarTimeLineHeight = 24.sp
+// private val BarTimeMinWidth = 64.dp
+// private val BarThumbWidth = 8.dp
+// private val BarThumbHeight = 48.dp
+// private val VolumeOverlayLift = 96.dp
+// SMCPKG_SUPPORT>>>Cursor050
+// Half of the 64dp bar: 32dp tall, icons and thumb scaled with it.
+internal val CellPlaybackBarHeight = 32.dp
 private val BarHeight = CellPlaybackBarHeight
-private val BarButtonSize = 48.dp
-private val BarIconSize = 40.dp
-private val BarTimeFontSize = 20.sp
-private val BarTimeLineHeight = 24.sp
-private val BarTimeMinWidth = 64.dp
-private val BarThumbWidth = 8.dp
-private val BarThumbHeight = 48.dp
-private val VolumeOverlayLift = 96.dp
+private val BarButtonSize = 24.dp
+private val BarIconSize = 20.dp
+private val BarTimeFontSize = 10.sp
+private val BarTimeLineHeight = 12.sp
+private val BarTimeMinWidth = 32.dp
+private val BarThumbWidth = 4.dp
+private val BarThumbHeight = 24.dp
+private val VolumeOverlayLift = 48.dp
+// SMCPKG_SUPPORT<<<Cursor050
 // SMCPKG_SUPPORT<<<Cursor049
 // SMCPKG_SUPPORT<<<Cursor038
 // private val BarButtonSize = 24.dp
@@ -517,16 +538,19 @@ private fun CompactBarIconButton(
     Box(
         modifier = Modifier
             // SMCPKG_SUPPORT>>>Cursor049
-            // .size(BarButtonSize)
-            // .clickable(
-            //     interactionSource = remember { MutableInteractionSource() },
-            //     indication = null,
-            //     onClick = onClick,
-            // ),
+            // .width(BarButtonSize)
+            // .height(BarHeight)
+            // .tapWithoutConsumingDown(onClick),
+            // SMCPKG_SUPPORT<<<Cursor049
+            // SMCPKG_SUPPORT>>>Cursor050
             .width(BarButtonSize)
             .height(BarHeight)
-            .tapWithoutConsumingDown(onClick),
-            // SMCPKG_SUPPORT<<<Cursor049
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            ),
+            // SMCPKG_SUPPORT<<<Cursor050
         contentAlignment = Alignment.Center,
     ) {
         content()
