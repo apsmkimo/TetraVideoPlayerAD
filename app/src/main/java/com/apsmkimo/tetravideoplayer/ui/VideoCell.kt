@@ -55,10 +55,16 @@ import androidx.compose.foundation.background
 // SMCPKG_SUPPORT>>>Cursor004
 // import androidx.compose.foundation.border
 // SMCPKG_SUPPORT<<<Cursor004
-import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT>>>Cursor049
+// import androidx.compose.foundation.clickable
+// Empty panes use tapWithoutConsumingDown so a vertical swipe still reaches
+// the screen-level volume gesture. clickable consumed the pointer-down.
+// SMCPKG_SUPPORT<<<Cursor049
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.interaction.MutableInteractionSource
+// SMCPKG_SUPPORT>>>Cursor049
+// import androidx.compose.foundation.interaction.MutableInteractionSource
+// SMCPKG_SUPPORT<<<Cursor049
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -132,6 +138,9 @@ fun VideoCell(
     player: ExoPlayer,
     videoUri: Uri?,
     onPickVideo: () -> Unit,
+    // SMCPKG_SUPPORT>>>Cursor049
+    systemVolume: SystemMusicVolumeController,
+    // SMCPKG_SUPPORT<<<Cursor049
     modifier: Modifier = Modifier,
     // SMCPKG_SUPPORT>>>Cursor013
     attachSurface: Boolean = true,
@@ -228,12 +237,17 @@ fun VideoCell(
             // so a tap is not consumed twice (clickable + gesture = net no-op).
             .then(
                 if (videoUri == null) {
-                    Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                    ) {
-                        onPickVideo()
-                    }
+                    // SMCPKG_SUPPORT>>>Cursor049
+                    // Modifier.clickable(
+                    //     indication = null,
+                    //     interactionSource = remember { MutableInteractionSource() },
+                    // ) {
+                    //     onPickVideo()
+                    // }
+                    // Does not consume the pointer-down, so the screen-level
+                    // volume swipe can start on an empty pane. A tap still picks.
+                    Modifier.tapWithoutConsumingDown(onPickVideo)
+                    // SMCPKG_SUPPORT<<<Cursor049
                 } else {
                     Modifier
                 },
@@ -351,14 +365,15 @@ fun VideoCell(
             // 1.0.13 hid the toolbar: parent clickable + this tap both toggled
             // controlsVisible, and the zIndex(1) layer sat on top of the bar.
             // Tap (movement <= slop) shows/hides the bar. Vertical-dominant
-            // drag maps absolute Y in the cell: top = 1f, bottom = 0f.
+            // drag changes STREAM_MUSIC relative to the current level over 4 cm.
+            // Horizontal drag in the upper half is still brightness.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f)
                     // SMCPKG_SUPPORT>>>Cursor037
                     // .pointerInput(player) {
-                    .pointerInput(player, videoUri?.toString()) {
+                    .pointerInput(player, videoUri?.toString(), systemVolume) {
                     // SMCPKG_SUPPORT<<<Cursor037
                         val slopPx = viewConfiguration.touchSlop
                         awaitEachGesture {
@@ -369,6 +384,16 @@ fun VideoCell(
                             var adjustingVolume = false
                             var adjustingBrightness = false
                             // SMCPKG_SUPPORT<<<Cursor040
+                            // SMCPKG_SUPPORT>>>Cursor049
+                            // Consuming this down keeps the screen-level volume
+                            // fallback from also tracking the same contact.
+                            // SMCPKG_SUPPORT<<<Cursor049
+                            // SMCPKG_SUPPORT>>>Cursor049
+                            var dragStartFraction = systemVolume.fraction
+                            var dragStartY = down.position.y
+                            var dragEpoch = systemVolume.externalEpoch
+                            val travelPx = systemVolume.fullRangePx().coerceAtLeast(1f)
+                            // SMCPKG_SUPPORT<<<Cursor049
                             val cellH = size.height.toFloat().coerceAtLeast(1f)
                             // SMCPKG_SUPPORT>>>Cursor040
                             val cellW = size.width.toFloat().coerceAtLeast(1f)
@@ -411,7 +436,15 @@ fun VideoCell(
                                     if (vertical) {
                                         dragged = true
                                         adjustingVolume = true
-                                        overlayVolume = player.volume.coerceIn(0f, 1f)
+                                        // SMCPKG_SUPPORT>>>Cursor049
+                                        // overlayVolume = player.volume.coerceIn(0f, 1f)
+                                        // Zero point is where the swipe was recognized,
+                                        // from the stream's current level. Not absolute Y.
+                                        dragStartFraction = systemVolume.fraction
+                                        dragStartY = change.position.y
+                                        dragEpoch = systemVolume.externalEpoch
+                                        overlayVolume = dragStartFraction
+                                        // SMCPKG_SUPPORT<<<Cursor049
                                         volumeOverlayVisible = true
                                     } else if (horizontal && upperHalf) {
                                         dragged = true
@@ -422,10 +455,23 @@ fun VideoCell(
                                     }
                                 }
                                 if (adjustingVolume) {
-                                    val next = (1f - (change.position.y.coerceIn(0f, cellH) / cellH))
-                                        .coerceIn(0f, 1f)
-                                    player.volume = next
-                                    overlayVolume = next
+                                    // SMCPKG_SUPPORT>>>Cursor049
+                                    // val next = (1f - (change.position.y.coerceIn(0f, cellH) / cellH))
+                                    //     .coerceIn(0f, 1f)
+                                    // player.volume = next
+                                    // overlayVolume = next
+                                    if (systemVolume.externalEpoch != dragEpoch) {
+                                        dragStartFraction = systemVolume.fraction
+                                        dragStartY = change.position.y
+                                        dragEpoch = systemVolume.externalEpoch
+                                    }
+                                    val desired = VolumeGestureMath.fractionAfterDrag(
+                                        startFraction = dragStartFraction,
+                                        deltaYPx = change.position.y - dragStartY,
+                                        fullRangePx = travelPx,
+                                    )
+                                    overlayVolume = systemVolume.setFraction(desired)
+                                    // SMCPKG_SUPPORT<<<Cursor049
                                     change.consume()
                                 } else if (adjustingBrightness) {
                                     val percent = (
@@ -590,7 +636,7 @@ private fun EmptyVideoPlaceholder(index: Int) {
 
 // SMCPKG_SUPPORT>>>Cursor023
 @Composable
-private fun SurfaceVolumeBar(
+internal fun SurfaceVolumeBar(
     volume: Float,
     barHeight: androidx.compose.ui.unit.Dp,
     modifier: Modifier = Modifier,

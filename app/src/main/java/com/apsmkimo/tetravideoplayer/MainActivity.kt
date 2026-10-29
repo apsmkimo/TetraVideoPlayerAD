@@ -39,6 +39,8 @@ package com.apsmkimo.tetravideoplayer
 
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.WindowManager
 // SMCPKG_SUPPORT>>>Cursor048
 // import androidx.activity.ComponentActivity
@@ -67,6 +69,9 @@ import com.apsmkimo.tetravideoplayer.ui.theme.QuadVideoPlayerTheme
 // SMCPKG_SUPPORT>>>Cursor043
 import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 // SMCPKG_SUPPORT<<<Cursor043
+// SMCPKG_SUPPORT>>>Cursor049
+import com.apsmkimo.tetravideoplayer.ui.PlayerChromeSignals
+// SMCPKG_SUPPORT<<<Cursor049
 
 // SMCPKG_SUPPORT>>>Cursor048
 // class MainActivity : ComponentActivity() {
@@ -125,4 +130,23 @@ class MainActivity : AppCompatActivity() {
         AdsConsentManager.getInstance(this).gatherConsent(this)
         // SMCPKG_SUPPORT<<<Cursor043
     }
+
+    // SMCPKG_SUPPORT>>>Cursor049
+    // Observe every touch and volume key. Neither call consumes the event.
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        PlayerChromeSignals.onTouch?.invoke(ev.actionMasked, ev.pointerCount)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val isVolumeKey = event.keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+            event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+            event.keyCode == KeyEvent.KEYCODE_VOLUME_MUTE
+        val handled = super.dispatchKeyEvent(event)
+        if (isVolumeKey && event.action == KeyEvent.ACTION_DOWN) {
+            PlayerChromeSignals.onVolumeKey?.invoke()
+        }
+        return handled
+    }
+    // SMCPKG_SUPPORT<<<Cursor049
 }

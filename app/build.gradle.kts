@@ -428,4 +428,7 @@ dependencies {
     // Per-app locales: AppCompatDelegate.setApplicationLocales and autoStoreLocales.
     implementation(libs.androidx.appcompat)
     // SMCPKG_SUPPORT<<<Cursor048
+    // SMCPKG_SUPPORT>>>Cursor049
+    testImplementation("junit:junit:4.13.2")
+    // SMCPKG_SUPPORT<<<Cursor049
 }
