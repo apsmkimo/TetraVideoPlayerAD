@@ -58,6 +58,15 @@ class RemoveAdsBilling(private val app: Application) {
         FAILED,
     }
 
+    // SMCPKG_SUPPORT>>>Cursor054
+    enum class RestoreResult {
+        RESTORED,
+        NONE,
+        UNAVAILABLE,
+        FAILED,
+    }
+    // SMCPKG_SUPPORT<<<Cursor054
+
     private val mainHandler = Handler(Looper.getMainLooper())
     private val listeners = CopyOnWriteArrayList<EntitlementListener>()
 
@@ -180,6 +189,44 @@ class RemoveAdsBilling(private val app: Application) {
             LaunchResult.UNAVAILABLE
         }
     }
+
+    // SMCPKG_SUPPORT>>>Cursor054
+    /**
+     * Re-queries Play for [PRODUCT_ID_REMOVE_ADS] and grants the existing
+     * entitlement when a completed purchase is found.
+     */
+    fun restorePurchases(onResult: (RestoreResult) -> Unit) {
+        if (billingUnavailable || !billingClient.isReady) {
+            deliverRestore(onResult, RestoreResult.UNAVAILABLE)
+            return
+        }
+        billingClient.queryPurchasesAsync(
+            QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build(),
+        ) { result, purchases ->
+            if (result.responseCode != BillingClient.BillingResponseCode.OK) {
+                deliverRestore(onResult, RestoreResult.FAILED)
+                return@queryPurchasesAsync
+            }
+            val owned = purchases.any { purchase ->
+                purchase.products.contains(PRODUCT_ID_REMOVE_ADS) &&
+                    purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+            }
+            if (owned) {
+                processPurchases(purchases)
+            }
+            deliverRestore(
+                onResult,
+                if (owned) RestoreResult.RESTORED else RestoreResult.NONE,
+            )
+        }
+    }
+
+    private fun deliverRestore(onResult: (RestoreResult) -> Unit, value: RestoreResult) {
+        mainHandler.post { onResult(value) }
+    }
+    // SMCPKG_SUPPORT<<<Cursor054
 
     fun restoreAdsForDebug() {
         if (!BuildConfig.DEBUG) return

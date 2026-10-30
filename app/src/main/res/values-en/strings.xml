@@ -114,20 +114,35 @@
     <string name="settings_rotation">Phone screen rotation</string>
     <!-- SMCPKG_SUPPORT>>>Cursor040 -->
     <!-- <string name="settings_rotation_summary">Off locks portrait or landscape for the layout. On follows the rotation sensor.</string> -->
-    <string name="settings_rotation_summary">Off locks portrait or landscape during playback. On follows the rotation sensor. The layout menu stays portrait.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_rotation_summary">Off locks portrait or landscape during playback. On follows the rotation sensor. The layout menu stays portrait.</string> -->
+    <string name="settings_rotation_summary">Off locks portrait or landscape during playback; on follows the sensor, and the layout menu stays portrait.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <!-- SMCPKG_SUPPORT>>>Cursor042 -->
     <string name="settings_strong_buffering">Stronger buffering</string>
-    <string name="settings_strong_buffering_summary">On reads further ahead so slow or bursty storage is less likely to stall. Applies to every pane the next time playback starts.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_strong_buffering_summary">On reads further ahead so slow or bursty storage is less likely to stall. Applies to every pane the next time playback starts.</string> -->
+    <string name="settings_strong_buffering_summary">Reads further ahead so slow or bursty storage is less likely to stall the next time playback starts.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_screen_margin">Screen margin</string>
-    <string name="settings_screen_margin_summary">0 is no extra border. Higher adds an equal black margin on every side, inside the system bars and cutout. Menus, video, and gestures stay inside it.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_screen_margin_summary">0 is no extra border. Higher adds an equal black margin on every side, inside the system bars and cutout. Menus, video, and gestures stay inside it.</string> -->
+    <string name="settings_screen_margin_summary">0 adds no border; higher values add an equal black margin on every side, inside the system bars.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <!-- SMCPKG_SUPPORT<<<Cursor042 -->
     <string name="settings_contrast">Contrast</string>
     <!-- <string name="settings_contrast_summary">50 is the original picture. Lower is flatter; higher is stronger.</string> -->
     <!-- SMCPKG_SUPPORT<<<Cursor040 -->
     <!-- SMCPKG_SUPPORT>>>Cursor041 -->
-    <string name="settings_contrast_summary">Per video. 50 is the original picture. Lower is flatter; higher is stronger.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_contrast_summary">Per video. 50 is the original picture. Lower is flatter; higher is stronger.</string> -->
+    <string name="settings_contrast_summary">For this video, 50 is the original picture; lower is flatter and higher is stronger.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_sharpness">Sharpness</string>
-    <string name="settings_sharpness_summary">Per video. 50 is the original picture. Lower is softer; higher is sharper.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_sharpness_summary">Per video. 50 is the original picture. Lower is softer; higher is sharper.</string> -->
+    <string name="settings_sharpness_summary">For this video, 50 is the original picture; lower is softer and higher is sharper.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_video_pane">Video %1$d</string>
     <string name="brightness_percent">%1$d%%</string>
     <string name="brightness_bar">Brightness %1$d%%</string>
@@ -149,6 +164,28 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_summary">Applies immediately and is kept after a restart.</string>
     <string name="settings_language_system">Follow system</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">Show layout and settings buttons</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_show_player_chrome_summary">Off hides both buttons on the player. Use Back to return to the layout menu, then open Settings from there.</string> -->
+    <string name="settings_show_player_chrome_summary">Off hides both buttons on the player; use Back to reach the layout menu, then open Settings there.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
+    <string name="back_again_to_return">Press back again to return</string>
+    <string name="back_again_to_exit">Press back again to exit</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <string name="settings_section_player">Player screen</string>
+    <string name="settings_section_videos">Individual videos</string>
+    <string name="settings_section_advanced">Advanced</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_tab_video">Video %1$d</string>
+    <string name="settings_tab_video_index">%1$d</string>
+    <string name="settings_restore_purchase">Restore purchase</string>
+    <string name="settings_restore_purchase_done">Purchase restored.</string>
+    <string name="settings_restore_purchase_none">No purchase to restore.</string>
+    <string name="settings_ads_already_removed">Ads are already removed.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

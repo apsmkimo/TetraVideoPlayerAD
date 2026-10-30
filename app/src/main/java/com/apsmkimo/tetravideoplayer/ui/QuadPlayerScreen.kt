@@ -41,9 +41,19 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
+// SMCPKG_SUPPORT>>>Cursor049
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+// SMCPKG_SUPPORT<<<Cursor049
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+// SMCPKG_SUPPORT>>>Cursor049
+// import androidx.compose.foundation.clickable
+// Top chrome uses tapWithoutConsumingDown so a swipe can still change volume.
+// SMCPKG_SUPPORT<<<Cursor049
+// SMCPKG_SUPPORT>>>Cursor050
 import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -87,9 +97,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
+// SMCPKG_SUPPORT>>>Cursor050
+// import androidx.compose.ui.platform.LocalConfiguration
+// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -129,6 +143,16 @@ import kotlinx.coroutines.delay
 
 private val Hairline = 1.dp
 private val HairlineColor = Color(0xFF5A5A5A)
+// SMCPKG_SUPPORT>>>Cursor049
+// private val TopChromeTouch = 48.dp
+// private val TopChromeIcon = 44.dp
+// SMCPKG_SUPPORT>>>Cursor050
+private val TopChromeTouch = 33.dp
+private val TopChromeIcon = 22.dp
+// SMCPKG_SUPPORT<<<Cursor050
+private const val TOP_CHROME_IDLE_MS = 10_000L
+private const val TOP_CHROME_FADE_MS = 350
+// SMCPKG_SUPPORT<<<Cursor049
 
 // SMCPKG_SUPPORT>>>Cursor045
 /** Top and side system bars / cutout. Bottom stays with the playback bar. */
@@ -184,6 +208,30 @@ fun QuadPlayerScreen(
 ) {
 // SMCPKG_SUPPORT<<<Cursor012
     val context = LocalContext.current
+    // SMCPKG_SUPPORT>>>Cursor049
+    // val systemVolume = rememberSystemMusicVolume()
+    // SMCPKG_SUPPORT>>>Cursor050
+    // Volume is per pane. The activity touch relay only restarts the icon fade.
+    // SMCPKG_SUPPORT<<<Cursor050
+    val topChromeAlpha = remember { Animatable(1f) }
+    val fingersDown = remember { mutableIntStateOf(0) }
+    DisposableEffect(Unit) {
+        PlayerChromeSignals.onTouch = { action, pointerCount ->
+            val down = fingersDownAfterEvent(action, pointerCount)
+            if (down != fingersDown.intValue) {
+                fingersDown.intValue = down
+            }
+        }
+        onDispose { PlayerChromeSignals.onTouch = null }
+    }
+    LaunchedEffect(fingersDown.intValue) {
+        topChromeAlpha.snapTo(1f)
+        if (fingersDown.intValue > 0) return@LaunchedEffect
+        delay(TOP_CHROME_IDLE_MS)
+        topChromeAlpha.animateTo(0.3f, tween(durationMillis = TOP_CHROME_FADE_MS))
+    }
+    val chromeOpacity = topChromeAlpha.value
+    // SMCPKG_SUPPORT<<<Cursor049
     // SMCPKG_SUPPORT>>>Cursor038
     // val controller = remember { QuadPlayerController(context) }
     val controller = remember {
@@ -441,6 +489,15 @@ fun QuadPlayerScreen(
         onChangeLayout()
     }
     // SMCPKG_SUPPORT<<<Cursor024
+    // SMCPKG_SUPPORT>>>Cursor051
+    // Picker handles its own back while a folder is open. At the picker root,
+    // back still dismisses nothing here so the existing close control stays.
+    ConfirmBackHandler(
+        enabled = !showPicker,
+        message = stringResource(R.string.back_again_to_return),
+        onConfirmed = { leaveToSelection() },
+    )
+    // SMCPKG_SUPPORT<<<Cursor051
 
     // SMCPKG_SUPPORT>>>Cursor004
     // Scaffold(topBar = { TopAppBar(...) }) { innerPadding ->
@@ -450,7 +507,18 @@ fun QuadPlayerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(HairlineColor),
+            .background(HairlineColor)
+            // SMCPKG_SUPPORT>>>Cursor049
+            // .relativeSystemVolumeSwipe(
+            //     volume = systemVolume,
+            //     acceptConsumedDown = false,
+            //     driveScreenHud = true,
+            // ),
+            // SMCPKG_SUPPORT<<<Cursor049
+            // SMCPKG_SUPPORT>>>Cursor050
+            // Screen-level STREAM_MUSIC swipe removed. Only a playing pane adjusts
+            // its own ExoPlayer volume.
+            // SMCPKG_SUPPORT<<<Cursor050
     ) {
         // SMCPKG_SUPPORT>>>Cursor013
         // BoxWithConstraints + LazyVerticalGrid used computed cellHeight. In 1x4
@@ -480,6 +548,9 @@ fun QuadPlayerScreen(
                 player = player,
                 videoUri = uri,
                 onPickVideo = { pickVideo(index) },
+                // SMCPKG_SUPPORT>>>Cursor049
+                // systemVolume = systemVolume,
+                // SMCPKG_SUPPORT<<<Cursor049
                 // SMCPKG_SUPPORT>>>Cursor017
                 // attachSurface = !(showPicker && index == pickingIndex),
                 // TextureView does not punch through the picker. Keep the cell's
@@ -487,6 +558,9 @@ fun QuadPlayerScreen(
                 attachSurface = true,
                 onTogglePlay = { controller.togglePlay(index) },
                 // SMCPKG_SUPPORT<<<Cursor017
+                // SMCPKG_SUPPORT>>>Cursor052
+                onScrubbingChange = { active -> controller.setScrubbing(index, active) },
+                // SMCPKG_SUPPORT<<<Cursor052
                 onAttachPlayerView = { view -> controller.attachPlayerView(index, view) },
                 onDetachPlayerView = { view -> controller.detachPlayerView(index, view) },
                 // SMCPKG_SUPPORT>>>Cursor038
@@ -516,67 +590,33 @@ fun QuadPlayerScreen(
             // SMCPKG_SUPPORT>>>Cursor038
             // Box( ... DashboardCustomize only ... )
             // SMCPKG_SUPPORT>>>Cursor040
-            val iconNudge = with(LocalDensity.current) { 10.toDp() }
-            val chromeBg = Color(0x66000000)
-            // was Color(0x99000000)
+            // val iconNudge = with(LocalDensity.current) { 10.toDp() }
+            // val chromeBg = Color(0x99000000)
+            // SMCPKG_SUPPORT>>>Cursor049
+            // val chromeBg = Color(0x66000000)
+            // Nudge and scrim now live in PlayerTopChrome.
+            // SMCPKG_SUPPORT<<<Cursor049
             // SMCPKG_SUPPORT<<<Cursor040
-            Row(
+            // SMCPKG_SUPPORT>>>Cursor049
+            // Settings was left of the layout icon. Layout is now left, gear right.
+            // 20.dp chips / 12.dp glyphs grew to a 48.dp target and a 44.dp glyph.
+            // The row fades to 0.3 after 10s idle. The playback bar does not.
+            // SMCPKG_SUPPORT>>>Cursor051
+            // if (settings.showPlayerChrome) {
+            // SMCPKG_SUPPORT<<<Cursor051
+            if (settings.showPlayerChrome) {
+            PlayerTopChrome(
+                chromeOpacity = chromeOpacity,
+                onChangeLayout = { leaveToSelection() },
+                onOpenSettings = onOpenSettings,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    // SMCPKG_SUPPORT>>>Cursor045
-                    // .statusBarsPadding()
-                    .playerChromePadding()
-                    // SMCPKG_SUPPORT<<<Cursor045
-                    // SMCPKG_SUPPORT>>>Cursor040
-                    // .padding(end = 8.dp, top = 4.dp),
-                    .padding(end = 8.dp + iconNudge, top = 4.dp),
-                    // SMCPKG_SUPPORT<<<Cursor040
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(CircleShape)
-                        // SMCPKG_SUPPORT>>>Cursor040
-                        // .background(Color(0x99000000))
-                        .background(chromeBg)
-                        // SMCPKG_SUPPORT<<<Cursor040
-                        .clickable(onClick = onOpenSettings),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = SettingsGearIcon,
-                        contentDescription = stringResource(R.string.settings_open),
-                        // SMCPKG_SUPPORT>>>Cursor040
-                        // tint = Color.White,
-                        tint = Color.White.copy(alpha = 0.72f),
-                        // SMCPKG_SUPPORT<<<Cursor040
-                        modifier = Modifier.size(12.dp),
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(CircleShape)
-                        // SMCPKG_SUPPORT>>>Cursor040
-                        // .background(Color(0x99000000))
-                        .background(chromeBg)
-                        // SMCPKG_SUPPORT<<<Cursor040
-                        .clickable(onClick = { leaveToSelection() }),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.DashboardCustomize,
-                        contentDescription = stringResource(R.string.change_layout),
-                        // SMCPKG_SUPPORT>>>Cursor040
-                        // tint = Color.White,
-                        tint = Color.White.copy(alpha = 0.72f),
-                        // SMCPKG_SUPPORT<<<Cursor040
-                        modifier = Modifier.size(12.dp),
-                    )
-                }
+                    .playerChromePadding(),
+            )
+            // SMCPKG_SUPPORT>>>Cursor051
             }
+            // SMCPKG_SUPPORT<<<Cursor051
+            // SMCPKG_SUPPORT<<<Cursor049
             // SMCPKG_SUPPORT<<<Cursor038
             // SMCPKG_SUPPORT<<<Cursor022
             // SMCPKG_SUPPORT<<<Cursor012
@@ -634,6 +674,15 @@ fun QuadPlayerScreen(
             }
         }
         // SMCPKG_SUPPORT<<<Cursor041
+
+        // SMCPKG_SUPPORT>>>Cursor049
+        // if (!showPicker && (systemVolume.hudVisible || systemVolume.flashVisible)) {
+        //     SurfaceVolumeBar(volume = systemVolume.fraction, ...)
+        // }
+        // SMCPKG_SUPPORT<<<Cursor049
+        // SMCPKG_SUPPORT>>>Cursor050
+        // The pane under the finger draws its own volume bar from player.volume.
+        // SMCPKG_SUPPORT<<<Cursor050
 
         if (showPicker) {
             VideoPickerScreen(
@@ -761,3 +810,63 @@ private fun PlayerPaneGrid(
     }
 }
 // SMCPKG_SUPPORT<<<Cursor013
+
+// SMCPKG_SUPPORT>>>Cursor049
+@Composable
+internal fun PlayerTopChrome(
+    chromeOpacity: Float,
+    onChangeLayout: () -> Unit,
+    onOpenSettings: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val iconNudge = with(LocalDensity.current) { 10.toDp() }
+    val chromeBg = Color(0x66000000)
+    Row(
+        modifier = modifier
+            .padding(end = 8.dp + iconNudge, top = 4.dp)
+            .alpha(chromeOpacity),
+        // SMCPKG_SUPPORT>>>Cursor050
+        // horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        // SMCPKG_SUPPORT<<<Cursor050
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(TopChromeTouch)
+                .clip(CircleShape)
+                .background(chromeBg)
+                // SMCPKG_SUPPORT>>>Cursor050
+                // .tapWithoutConsumingDown(onChangeLayout),
+                .clickable(onClick = onChangeLayout),
+                // SMCPKG_SUPPORT<<<Cursor050
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DashboardCustomize,
+                contentDescription = stringResource(R.string.change_layout),
+                tint = Color.White,
+                modifier = Modifier.size(TopChromeIcon),
+            )
+        }
+        Box(
+            modifier = Modifier
+                .size(TopChromeTouch)
+                .clip(CircleShape)
+                .background(chromeBg)
+                // SMCPKG_SUPPORT>>>Cursor050
+                // .tapWithoutConsumingDown(onOpenSettings),
+                .clickable(onClick = onOpenSettings),
+                // SMCPKG_SUPPORT<<<Cursor050
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = SettingsGearIcon,
+                contentDescription = stringResource(R.string.settings_open),
+                tint = Color.White,
+                modifier = Modifier.size(TopChromeIcon),
+            )
+        }
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor049

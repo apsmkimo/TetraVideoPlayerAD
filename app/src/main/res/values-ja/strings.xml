@@ -51,15 +51,30 @@
     <string name="settings_title">設定</string>
     <string name="settings_open">設定</string>
     <string name="settings_rotation">画面の回転</string>
-    <string name="settings_rotation_summary">オフのときは再生中の向きを縦または横に固定します。オンのときはセンサーに従います。レイアウトメニューは縦のままです。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_rotation_summary">オフのときは再生中の向きを縦または横に固定します。オンのときはセンサーに従います。レイアウトメニューは縦のままです。</string> -->
+    <string name="settings_rotation_summary">オフは再生中の向きを固定し、オンはセンサーに従い、レイアウトメニューは縦のままです。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_strong_buffering">バッファを強化</string>
-    <string name="settings_strong_buffering_summary">オンにすると先読みを増やし、遅いストレージや不安定な読み込みでの停止を減らします。次に再生を開始したとき、すべての画面に適用されます。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_strong_buffering_summary">オンにすると先読みを増やし、遅いストレージや不安定な読み込みでの停止を減らします。次に再生を開始したとき、すべての画面に適用されます。</string> -->
+    <string name="settings_strong_buffering_summary">オンにすると先読みを増やし、次回の再生開始時に遅いストレージで止まりにくくします。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_screen_margin">画面の余白</string>
-    <string name="settings_screen_margin_summary">0 は余白なしです。上げると、システムバーと切り欠きの内側に同じ幅の黒い余白を加えます。メニュー、動画、操作はその内側に残ります。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_screen_margin_summary">0 は余白なしです。上げると、システムバーと切り欠きの内側に同じ幅の黒い余白を加えます。メニュー、動画、操作はその内側に残ります。</string> -->
+    <string name="settings_screen_margin_summary">0 は余白なしで、上げるとシステムバーと切り欠きの内側に同じ幅の黒い余白を加えます。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_contrast">コントラスト</string>
-    <string name="settings_contrast_summary">動画ごと。50 が元の映像です。下げると平坦に、上げると強くなります。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_contrast_summary">動画ごと。50 が元の映像です。下げると平坦に、上げると強くなります。</string> -->
+    <string name="settings_contrast_summary">この動画では 50 が元の映像で、下げると平坦に、上げると強くなります。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_sharpness">シャープネス</string>
-    <string name="settings_sharpness_summary">動画ごと。50 が元の映像です。下げると柔らかく、上げると鋭くなります。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_sharpness_summary">動画ごと。50 が元の映像です。下げると柔らかく、上げると鋭くなります。</string> -->
+    <string name="settings_sharpness_summary">この動画では 50 が元の映像で、下げると柔らかく、上げると鋭くなります。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_video_pane">動画 %1$d</string>
     <string name="brightness_percent">%1$d%%</string>
     <string name="brightness_bar">明るさ %1$d%%</string>
@@ -72,6 +87,28 @@
     <string name="settings_language">言語</string>
     <string name="settings_language_summary">すぐに反映され、再起動後も保持されます。</string>
     <string name="settings_language_system">システムに従う</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">レイアウトと設定ボタンを表示</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_show_player_chrome_summary">オフにすると再生画面の両方のボタンを隠します。戻るでレイアウト選択に戻り、そこから設定を開きます。</string> -->
+    <string name="settings_show_player_chrome_summary">オフにすると再生画面の両方のボタンを隠し、戻るでレイアウト選択に戻ってから設定を開きます。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
+    <string name="back_again_to_return">もう一度戻ると選択画面に戻ります</string>
+    <string name="back_again_to_exit">もう一度戻ると終了します</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <string name="settings_section_player">再生画面</string>
+    <string name="settings_section_videos">個別の動画</string>
+    <string name="settings_section_advanced">詳細設定</string>
+    <string name="settings_section_general">一般</string>
+    <string name="settings_section_about">このアプリについて</string>
+    <string name="settings_tab_video">動画 %1$d</string>
+    <string name="settings_tab_video_index">%1$d</string>
+    <string name="settings_restore_purchase">購入を復元</string>
+    <string name="settings_restore_purchase_done">購入を復元しました。</string>
+    <string name="settings_restore_purchase_none">復元できる購入はありません。</string>
+    <string name="settings_ads_already_removed">広告はすでに削除されています。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

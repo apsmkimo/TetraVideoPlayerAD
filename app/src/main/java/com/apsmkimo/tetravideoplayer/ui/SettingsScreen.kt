@@ -37,7 +37,29 @@ import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+// SMCPKG_SUPPORT>>>Cursor053
+// import androidx.compose.foundation.clickable
+// SMCPKG_SUPPORT<<<Cursor053
+// SMCPKG_SUPPORT>>>Cursor054
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableIntStateOf
+import com.apsmkimo.tetravideoplayer.TetraVideoPlayerApp
+import com.apsmkimo.tetravideoplayer.ads.AdPreferences
+import com.apsmkimo.tetravideoplayer.ads.RemoveAdsBilling
+// SMCPKG_SUPPORT<<<Cursor054
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,15 +72,32 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+// SMCPKG_SUPPORT>>>Cursor054
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+// SMCPKG_SUPPORT<<<Cursor054
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
+// SMCPKG_SUPPORT>>>Cursor054
+// import androidx.compose.material3.Button
+// SMCPKG_SUPPORT<<<Cursor054
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.HorizontalDivider
+// SMCPKG_SUPPORT>>>Cursor054
+// import androidx.compose.material3.HorizontalDivider
+// SMCPKG_SUPPORT<<<Cursor054
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.MenuAnchorType
+// SMCPKG_SUPPORT>>>Cursor054
+// import androidx.compose.material3.OutlinedButton
+// SMCPKG_SUPPORT<<<Cursor054
+import androidx.compose.material3.OutlinedTextField
+// SMCPKG_SUPPORT>>>Cursor053
+// import androidx.compose.material3.RadioButton
+// SMCPKG_SUPPORT<<<Cursor053
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -93,7 +132,18 @@ val SettingsGearIcon: ImageVector = Icons.Outlined.Settings
 private val SettingsBackground = Color(0xFF000000)
 private val SettingsText = Color(0xFFE8EEF6)
 private val SettingsMuted = Color(0xFFB4C0D0)
-private val SettingsDivider = Color(0xFF2A3340)
+// SMCPKG_SUPPORT>>>Cursor054
+// private val SettingsDivider = Color(0xFF2A3340)
+// SMCPKG_SUPPORT<<<Cursor054
+// SMCPKG_SUPPORT>>>Cursor051
+/** Settings-only accent. The rest of the app keeps AccentGreen. */
+private val SettingsAccent = Color(0xFF007979)
+// SMCPKG_SUPPORT<<<Cursor051
+// SMCPKG_SUPPORT>>>Cursor054
+private val SettingsGlassTop = Color(0x2EFFFFFF)
+private val SettingsGlassBottom = Color(0x12FFFFFF)
+private val SettingsGlassStroke = Color(0x38FFFFFF)
+// SMCPKG_SUPPORT<<<Cursor054
 
 @Composable
 fun SettingsScreen(
@@ -123,7 +173,42 @@ fun SettingsScreen(
     val consent = remember(context) { AdsConsentManager.getInstance(context) }
     val privacyOptionsRequired by consent.privacyOptionsRequired.collectAsStateWithLifecycle()
     // SMCPKG_SUPPORT<<<Cursor043
+    // SMCPKG_SUPPORT>>>Cursor054
+    val billing = (context.applicationContext as? TetraVideoPlayerApp)?.removeAdsBilling
+    var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
+    DisposableEffect(billing) {
+        val listener = billing?.let { client ->
+            RemoveAdsBilling.EntitlementListener { owned ->
+                adsRemoved = owned
+            }.also { client.addListener(it) }
+        }
+        if (billing != null) {
+            adsRemoved = AdPreferences.isAdRemoved(context)
+        }
+        onDispose {
+            if (billing != null && listener != null) {
+                billing.removeListener(listener)
+            }
+        }
+    }
+    var selectedPane by remember { mutableIntStateOf(0) }
+    // SMCPKG_SUPPORT<<<Cursor054
 
+    // SMCPKG_SUPPORT>>>Cursor051
+    // Switches, selected chips/radios, sliders, and buttons on this screen only.
+    val settingsScheme = MaterialTheme.colorScheme.copy(
+        primary = SettingsAccent,
+        onPrimary = Color.White,
+        primaryContainer = SettingsAccent,
+        onPrimaryContainer = Color.White,
+        inversePrimary = SettingsAccent,
+        secondary = SettingsAccent,
+        onSecondary = Color.White,
+        secondaryContainer = SettingsAccent,
+        onSecondaryContainer = Color.White,
+    )
+    MaterialTheme(colorScheme = settingsScheme) {
+    // SMCPKG_SUPPORT<<<Cursor051
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -137,105 +222,210 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            // SMCPKG_SUPPORT>>>Cursor054
+            // verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            // SMCPKG_SUPPORT<<<Cursor054
         ) {
-            // SMCPKG_SUPPORT>>>Cursor048
-            LanguageSetting()
-            // SMCPKG_SUPPORT<<<Cursor048
-            RotationSetting(
-                enabled = settings.allowRotation,
-                onEnabledChange = { enabled ->
-                    onSettingsChange(settings.copy(allowRotation = enabled))
-                },
-            )
-            // SMCPKG_SUPPORT>>>Cursor042
-            StrongBufferingSetting(
-                enabled = settings.strongBuffering,
-                onEnabledChange = { enabled ->
-                    onSettingsChange(settings.copy(strongBuffering = enabled))
-                },
-            )
-            PercentSlider(
-                title = stringResource(R.string.settings_screen_margin),
-                summary = stringResource(R.string.settings_screen_margin_summary),
-                value = settings.screenMargin,
-                onValueChange = { margin ->
-                    onSettingsChange(settings.copy(screenMargin = margin))
-                },
-            )
-            // SMCPKG_SUPPORT<<<Cursor042
-            // SMCPKG_SUPPORT>>>Cursor040
-            // ContrastSetting was app-wide. Cursor041 moves contrast onto each pane.
-            // SMCPKG_SUPPORT<<<Cursor040
-            HorizontalDivider(color = SettingsDivider)
-            Text(
-                text = stringResource(R.string.settings_panes_title),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = SettingsText,
-            )
-            // SMCPKG_SUPPORT>>>Cursor040
-            // Text(
-            //     text = stringResource(R.string.settings_decode_sw_note),
-            //     style = MaterialTheme.typography.bodySmall,
-            //     color = SettingsMuted,
+            // SMCPKG_SUPPORT>>>Cursor054
+            // // SMCPKG_SUPPORT>>>Cursor048
+            // LanguageSetting()
+            // // SMCPKG_SUPPORT<<<Cursor048
+            // // SMCPKG_SUPPORT>>>Cursor051
+            // PlayerChromeSetting(
+            //     enabled = settings.showPlayerChrome,
+            //     onEnabledChange = { enabled ->
+            //         onSettingsChange(settings.copy(showPlayerChrome = enabled))
+            //     },
             // )
-            // SMCPKG_SUPPORT<<<Cursor040
-            repeat(SETTINGS_PANE_COUNT) { index ->
-                PaneSettingsBlock(
-                    index = index,
-                    pane = settings.pane(index),
-                    onPaneChange = { pane ->
-                        onSettingsChange(settings.withPane(index, pane))
+            // // SMCPKG_SUPPORT<<<Cursor051
+            // RotationSetting(
+            //     enabled = settings.allowRotation,
+            //     onEnabledChange = { enabled ->
+            //         onSettingsChange(settings.copy(allowRotation = enabled))
+            //     },
+            // )
+            // // SMCPKG_SUPPORT>>>Cursor042
+            // StrongBufferingSetting(
+            //     enabled = settings.strongBuffering,
+            //     onEnabledChange = { enabled ->
+            //         onSettingsChange(settings.copy(strongBuffering = enabled))
+            //     },
+            // )
+            // PercentSlider(
+            //     title = stringResource(R.string.settings_screen_margin),
+            //     summary = stringResource(R.string.settings_screen_margin_summary),
+            //     value = settings.screenMargin,
+            //     onValueChange = { margin ->
+            //         onSettingsChange(settings.copy(screenMargin = margin))
+            //     },
+            // )
+            // // SMCPKG_SUPPORT<<<Cursor042
+            // // SMCPKG_SUPPORT>>>Cursor040
+            // // ContrastSetting was app-wide. Cursor041 moves contrast onto each pane.
+            // // SMCPKG_SUPPORT<<<Cursor040
+            // HorizontalDivider(color = SettingsDivider)
+            // Text(
+            //     text = stringResource(R.string.settings_panes_title),
+            //     style = MaterialTheme.typography.titleMedium,
+            //     fontWeight = FontWeight.SemiBold,
+            //     color = SettingsText,
+            // )
+            // // SMCPKG_SUPPORT>>>Cursor040
+            // // Text(
+            // //     text = stringResource(R.string.settings_decode_sw_note),
+            // //     style = MaterialTheme.typography.bodySmall,
+            // //     color = SettingsMuted,
+            // // )
+            // // SMCPKG_SUPPORT<<<Cursor040
+            // repeat(SETTINGS_PANE_COUNT) { index ->
+            //     PaneSettingsBlock(
+            //         index = index,
+            //         pane = settings.pane(index),
+            //         onPaneChange = { pane ->
+            //             onSettingsChange(settings.withPane(index, pane))
+            //         },
+            //     )
+            // }
+            // HorizontalDivider(color = SettingsDivider)
+            // Text(
+            //     text = stringResource(R.string.settings_about_section),
+            //     style = MaterialTheme.typography.titleMedium,
+            //     fontWeight = FontWeight.SemiBold,
+            //     color = SettingsText,
+            // )
+            // Text(
+            //     text = stringResource(R.string.app_name),
+            //     style = MaterialTheme.typography.titleLarge,
+            //     fontWeight = FontWeight.Bold,
+            //     color = SettingsText,
+            // )
+            // Text(text = versionLabel, color = SettingsMuted)
+            // Button(
+            //     onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+            //     modifier = Modifier.fillMaxWidth(),
+            // ) {
+            //     Text(stringResource(R.string.about_privacy_policy))
+            // }
+            // // SMCPKG_SUPPORT>>>Cursor043
+            // if (privacyOptionsRequired) {
+            //     OutlinedButton(
+            //         onClick = {
+            //             val activity = context as? Activity ?: return@OutlinedButton
+            //             consent.showPrivacyOptionsForm(activity) { formError ->
+            //                 val message = formError?.message
+            //                 if (!message.isNullOrBlank()) {
+            //                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            //                 }
+            //             }
+            //         },
+            //         modifier = Modifier.fillMaxWidth(),
+            //     ) {
+            //         Text(stringResource(R.string.privacy_options))
+            //     }
+            // }
+            // // SMCPKG_SUPPORT<<<Cursor043
+            // OutlinedButton(
+            //     onClick = { openPlayStoreListing(context) },
+            //     modifier = Modifier.fillMaxWidth(),
+            // ) {
+            //     Text(stringResource(R.string.about_rate_us))
+            // }
+            SettingsSectionCard(title = stringResource(R.string.settings_section_player)) {
+                PlayerChromeSetting(
+                    enabled = settings.showPlayerChrome,
+                    onEnabledChange = { enabled ->
+                        onSettingsChange(settings.copy(showPlayerChrome = enabled))
+                    },
+                )
+                RotationSetting(
+                    enabled = settings.allowRotation,
+                    onEnabledChange = { enabled ->
+                        onSettingsChange(settings.copy(allowRotation = enabled))
+                    },
+                )
+                PercentSlider(
+                    title = stringResource(R.string.settings_screen_margin),
+                    summary = stringResource(R.string.settings_screen_margin_summary),
+                    value = settings.screenMargin,
+                    onValueChange = { margin ->
+                        onSettingsChange(settings.copy(screenMargin = margin))
                     },
                 )
             }
-            HorizontalDivider(color = SettingsDivider)
-            Text(
-                text = stringResource(R.string.settings_about_section),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = SettingsText,
-            )
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = SettingsText,
-            )
-            Text(text = versionLabel, color = SettingsMuted)
-            Button(
-                onClick = { openUrl(context, PRIVACY_POLICY_URL) },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.about_privacy_policy))
-            }
-            // SMCPKG_SUPPORT>>>Cursor043
-            if (privacyOptionsRequired) {
-                OutlinedButton(
-                    onClick = {
-                        val activity = context as? Activity ?: return@OutlinedButton
-                        consent.showPrivacyOptionsForm(activity) { formError ->
-                            val message = formError?.message
-                            if (!message.isNullOrBlank()) {
-                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                            }
-                        }
+            SettingsSectionCard(title = stringResource(R.string.settings_section_videos)) {
+                VideoPaneTabRow(
+                    selected = selectedPane,
+                    onSelected = { selectedPane = it },
+                )
+                val paneIndex = selectedPane.coerceIn(0, SETTINGS_PANE_COUNT - 1)
+                PaneSettingsBlock(
+                    index = paneIndex,
+                    pane = settings.pane(paneIndex),
+                    onPaneChange = { pane ->
+                        onSettingsChange(settings.withPane(paneIndex, pane))
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(stringResource(R.string.privacy_options))
+                    showHeading = false,
+                )
+            }
+            SettingsSectionCard(title = stringResource(R.string.settings_section_advanced)) {
+                StrongBufferingSetting(
+                    enabled = settings.strongBuffering,
+                    onEnabledChange = { enabled ->
+                        onSettingsChange(settings.copy(strongBuffering = enabled))
+                    },
+                )
+            }
+            SettingsSectionCard(title = stringResource(R.string.settings_section_general)) {
+                LanguageSetting()
+                SettingsChevronRow(
+                    title = stringResource(R.string.remove_ads),
+                    onClick = { launchRemoveAds(context, billing, adsRemoved) },
+                )
+                SettingsChevronRow(
+                    title = stringResource(R.string.settings_restore_purchase),
+                    onClick = { restoreRemoveAdsPurchase(context, billing) },
+                )
+            }
+            SettingsSectionCard(title = stringResource(R.string.settings_section_about)) {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = SettingsText,
+                )
+                Text(text = versionLabel, color = SettingsMuted)
+                SettingsChevronRow(
+                    title = stringResource(R.string.about_privacy_policy),
+                    onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+                )
+                if (privacyOptionsRequired) {
+                    SettingsChevronRow(
+                        title = stringResource(R.string.privacy_options),
+                        onClick = {
+                            val activity = context as? Activity
+                            if (activity != null) {
+                                consent.showPrivacyOptionsForm(activity) { formError ->
+                                    val message = formError?.message
+                                    if (!message.isNullOrBlank()) {
+                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        },
+                    )
                 }
+                SettingsChevronRow(
+                    title = stringResource(R.string.about_rate_us),
+                    onClick = { openPlayStoreListing(context) },
+                )
             }
-            // SMCPKG_SUPPORT<<<Cursor043
-            OutlinedButton(
-                onClick = { openPlayStoreListing(context) },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(stringResource(R.string.about_rate_us))
-            }
+            // SMCPKG_SUPPORT<<<Cursor054
         }
     }
+    // SMCPKG_SUPPORT>>>Cursor051
+    }
+    // SMCPKG_SUPPORT<<<Cursor051
 }
 
 @Composable
@@ -262,9 +452,13 @@ private fun SettingsTopBar(onClose: () -> Unit) {
 }
 
 // SMCPKG_SUPPORT>>>Cursor048
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LanguageSetting() {
     var selected by remember { mutableStateOf(AppLanguage.current()) }
+    // SMCPKG_SUPPORT>>>Cursor053
+    var expanded by remember { mutableStateOf(false) }
+    // SMCPKG_SUPPORT<<<Cursor053
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
             text = stringResource(R.string.settings_language),
@@ -276,31 +470,83 @@ internal fun LanguageSetting() {
             style = MaterialTheme.typography.bodySmall,
             color = SettingsMuted,
         )
-        AppLanguage.entries.forEach { language ->
-            Row(
+        // SMCPKG_SUPPORT>>>Cursor053
+        // AppLanguage.entries.forEach { language ->
+        //     Row(
+        //         modifier = Modifier
+        //             .fillMaxWidth()
+        //             .clickable {
+        //                 selected = language
+        //                 language.apply()
+        //             }
+        //             .padding(vertical = 2.dp),
+        //         verticalAlignment = Alignment.CenterVertically,
+        //     ) {
+        //         RadioButton(
+        //             selected = selected == language,
+        //             onClick = {
+        //                 selected = language
+        //                 language.apply()
+        //             },
+        //         )
+        //         Text(
+        //             text = stringResource(language.labelRes),
+        //             color = SettingsText,
+        //             style = MaterialTheme.typography.bodyLarge,
+        //         )
+        //     }
+        // }
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            OutlinedTextField(
+                value = stringResource(selected.labelRes),
+                onValueChange = {},
+                readOnly = true,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(color = SettingsText),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedTextColor = SettingsText,
+                    unfocusedTextColor = SettingsText,
+                    focusedBorderColor = SettingsAccent,
+                    unfocusedBorderColor = SettingsMuted,
+                    focusedTrailingIconColor = SettingsAccent,
+                    unfocusedTrailingIconColor = SettingsMuted,
+                    cursorColor = SettingsAccent,
+                ),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        selected = language
-                        language.apply()
-                    }
-                    .padding(vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                    .fillMaxWidth(),
+            )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
             ) {
-                RadioButton(
-                    selected = selected == language,
-                    onClick = {
-                        selected = language
-                        language.apply()
-                    },
-                )
-                Text(
-                    text = stringResource(language.labelRes),
-                    color = SettingsText,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                AppLanguage.entries.forEach { language ->
+                    val isSelected = language == selected
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = stringResource(language.labelRes),
+                                color = if (isSelected) SettingsAccent else SettingsText,
+                            )
+                        },
+                        onClick = {
+                            expanded = false
+                            if (language != selected) {
+                                selected = language
+                                language.apply()
+                            }
+                        },
+                    )
+                }
             }
         }
+        // SMCPKG_SUPPORT<<<Cursor053
     }
 }
 
@@ -318,6 +564,37 @@ internal fun SettingsLanguagePreview() {
     }
 }
 // SMCPKG_SUPPORT<<<Cursor048
+
+// SMCPKG_SUPPORT>>>Cursor051
+@Composable
+private fun PlayerChromeSetting(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.settings_show_player_chrome),
+                style = MaterialTheme.typography.titleMedium,
+                color = SettingsText,
+            )
+            Text(
+                text = stringResource(R.string.settings_show_player_chrome_summary),
+                style = MaterialTheme.typography.bodySmall,
+                color = SettingsMuted,
+            )
+        }
+        Switch(
+            checked = enabled,
+            onCheckedChange = onEnabledChange,
+        )
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor051
 
 @Composable
 private fun RotationSetting(
@@ -433,17 +710,30 @@ private fun PaneSettingsBlock(
     index: Int,
     pane: PaneSettings,
     onPaneChange: (PaneSettings) -> Unit,
+    // SMCPKG_SUPPORT>>>Cursor054
+    showHeading: Boolean = true,
+    // SMCPKG_SUPPORT<<<Cursor054
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            // SMCPKG_SUPPORT>>>Cursor041
-            // text = stringResource(R.string.cell_index, index + 1),
-            text = stringResource(R.string.settings_video_pane, index + 1),
-            // SMCPKG_SUPPORT<<<Cursor041
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = SettingsText,
-        )
+        // SMCPKG_SUPPORT>>>Cursor054
+        // Text(
+        //     // SMCPKG_SUPPORT>>>Cursor041
+        //     // text = stringResource(R.string.cell_index, index + 1),
+        //     text = stringResource(R.string.settings_video_pane, index + 1),
+        //     // SMCPKG_SUPPORT<<<Cursor041
+        //     style = MaterialTheme.typography.titleSmall,
+        //     fontWeight = FontWeight.SemiBold,
+        //     color = SettingsText,
+        // )
+        if (showHeading) {
+            Text(
+                text = stringResource(R.string.settings_video_pane, index + 1),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = SettingsText,
+            )
+        }
+        // SMCPKG_SUPPORT<<<Cursor054
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -523,4 +813,169 @@ private fun PaneSettingsBlock(
         }
     }
 }
+
+// SMCPKG_SUPPORT>>>Cursor054
+@Composable
+private fun SettingsSectionCard(
+    title: String,
+    content: @Composable () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(SettingsGlassTop, SettingsGlassBottom),
+                ),
+            )
+            .border(1.dp, SettingsGlassStroke, RoundedCornerShape(20.dp))
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = SettingsAccent,
+        )
+        content()
+    }
+}
+
+@Composable
+private fun SettingsChevronRow(
+    title: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.weight(1f),
+            color = SettingsText,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = SettingsMuted,
+        )
+    }
+}
+
+@Composable
+private fun VideoPaneTabRow(
+    selected: Int,
+    onSelected: (Int) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        repeat(SETTINGS_PANE_COUNT) { index ->
+            val isSelected = index == selected
+            val label = if (index == 0) {
+                stringResource(R.string.settings_tab_video, index + 1)
+            } else {
+                stringResource(R.string.settings_tab_video_index, index + 1)
+            }
+            val spoken = stringResource(R.string.settings_tab_video, index + 1)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (index > 0) {
+                    Text(
+                        text = "|",
+                        color = SettingsMuted,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .padding(end = 6.dp)
+                            .clearAndSetSemantics { },
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .defaultMinSize(minWidth = 40.dp, minHeight = 40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(if (isSelected) SettingsAccent else Color.Transparent)
+                        .selectable(
+                            selected = isSelected,
+                            onClick = { onSelected(index) },
+                            role = Role.Tab,
+                        )
+                        .padding(horizontal = 8.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = label,
+                        modifier = Modifier.clearAndSetSemantics {
+                            contentDescription = spoken
+                        },
+                        color = if (isSelected) Color.White else SettingsText,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun launchRemoveAds(
+    context: android.content.Context,
+    billing: RemoveAdsBilling?,
+    adsRemoved: Boolean,
+) {
+    if (adsRemoved) {
+        Toast.makeText(context, R.string.settings_ads_already_removed, Toast.LENGTH_SHORT).show()
+        return
+    }
+    val activity = context as? Activity
+    if (billing == null || activity == null) {
+        Toast.makeText(context, R.string.remove_ads_billing_unavailable, Toast.LENGTH_SHORT).show()
+        return
+    }
+    when (billing.launchPurchase(activity)) {
+        RemoveAdsBilling.LaunchResult.STARTED -> Unit
+        RemoveAdsBilling.LaunchResult.UNAVAILABLE -> {
+            Toast.makeText(context, R.string.remove_ads_billing_unavailable, Toast.LENGTH_SHORT).show()
+        }
+        RemoveAdsBilling.LaunchResult.PRODUCT_UNAVAILABLE -> {
+            Toast.makeText(context, R.string.remove_ads_product_unavailable, Toast.LENGTH_SHORT).show()
+        }
+        RemoveAdsBilling.LaunchResult.FAILED -> {
+            Toast.makeText(context, R.string.remove_ads_purchase_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+private fun restoreRemoveAdsPurchase(
+    context: android.content.Context,
+    billing: RemoveAdsBilling?,
+) {
+    if (billing == null) {
+        Toast.makeText(context, R.string.remove_ads_billing_unavailable, Toast.LENGTH_SHORT).show()
+        return
+    }
+    val appContext = context.applicationContext
+    billing.restorePurchases { result ->
+        val message = when (result) {
+            RemoveAdsBilling.RestoreResult.RESTORED -> R.string.settings_restore_purchase_done
+            RemoveAdsBilling.RestoreResult.NONE -> R.string.settings_restore_purchase_none
+            RemoveAdsBilling.RestoreResult.UNAVAILABLE -> R.string.remove_ads_billing_unavailable
+            RemoveAdsBilling.RestoreResult.FAILED -> R.string.remove_ads_purchase_failed
+        }
+        Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor054
 // SMCPKG_SUPPORT<<<Cursor038

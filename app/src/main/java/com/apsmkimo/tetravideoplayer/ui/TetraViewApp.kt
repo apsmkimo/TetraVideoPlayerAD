@@ -39,6 +39,12 @@ package com.apsmkimo.tetravideoplayer.ui
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.widget.Toast
+// SMCPKG_SUPPORT>>>Cursor051
+import androidx.activity.compose.BackHandler
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.rememberUpdatedState
+// SMCPKG_SUPPORT<<<Cursor051
 // SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.foundation.layout.Box
 // import androidx.compose.foundation.layout.fillMaxSize
@@ -254,3 +260,34 @@ fun TetraViewApp() {
     }
     // SMCPKG_SUPPORT<<<Cursor042
 }
+
+// SMCPKG_SUPPORT>>>Cursor051
+/**
+ * First back shows [message]. A second back within [windowMs] runs [onConfirmed].
+ * Registered on [androidx.activity.OnBackPressedDispatcher] via [BackHandler],
+ * so the system back button and the back gesture are the same event, including
+ * predictive back.
+ */
+@Composable
+internal fun ConfirmBackHandler(
+    message: String,
+    onConfirmed: () -> Unit,
+    enabled: Boolean = true,
+    windowMs: Long = 2_000L,
+) {
+    val context = LocalContext.current
+    val currentMessage = rememberUpdatedState(message)
+    val currentConfirmed = rememberUpdatedState(onConfirmed)
+    var armedAt by remember { mutableLongStateOf(0L) }
+    BackHandler(enabled = enabled) {
+        val now = android.os.SystemClock.uptimeMillis()
+        if (armedAt != 0L && now - armedAt <= windowMs) {
+            armedAt = 0L
+            currentConfirmed.value()
+        } else {
+            armedAt = now
+            Toast.makeText(context, currentMessage.value, Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+// SMCPKG_SUPPORT<<<Cursor051

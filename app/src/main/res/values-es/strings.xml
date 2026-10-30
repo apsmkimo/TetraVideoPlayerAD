@@ -51,15 +51,30 @@
     <string name="settings_title">Ajustes</string>
     <string name="settings_open">Ajustes</string>
     <string name="settings_rotation">Rotación de la pantalla</string>
-    <string name="settings_rotation_summary">Desactivado fija vertical u horizontal durante la reproducción. Activado sigue el sensor. El menú de diseño permanece en vertical.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_rotation_summary">Desactivado fija vertical u horizontal durante la reproducción. Activado sigue el sensor. El menú de diseño permanece en vertical.</string> -->
+    <string name="settings_rotation_summary">Desactivado fija vertical u horizontal durante la reproducción; activado sigue el sensor y el menú de diseño permanece en vertical.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_strong_buffering">Búfer más amplio</string>
-    <string name="settings_strong_buffering_summary">Activado lee más por adelantado para que un almacenamiento lento o irregular se detenga menos. Se aplica a cada panel la próxima vez que empiece la reproducción.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_strong_buffering_summary">Activado lee más por adelantado para que un almacenamiento lento o irregular se detenga menos. Se aplica a cada panel la próxima vez que empiece la reproducción.</string> -->
+    <string name="settings_strong_buffering_summary">Activado lee más por adelantado para que un almacenamiento lento se detenga menos al iniciar la reproducción.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_screen_margin">Margen de pantalla</string>
-    <string name="settings_screen_margin_summary">0 no añade borde. Un valor mayor añade el mismo margen negro en cada lado, dentro de las barras del sistema y el recorte. Los menús, el vídeo y los gestos quedan dentro.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_screen_margin_summary">0 no añade borde. Un valor mayor añade el mismo margen negro en cada lado, dentro de las barras del sistema y el recorte. Los menús, el vídeo y los gestos quedan dentro.</string> -->
+    <string name="settings_screen_margin_summary">0 no añade borde; un valor mayor añade el mismo margen negro en cada lado, dentro de las barras del sistema.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_contrast">Contraste</string>
-    <string name="settings_contrast_summary">Por vídeo. 50 es la imagen original. Más bajo es más plano; más alto es más fuerte.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_contrast_summary">Por vídeo. 50 es la imagen original. Más bajo es más plano; más alto es más fuerte.</string> -->
+    <string name="settings_contrast_summary">En este vídeo, 50 es la imagen original; más bajo es más plano y más alto es más fuerte.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_sharpness">Nitidez</string>
-    <string name="settings_sharpness_summary">Por vídeo. 50 es la imagen original. Más bajo es más suave; más alto es más nítido.</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_sharpness_summary">Por vídeo. 50 es la imagen original. Más bajo es más suave; más alto es más nítido.</string> -->
+    <string name="settings_sharpness_summary">En este vídeo, 50 es la imagen original; más bajo es más suave y más alto es más nítido.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_video_pane">Vídeo %1$d</string>
     <string name="brightness_percent">%1$d%%</string>
     <string name="brightness_bar">Brillo %1$d%%</string>
@@ -72,6 +87,28 @@
     <string name="settings_language">Idioma</string>
     <string name="settings_language_summary">Se aplica al momento y se conserva al reiniciar.</string>
     <string name="settings_language_system">Seguir el sistema</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor051 -->
+    <string name="settings_show_player_chrome">Mostrar botones de diseño y ajustes</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_show_player_chrome_summary">Desactivado oculta ambos en el reproductor. Vuelve al menú con Atrás y abre Ajustes desde allí.</string> -->
+    <string name="settings_show_player_chrome_summary">Desactivado oculta ambos botones del reproductor; vuelve al menú con Atrás y abre Ajustes desde allí.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
+    <string name="back_again_to_return">Pulsa atrás otra vez para volver</string>
+    <string name="back_again_to_exit">Pulsa atrás otra vez para salir</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor051 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <string name="settings_section_player">Pantalla del reproductor</string>
+    <string name="settings_section_videos">Vídeos individuales</string>
+    <string name="settings_section_advanced">Avanzado</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_about">Acerca de</string>
+    <string name="settings_tab_video">Vídeo %1$d</string>
+    <string name="settings_tab_video_index">%1$d</string>
+    <string name="settings_restore_purchase">Restaurar compra</string>
+    <string name="settings_restore_purchase_done">Compra restaurada.</string>
+    <string name="settings_restore_purchase_none">No hay ninguna compra que restaurar.</string>
+    <string name="settings_ads_already_removed">Los anuncios ya están quitados.</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>
