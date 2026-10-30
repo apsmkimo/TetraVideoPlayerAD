@@ -52,15 +52,30 @@
     <string name="settings_title">設定</string>
     <string name="settings_open">設定</string>
     <string name="settings_rotation">手機螢幕旋轉</string>
-    <string name="settings_rotation_summary">關閉時，播放期間鎖定直向或橫向。開啟時跟隨旋轉感應器。版面選單維持直向。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_rotation_summary">關閉時，播放期間鎖定直向或橫向。開啟時跟隨旋轉感應器。版面選單維持直向。</string> -->
+    <string name="settings_rotation_summary">關閉時播放期間鎖定直向或橫向，開啟時跟隨感應器，版面選單維持直向。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_strong_buffering">加強緩衝</string>
-    <string name="settings_strong_buffering_summary">開啟後會預先讀取更多內容，降低慢速或不穩定儲存造成的停頓。下次開始播放時套用到每個畫面。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_strong_buffering_summary">開啟後會預先讀取更多內容，降低慢速或不穩定儲存造成的停頓。下次開始播放時套用到每個畫面。</string> -->
+    <string name="settings_strong_buffering_summary">開啟後會預先多讀一些內容，讓下次開始播放時較不容易因慢速儲存而停頓。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_screen_margin">螢幕邊界</string>
-    <string name="settings_screen_margin_summary">0 表示沒有額外邊界。調高會在系統列與瀏海內側的每一邊加上等寬黑邊。選單、影片與手勢都留在邊界內。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_screen_margin_summary">0 表示沒有額外邊界。調高會在系統列與瀏海內側的每一邊加上等寬黑邊。選單、影片與手勢都留在邊界內。</string> -->
+    <string name="settings_screen_margin_summary">0 不加邊界；調高會在系統列與瀏海內側的每一邊加上等寬黑邊。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_contrast">對比</string>
-    <string name="settings_contrast_summary">各影片獨立。50 為原始畫面。調低較平、調高較強。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_contrast_summary">各影片獨立。50 為原始畫面。調低較平、調高較強。</string> -->
+    <string name="settings_contrast_summary">此影片以 50 為原始畫面，調低較平、調高較強。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_sharpness">銳利度</string>
-    <string name="settings_sharpness_summary">各影片獨立。50 為原始畫面。調低較柔、調高較銳。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_sharpness_summary">各影片獨立。50 為原始畫面。調低較柔、調高較銳。</string> -->
+    <string name="settings_sharpness_summary">此影片以 50 為原始畫面，調低較柔、調高較銳。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_video_pane">影片 %1$d</string>
     <string name="brightness_percent">%1$d%%</string>
     <string name="brightness_bar">亮度 %1$d%%</string>
@@ -75,10 +90,26 @@
     <string name="settings_language_system">跟隨系統</string>
     <!-- SMCPKG_SUPPORT>>>Cursor051 -->
     <string name="settings_show_player_chrome">顯示版面與設定按鈕</string>
-    <string name="settings_show_player_chrome_summary">關閉後，播放畫面會隱藏這兩個按鈕。用返回回到版面選單，再從那裡開啟設定。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_show_player_chrome_summary">關閉後，播放畫面會隱藏這兩個按鈕。用返回回到版面選單，再從那裡開啟設定。</string> -->
+    <string name="settings_show_player_chrome_summary">關閉後會隱藏播放畫面的兩個按鈕，請用返回回到版面選單再開啟設定。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="back_again_to_return">再按一次返回以回到選單</string>
     <string name="back_again_to_exit">再按一次返回以離開</string>
     <!-- SMCPKG_SUPPORT<<<Cursor051 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <string name="settings_section_player">播放畫面</string>
+    <string name="settings_section_videos">個別影片</string>
+    <string name="settings_section_advanced">進階</string>
+    <string name="settings_section_general">一般</string>
+    <string name="settings_section_about">關於</string>
+    <string name="settings_tab_video">影片 %1$d</string>
+    <string name="settings_tab_video_index">%1$d</string>
+    <string name="settings_restore_purchase">還原購買</string>
+    <string name="settings_restore_purchase_done">已還原購買。</string>
+    <string name="settings_restore_purchase_none">找不到可還原的購買。</string>
+    <string name="settings_ads_already_removed">廣告已移除。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>

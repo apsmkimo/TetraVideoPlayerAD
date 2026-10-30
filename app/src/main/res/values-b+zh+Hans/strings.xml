@@ -52,15 +52,30 @@
     <string name="settings_title">设置</string>
     <string name="settings_open">设置</string>
     <string name="settings_rotation">手机屏幕旋转</string>
-    <string name="settings_rotation_summary">关闭时，播放期间锁定竖屏或横屏。开启时跟随旋转传感器。布局菜单保持竖屏。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_rotation_summary">关闭时，播放期间锁定竖屏或横屏。开启时跟随旋转传感器。布局菜单保持竖屏。</string> -->
+    <string name="settings_rotation_summary">关闭时播放期间锁定竖屏或横屏，开启时跟随传感器，布局菜单保持竖屏。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_strong_buffering">加强缓冲</string>
-    <string name="settings_strong_buffering_summary">开启后会提前读取更多内容，减少慢速或不稳定存储造成的停顿。下次开始播放时应用到每个画面。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_strong_buffering_summary">开启后会提前读取更多内容，减少慢速或不稳定存储造成的停顿。下次开始播放时应用到每个画面。</string> -->
+    <string name="settings_strong_buffering_summary">开启后会提前多读一些内容，让下次开始播放时较不容易因慢速存储而停顿。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_screen_margin">屏幕边距</string>
-    <string name="settings_screen_margin_summary">0 表示没有额外边距。调高会在系统栏和刘海内侧的每一边加上等宽黑边。菜单、视频和手势都留在边距内。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_screen_margin_summary">0 表示没有额外边距。调高会在系统栏和刘海内侧的每一边加上等宽黑边。菜单、视频和手势都留在边距内。</string> -->
+    <string name="settings_screen_margin_summary">0 不加边距；调高会在系统栏和刘海内侧的每一边加上等宽黑边。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_contrast">对比度</string>
-    <string name="settings_contrast_summary">每个视频单独设置。50 为原始画面。调低更平，调高更强。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_contrast_summary">每个视频单独设置。50 为原始画面。调低更平，调高更强。</string> -->
+    <string name="settings_contrast_summary">此视频以 50 为原始画面，调低更平、调高更强。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_sharpness">锐度</string>
-    <string name="settings_sharpness_summary">每个视频单独设置。50 为原始画面。调低更柔，调高更锐。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_sharpness_summary">每个视频单独设置。50 为原始画面。调低更柔，调高更锐。</string> -->
+    <string name="settings_sharpness_summary">此视频以 50 为原始画面，调低更柔、调高更锐。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="settings_video_pane">视频 %1$d</string>
     <string name="brightness_percent">%1$d%%</string>
     <string name="brightness_bar">亮度 %1$d%%</string>
@@ -75,10 +90,26 @@
     <string name="settings_language_system">跟随系统</string>
     <!-- SMCPKG_SUPPORT>>>Cursor051 -->
     <string name="settings_show_player_chrome">显示布局与设置按钮</string>
-    <string name="settings_show_player_chrome_summary">关闭后，播放画面会隐藏这两个按钮。用返回回到布局菜单，再从那里打开设置。</string>
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <!-- <string name="settings_show_player_chrome_summary">关闭后，播放画面会隐藏这两个按钮。用返回回到布局菜单，再从那里打开设置。</string> -->
+    <string name="settings_show_player_chrome_summary">关闭后会隐藏播放画面的两个按钮，请用返回回到布局菜单再打开设置。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="back_again_to_return">再按一次返回以回到菜单</string>
     <string name="back_again_to_exit">再按一次返回以退出</string>
     <!-- SMCPKG_SUPPORT<<<Cursor051 -->
+    <!-- SMCPKG_SUPPORT>>>Cursor054 -->
+    <string name="settings_section_player">播放画面</string>
+    <string name="settings_section_videos">单个视频</string>
+    <string name="settings_section_advanced">高级</string>
+    <string name="settings_section_general">常规</string>
+    <string name="settings_section_about">关于</string>
+    <string name="settings_tab_video">视频 %1$d</string>
+    <string name="settings_tab_video_index">%1$d</string>
+    <string name="settings_restore_purchase">恢复购买</string>
+    <string name="settings_restore_purchase_done">已恢复购买。</string>
+    <string name="settings_restore_purchase_none">没有可恢复的购买。</string>
+    <string name="settings_ads_already_removed">广告已移除。</string>
+    <!-- SMCPKG_SUPPORT<<<Cursor054 -->
     <string name="language_name_en">English</string>
     <string name="language_name_zh_hant">繁體中文</string>
     <string name="language_name_zh_hans">简体中文</string>
