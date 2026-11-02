@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.app.Activity
 import android.graphics.ColorMatrix
@@ -52,25 +44,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
-// SMCPKG_SUPPORT>>>Cursor004
 // import androidx.compose.foundation.border
-// SMCPKG_SUPPORT<<<Cursor004
-// SMCPKG_SUPPORT>>>Cursor049
 // import androidx.compose.foundation.clickable
 // Empty panes use tapWithoutConsumingDown so a vertical swipe still reaches
 // the screen-level volume gesture. clickable consumed the pointer-down.
-// SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT>>>Cursor050
 import androidx.compose.foundation.clickable
-// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-// SMCPKG_SUPPORT>>>Cursor049
 // import androidx.compose.foundation.interaction.MutableInteractionSource
-// SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT>>>Cursor050
 import androidx.compose.foundation.interaction.MutableInteractionSource
-// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -104,9 +86,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-// SMCPKG_SUPPORT>>>Cursor037
 // import androidx.compose.runtime.saveable.rememberSaveable
-// SMCPKG_SUPPORT<<<Cursor037
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -115,9 +95,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-// SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.ui.platform.LocalDensity
-// SMCPKG_SUPPORT<<<Cursor024
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -129,13 +107,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-// SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.R
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -144,54 +118,31 @@ fun VideoCell(
     player: ExoPlayer,
     videoUri: Uri?,
     onPickVideo: () -> Unit,
-    // SMCPKG_SUPPORT>>>Cursor049
     // systemVolume: SystemMusicVolumeController,
-    // SMCPKG_SUPPORT<<<Cursor049
     modifier: Modifier = Modifier,
-    // SMCPKG_SUPPORT>>>Cursor013
     attachSurface: Boolean = true,
-    // SMCPKG_SUPPORT<<<Cursor013
-    // SMCPKG_SUPPORT>>>Cursor014
     // onBindPlayerView: (PlayerView?) -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor014
-    // SMCPKG_SUPPORT>>>Cursor015
     onAttachPlayerView: (PlayerView) -> Unit = {},
     onDetachPlayerView: (PlayerView) -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor015
-    // SMCPKG_SUPPORT>>>Cursor017
     onTogglePlay: () -> Unit = {
         if (player.isPlaying) player.pause() else {
             player.playWhenReady = true
             player.play()
         }
     },
-    // SMCPKG_SUPPORT<<<Cursor017
-    // SMCPKG_SUPPORT>>>Cursor052
     onScrubbingChange: (Boolean) -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor052
-    // SMCPKG_SUPPORT>>>Cursor038
     toolbarLift: Int = 0,
-    // SMCPKG_SUPPORT<<<Cursor038
-    // SMCPKG_SUPPORT>>>Cursor040
     contrast: Int = 50,
-    // SMCPKG_SUPPORT<<<Cursor040
-    // SMCPKG_SUPPORT>>>Cursor041
     sharpness: Int = 50,
     onBrightnessAdjusting: (Int?) -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor041
-    // SMCPKG_SUPPORT>>>Cursor045
     safeEdges: WindowInsetsSides? = null,
-    // SMCPKG_SUPPORT<<<Cursor045
 ) {
-    // SMCPKG_SUPPORT>>>Cursor004
     // val shape = RoundedCornerShape(12.dp)
     // val borderColor = if (isUnmuted) {
     //     UnmutedGold
     // } else {
     //     MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
     // }
-    // SMCPKG_SUPPORT<<<Cursor004
-    // SMCPKG_SUPPORT>>>Cursor037
     // var controlsVisible by rememberSaveable(videoUri?.toString()) { mutableStateOf(false) }
     // rememberSaveable(uri) allocated a new MutableState on in-cell swap, while
     // pointerInput(player) kept writing the previous instance — taps no-op'd the
@@ -200,43 +151,27 @@ fun VideoCell(
     LaunchedEffect(videoUri?.toString()) {
         controlsVisible = false
     }
-    // SMCPKG_SUPPORT<<<Cursor037
-    // SMCPKG_SUPPORT>>>Cursor023
     var volumeOverlayVisible by remember { mutableStateOf(false) }
     var overlayVolume by remember { mutableFloatStateOf(player.volume.coerceIn(0f, 1f)) }
-    // SMCPKG_SUPPORT>>>Cursor040
     var brightnessOverlayVisible by remember { mutableStateOf(false) }
     var overlayBrightness by remember { mutableIntStateOf(50) }
     val activity = LocalContext.current as? Activity
     val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    // SMCPKG_SUPPORT<<<Cursor040
     val screenHeightDp = LocalConfiguration.current.screenHeightDp.dp
     val volumeBarHeight = screenHeightDp * 0.8f
-    // SMCPKG_SUPPORT>>>Cursor050
     val volumeTravelPx = VolumeGestureMath.fullRangePixels(
         LocalContext.current.resources.displayMetrics.ydpi,
     )
-    // SMCPKG_SUPPORT<<<Cursor050
-    // SMCPKG_SUPPORT>>>Cursor024
     // val density = LocalDensity.current
-    // SMCPKG_SUPPORT<<<Cursor024
-    // SMCPKG_SUPPORT<<<Cursor023
 
-    // SMCPKG_SUPPORT>>>Cursor038
     // Box(
     BoxWithConstraints(
-    // SMCPKG_SUPPORT<<<Cursor038
         modifier = modifier
-            // SMCPKG_SUPPORT>>>Cursor004
             // .padding(4.dp)
             // .clip(shape)
             // .border(2.dp, borderColor, shape)
-            // SMCPKG_SUPPORT<<<Cursor004
-            // SMCPKG_SUPPORT>>>Cursor005
             // .background(MaterialTheme.colorScheme.background)
             .background(androidx.compose.ui.graphics.Color.Black)
-            // SMCPKG_SUPPORT<<<Cursor005
-            // SMCPKG_SUPPORT>>>Cursor024
             // .clickable(
             //     indication = null,
             //     interactionSource = remember { MutableInteractionSource() },
@@ -251,10 +186,7 @@ fun VideoCell(
             // so a tap is not consumed twice (clickable + gesture = net no-op).
             .then(
                 if (videoUri == null) {
-                    // SMCPKG_SUPPORT>>>Cursor049
                     // Modifier.tapWithoutConsumingDown(onPickVideo)
-                    // SMCPKG_SUPPORT<<<Cursor049
-                    // SMCPKG_SUPPORT>>>Cursor050
                     // A swipe on an empty pane does nothing. A tap still picks a video.
                     Modifier.clickable(
                         indication = null,
@@ -262,17 +194,13 @@ fun VideoCell(
                     ) {
                         onPickVideo()
                     }
-                    // SMCPKG_SUPPORT<<<Cursor050
                 } else {
                     Modifier
                 },
             ),
-            // SMCPKG_SUPPORT<<<Cursor024
     ) {
         if (videoUri == null) {
             EmptyVideoPlaceholder(index = index)
-        // SMCPKG_SUPPORT>>>Cursor013
-        // SMCPKG_SUPPORT>>>Cursor017
         // } else if (!attachSurface) {
         //     // Keep a black placeholder while the picker is open so SurfaceView
         //     // does not punch through the overlay or sit in a zero-size lazy slot.
@@ -280,12 +208,9 @@ fun VideoCell(
         // TextureView: stay mounted so the live ExoPlayer keeps (or re-gains) a surface.
         } else if (!attachSurface) {
             EmptyVideoPlaceholder(index = index)
-        // SMCPKG_SUPPORT<<<Cursor017
-        // SMCPKG_SUPPORT<<<Cursor013
         } else {
             AndroidView(
                 factory = { context ->
-                    // SMCPKG_SUPPORT>>>Cursor014
                     // PlayerView(context).apply { this.player = player }
                     (LayoutInflater.from(context).inflate(
                         R.layout.player_view_texture,
@@ -294,11 +219,9 @@ fun VideoCell(
                     ) as PlayerView).apply {
                         useController = false
                         controllerAutoShow = false
-                        // SMCPKG_SUPPORT>>>Cursor005
                         // resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                         resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                         setBackgroundColor(android.graphics.Color.BLACK)
-                        // SMCPKG_SUPPORT<<<Cursor005
                         setShutterBackgroundColor(android.graphics.Color.BLACK)
                         isClickable = false
                         isFocusable = false
@@ -306,59 +229,38 @@ fun VideoCell(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT,
                         )
-                        // SMCPKG_SUPPORT>>>Cursor018
                         this.player = player
-                        // SMCPKG_SUPPORT<<<Cursor018
                     }
-                    // SMCPKG_SUPPORT<<<Cursor014
                 },
                 update = { view ->
                     view.useController = false
-                    // SMCPKG_SUPPORT>>>Cursor005
                     // view.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     view.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                     view.setBackgroundColor(android.graphics.Color.BLACK)
-                    // SMCPKG_SUPPORT<<<Cursor005
-                    // SMCPKG_SUPPORT>>>Cursor014
                     // view.player = player
                     // onBindPlayerView(view)
-                    // SMCPKG_SUPPORT<<<Cursor014
-                    // SMCPKG_SUPPORT>>>Cursor015
                     // onAttachPlayerView(view)
-                    // SMCPKG_SUPPORT<<<Cursor015
-                    // SMCPKG_SUPPORT>>>Cursor018
                     // Always assign the live ExoPlayer here so first-pick prepare
                     // never races a PlayerView that has no player/surface.
                     view.player = player
                     onAttachPlayerView(view)
-                    // SMCPKG_SUPPORT<<<Cursor018
-                    // SMCPKG_SUPPORT>>>Cursor040
-                    // SMCPKG_SUPPORT>>>Cursor041
                     // val pictureContrast = contrast
                     // view.post { applyVideoContrast(view, pictureContrast) }
                     val pictureContrast = contrast
                     val pictureSharpness = sharpness
                     view.post { applyVideoPicture(view, pictureContrast, pictureSharpness) }
-                    // SMCPKG_SUPPORT<<<Cursor041
-                    // SMCPKG_SUPPORT<<<Cursor040
                 },
                 onRelease = { view ->
-                    // SMCPKG_SUPPORT>>>Cursor014
                     // onBindPlayerView(null)
-                    // SMCPKG_SUPPORT<<<Cursor014
-                    // SMCPKG_SUPPORT>>>Cursor015
                     onDetachPlayerView(view)
-                    // SMCPKG_SUPPORT<<<Cursor015
                     view.player = null
                 },
                 modifier = Modifier.fillMaxSize(),
             )
 
-            // SMCPKG_SUPPORT>>>Cursor023
             // Transparent tap target above PlayerView so Compose receives show/hide taps.
             // Box(Modifier.fillMaxSize().clickable { controlsVisible = !controlsVisible })
             // Press + vertical drag on the video surface adjusts this cell's volume.
-            // SMCPKG_SUPPORT>>>Cursor024
             // Box(
             //     modifier = Modifier
             //         .fillMaxSize()
@@ -386,37 +288,25 @@ fun VideoCell(
                 modifier = Modifier
                     .fillMaxSize()
                     .zIndex(1f)
-                    // SMCPKG_SUPPORT>>>Cursor037
                     // .pointerInput(player) {
-                    // SMCPKG_SUPPORT>>>Cursor050
                     // .pointerInput(player, videoUri?.toString(), systemVolume) {
                     .pointerInput(player, videoUri?.toString()) {
-                    // SMCPKG_SUPPORT<<<Cursor050
-                    // SMCPKG_SUPPORT<<<Cursor037
                         val slopPx = viewConfiguration.touchSlop
                         awaitEachGesture {
                             val down = awaitFirstDown()
                             var dragged = false
-                            // SMCPKG_SUPPORT>>>Cursor040
                             // var dragged volume-only: vertical drag set player.volume from Y.
                             var adjustingVolume = false
                             var adjustingBrightness = false
-                            // SMCPKG_SUPPORT<<<Cursor040
-                            // SMCPKG_SUPPORT>>>Cursor049
                             // var dragStartFraction = systemVolume.fraction
                             // var dragEpoch = systemVolume.externalEpoch
                             // val travelPx = systemVolume.fullRangePx().coerceAtLeast(1f)
-                            // SMCPKG_SUPPORT<<<Cursor049
-                            // SMCPKG_SUPPORT>>>Cursor050
                             var dragStartFraction = player.volume.coerceIn(0f, 1f)
                             var dragStartY = down.position.y
                             val travelPx = volumeTravelPx.coerceAtLeast(1f)
-                            // SMCPKG_SUPPORT<<<Cursor050
                             val cellH = size.height.toFloat().coerceAtLeast(1f)
-                            // SMCPKG_SUPPORT>>>Cursor040
                             val cellW = size.width.toFloat().coerceAtLeast(1f)
                             val upperHalf = down.position.y < cellH / 2f
-                            // SMCPKG_SUPPORT<<<Cursor040
                             while (true) {
                                 val event = awaitPointerEvent()
                                 val change = event.changes.firstOrNull() ?: break
@@ -425,17 +315,12 @@ fun VideoCell(
                                         controlsVisible = !controlsVisible
                                     }
                                     volumeOverlayVisible = false
-                                    // SMCPKG_SUPPORT>>>Cursor040
                                     brightnessOverlayVisible = false
-                                    // SMCPKG_SUPPORT<<<Cursor040
-                                    // SMCPKG_SUPPORT>>>Cursor041
                                     onBrightnessAdjusting(null)
-                                    // SMCPKG_SUPPORT<<<Cursor041
                                     break
                                 }
                                 val dx = change.position.x - down.position.x
                                 val dy = change.position.y - down.position.y
-                                // SMCPKG_SUPPORT>>>Cursor040
                                 // if (!dragged && abs(dy) > slopPx && abs(dy) > abs(dx)) {
                                 //     dragged = true
                                 //     overlayVolume = player.volume.coerceIn(0f, 1f)
@@ -454,17 +339,13 @@ fun VideoCell(
                                     if (vertical) {
                                         dragged = true
                                         adjustingVolume = true
-                                        // SMCPKG_SUPPORT>>>Cursor049
                                         // dragStartFraction = systemVolume.fraction
                                         // dragEpoch = systemVolume.externalEpoch
-                                        // SMCPKG_SUPPORT<<<Cursor049
-                                        // SMCPKG_SUPPORT>>>Cursor050
                                         // Zero point is where the swipe was recognized,
                                         // from this pane's current player.volume.
                                         dragStartFraction = player.volume.coerceIn(0f, 1f)
                                         dragStartY = change.position.y
                                         overlayVolume = dragStartFraction
-                                        // SMCPKG_SUPPORT<<<Cursor050
                                         volumeOverlayVisible = true
                                     } else if (horizontal && upperHalf) {
                                         dragged = true
@@ -475,15 +356,12 @@ fun VideoCell(
                                     }
                                 }
                                 if (adjustingVolume) {
-                                    // SMCPKG_SUPPORT>>>Cursor049
                                     // if (systemVolume.externalEpoch != dragEpoch) {
                                     //     dragStartFraction = systemVolume.fraction
                                     //     dragStartY = change.position.y
                                     //     dragEpoch = systemVolume.externalEpoch
                                     // }
                                     // overlayVolume = systemVolume.setFraction(desired)
-                                    // SMCPKG_SUPPORT<<<Cursor049
-                                    // SMCPKG_SUPPORT>>>Cursor050
                                     val desired = VolumeGestureMath.fractionAfterDrag(
                                         startFraction = dragStartFraction,
                                         deltaYPx = change.position.y - dragStartY,
@@ -491,7 +369,6 @@ fun VideoCell(
                                     )
                                     player.volume = desired
                                     overlayVolume = desired
-                                    // SMCPKG_SUPPORT<<<Cursor050
                                     change.consume()
                                 } else if (adjustingBrightness) {
                                     val percent = (
@@ -499,20 +376,13 @@ fun VideoCell(
                                         ).roundToInt().coerceIn(0, 100)
                                     overlayBrightness = percent
                                     activity?.let { host -> applyWindowBrightness(host, percent) }
-                                    // SMCPKG_SUPPORT>>>Cursor041
                                     onBrightnessAdjusting(percent)
-                                    // SMCPKG_SUPPORT<<<Cursor041
                                     change.consume()
                                 }
-                                // SMCPKG_SUPPORT<<<Cursor040
                             }
                             volumeOverlayVisible = false
-                            // SMCPKG_SUPPORT>>>Cursor040
                             brightnessOverlayVisible = false
-                            // SMCPKG_SUPPORT<<<Cursor040
-                            // SMCPKG_SUPPORT>>>Cursor041
                             onBrightnessAdjusting(null)
-                            // SMCPKG_SUPPORT<<<Cursor041
                         }
                     },
             ) {
@@ -525,54 +395,39 @@ fun VideoCell(
                             .padding(end = 16.dp),
                     )
                 }
-                // SMCPKG_SUPPORT>>>Cursor040
                 if (brightnessOverlayVisible) {
-                    // SMCPKG_SUPPORT>>>Cursor041
                     // val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
                     // Box(Modifier.size(readout)) { Text(overlayBrightness, fontSize = readout * 0.38) }
                     val readout = minOf(screenWidthDp, screenHeightDp.value.toInt()).dp / 16f
                     val edgePad = with(LocalDensity.current) { 10.toDp() }
-                    // SMCPKG_SUPPORT<<<Cursor041
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(start = 8.dp, top = 8.dp)
-                            // SMCPKG_SUPPORT>>>Cursor041
                             // .size(readout)
-                            // SMCPKG_SUPPORT<<<Cursor041
                             .clip(RoundedCornerShape(6.dp))
                             .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.72f))
-                            // SMCPKG_SUPPORT>>>Cursor041
                             .padding(edgePad),
-                            // SMCPKG_SUPPORT<<<Cursor041
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            // SMCPKG_SUPPORT>>>Cursor041
                             // text = overlayBrightness.toString(),
                             text = stringResource(R.string.brightness_percent, overlayBrightness),
-                            // SMCPKG_SUPPORT<<<Cursor041
                             color = androidx.compose.ui.graphics.Color.White,
-                            // SMCPKG_SUPPORT>>>Cursor041
                             // fontSize = (readout.value * 0.38f).sp,
                             fontSize = (readout.value * 0.38f * 3f).sp,
-                            // SMCPKG_SUPPORT<<<Cursor041
                             maxLines = 1,
                         )
                     }
                 }
-                // SMCPKG_SUPPORT<<<Cursor040
             }
 
             if (controlsVisible) {
-                // SMCPKG_SUPPORT>>>Cursor038
                 // CellPlaybackBar(..., Modifier.align(Alignment.BottomCenter).zIndex(2f))
                 // 0 keeps the bar on the bottom edge. 100 lifts it by the free
                 // space in this pane so the bar sits on the top edge.
                 val liftFraction = toolbarLift.coerceIn(0, 100) / 100f
                 val lift = (maxHeight - CellPlaybackBarHeight).coerceAtLeast(0.dp) * liftFraction
-                // SMCPKG_SUPPORT<<<Cursor038
-                // SMCPKG_SUPPORT>>>Cursor045
                 // Video stays full-bleed. Only the bar moves off the nav bar / cutout.
                 // Once lift already clears the bottom inset, do not push the bar further.
                 val edgeInsets = if (safeEdges == null) {
@@ -587,33 +442,21 @@ fun VideoCell(
                     .asPaddingValues()
                     .calculateBottomPadding()
                 val bottomOverlap = (bottomInset - lift).coerceAtLeast(0.dp)
-                // SMCPKG_SUPPORT<<<Cursor045
                 CellPlaybackBar(
                     player = player,
                     onPickVideo = onPickVideo,
-                    // SMCPKG_SUPPORT>>>Cursor017
                     onTogglePlay = onTogglePlay,
-                    // SMCPKG_SUPPORT<<<Cursor017
-                    // SMCPKG_SUPPORT>>>Cursor052
                     onScrubbingChange = onScrubbingChange,
-                    // SMCPKG_SUPPORT<<<Cursor052
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        // SMCPKG_SUPPORT>>>Cursor038
                         // .offset(y = -lift)
-                        // SMCPKG_SUPPORT<<<Cursor038
-                        // SMCPKG_SUPPORT>>>Cursor045
                         .offset(y = -(lift + bottomOverlap))
                         .windowInsetsPadding(edgeInsets.only(WindowInsetsSides.Horizontal))
-                        // SMCPKG_SUPPORT<<<Cursor045
                         .zIndex(2f),
                 )
             }
-            // SMCPKG_SUPPORT<<<Cursor024
-            // SMCPKG_SUPPORT<<<Cursor023
         }
 
-        // SMCPKG_SUPPORT>>>Cursor004
         // CellOverlay(
         //     index = index,
         //     hasVideo = videoUri != null,
@@ -621,7 +464,6 @@ fun VideoCell(
         //     onPickVideo = onPickVideo,
         //     modifier = Modifier.align(Alignment.TopStart),
         // )
-        // SMCPKG_SUPPORT<<<Cursor004
     }
 }
 
@@ -657,7 +499,6 @@ private fun EmptyVideoPlaceholder(index: Int) {
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor023
 @Composable
 internal fun SurfaceVolumeBar(
     volume: Float,
@@ -690,9 +531,7 @@ internal fun SurfaceVolumeBar(
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor023
 
-// SMCPKG_SUPPORT>>>Cursor040
 private fun applyWindowBrightness(activity: Activity, percent: Int) {
     val window = activity.window
     val attrs = window.attributes
@@ -706,10 +545,8 @@ private fun applyWindowBrightness(activity: Activity, percent: Int) {
  * picture matches the decoder output. API 31+ uses RenderEffect; older
  * releases use a hardware-layer color filter (TextureView may ignore it).
  */
-// SMCPKG_SUPPORT>>>Cursor041
 // @OptIn(UnstableApi::class)
 // private fun applyVideoContrast(root: View, contrast: Int) { ... contrast only ... }
-// SMCPKG_SUPPORT<<<Cursor041
 
 private const val SHARPEN_SHADER = """
     uniform shader content;
@@ -797,9 +634,7 @@ private fun findTextureView(view: View): TextureView? {
     }
     return null
 }
-// SMCPKG_SUPPORT<<<Cursor040
 
-// SMCPKG_SUPPORT>>>Cursor004
 // @Composable
 // private fun CellOverlay(
 //     index: Int,
@@ -808,4 +643,3 @@ private fun findTextureView(view: View): TextureView? {
 //     onPickVideo: () -> Unit,
 //     modifier: Modifier = Modifier,
 // ) { ... }
-// SMCPKG_SUPPORT<<<Cursor004

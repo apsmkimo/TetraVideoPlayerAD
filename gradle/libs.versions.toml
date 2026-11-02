@@ -1,9 +1,7 @@
 [versions]
 agp = "8.7.3"
-# SMCPKG_SUPPORT>>>Cursor002
 # kotlin = "2.0.21"
 kotlin = "2.2.10"
-# SMCPKG_SUPPORT<<<Cursor002
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
@@ -11,22 +9,12 @@ composeBom = "2024.12.01"
 media3 = "1.11.0"
 coil = "2.7.0"
 playServicesAds = "23.6.0"
-# SMCPKG_SUPPORT>>>Cursor043
 userMessagingPlatform = "4.0.0"
-# SMCPKG_SUPPORT<<<Cursor043
-# SMCPKG_SUPPORT>>>Cursor033
 billing = "9.1.0"
-# SMCPKG_SUPPORT<<<Cursor033
-# SMCPKG_SUPPORT>>>Cursor009
 checkerQual = "3.43.0"
 annotation = "1.9.1"
-# SMCPKG_SUPPORT<<<Cursor009
-# SMCPKG_SUPPORT>>>Cursor045
 fragment = "1.8.9"
-# SMCPKG_SUPPORT<<<Cursor045
-# SMCPKG_SUPPORT>>>Cursor048
 appcompat = "1.7.0"
-# SMCPKG_SUPPORT<<<Cursor048
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,31 +31,19 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3" }
-# SMCPKG_SUPPORT>>>Cursor009
 androidx-media3-decoder = { group = "androidx.media3", name = "media3-decoder", version.ref = "media3" }
 checker-qual = { group = "org.checkerframework", name = "checker-qual", version.ref = "checkerQual" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
-# SMCPKG_SUPPORT<<<Cursor009
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-video = { group = "io.coil-kt", name = "coil-video", version.ref = "coil" }
 play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
-# SMCPKG_SUPPORT>>>Cursor043
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }
-# SMCPKG_SUPPORT<<<Cursor043
-# SMCPKG_SUPPORT>>>Cursor033
 billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
-# SMCPKG_SUPPORT<<<Cursor033
-# SMCPKG_SUPPORT>>>Cursor045
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
-# SMCPKG_SUPPORT<<<Cursor045
-# SMCPKG_SUPPORT>>>Cursor048
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-# SMCPKG_SUPPORT<<<Cursor048
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-# SMCPKG_SUPPORT>>>Cursor009
 android-library = { id = "com.android.library", version.ref = "agp" }
-# SMCPKG_SUPPORT<<<Cursor009
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

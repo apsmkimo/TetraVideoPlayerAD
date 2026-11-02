@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,7 +24,6 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
 package com.apsmkimo.tetravideoplayer.ui
 
@@ -66,21 +62,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-// SMCPKG_SUPPORT>>>Cursor046
 // import androidx.annotation.DrawableRes
 // import androidx.compose.foundation.Image
 // import androidx.compose.foundation.layout.offset
-// SMCPKG_SUPPORT<<<Cursor046
-// SMCPKG_SUPPORT>>>Cursor038
 // import androidx.compose.material.icons.Icons
-// SMCPKG_SUPPORT<<<Cursor038
-// SMCPKG_SUPPORT>>>Cursor033
 // import androidx.compose.material.icons.filled.Star
 // import androidx.compose.material.icons.outlined.Star
-// SMCPKG_SUPPORT<<<Cursor033
-// SMCPKG_SUPPORT>>>Cursor038
 // import androidx.compose.material.icons.outlined.Info
-// SMCPKG_SUPPORT<<<Cursor038
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -116,7 +104,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// SMCPKG_SUPPORT>>>Cursor046
 // import androidx.compose.ui.draw.alpha
 // import androidx.compose.ui.graphics.FilterQuality
 // import androidx.compose.ui.graphics.ImageBitmap
@@ -124,7 +111,6 @@ import androidx.compose.ui.unit.sp
 // import androidx.compose.ui.platform.LocalDensity
 // import androidx.compose.ui.res.imageResource
 // import androidx.compose.ui.unit.min
-// SMCPKG_SUPPORT<<<Cursor046
 import com.apsmkimo.tetravideoplayer.ui.theme.QuadVideoPlayerTheme
 import kotlin.math.max
 import kotlin.math.min
@@ -133,9 +119,7 @@ import com.apsmkimo.tetravideoplayer.R
 import com.apsmkimo.tetravideoplayer.TetraVideoPlayerApp
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
 import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
-// SMCPKG_SUPPORT>>>Cursor033
 // import com.apsmkimo.tetravideoplayer.ads.AdSession
-// SMCPKG_SUPPORT<<<Cursor033
 import com.apsmkimo.tetravideoplayer.ads.BannerAd
 import com.apsmkimo.tetravideoplayer.ads.RemoveAdsBilling
 import com.apsmkimo.tetravideoplayer.ads.maybeShowInterstitialOnce
@@ -143,7 +127,6 @@ import com.apsmkimo.tetravideoplayer.ads.preloadInterstitial
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
 import kotlinx.coroutines.launch
 
-// SMCPKG_SUPPORT>>>Cursor046
 // private val ScreenBlack = Color(0xFF000000)
 private val MenuBackground = Brush.verticalGradient(
     colors = listOf(
@@ -153,21 +136,16 @@ private val MenuBackground = Brush.verticalGradient(
     ),
 )
 private val MenuSubtitle = Color(0xFF8E97A8)
-// SMCPKG_SUPPORT<<<Cursor046
 private val LabelWhite = Color(0xFFFFFFFF)
-// SMCPKG_SUPPORT>>>Cursor033
 // private val StarGold = Color(0xFFFFC107)
-// SMCPKG_SUPPORT<<<Cursor033
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LauncherSelectionScreen(
     onLayoutSelected: (PlayerLayout) -> Unit,
     onCancel: (() -> Unit)? = null,
-    // SMCPKG_SUPPORT>>>Cursor038
     // onAbout: () -> Unit = {},
     onSettings: () -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor038
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -175,23 +153,18 @@ fun LauncherSelectionScreen(
     if (onCancel != null) {
         BackHandler(onBack = onCancel)
     } else {
-        // SMCPKG_SUPPORT>>>Cursor051
         ConfirmBackHandler(
             message = stringResource(R.string.back_again_to_exit),
             onConfirmed = { activity.finish() },
         )
-        // SMCPKG_SUPPORT<<<Cursor051
     }
 
     val scope = rememberCoroutineScope()
     var adsRemoved by remember { mutableStateOf(AdPreferences.isAdRemoved(context)) }
     var gating by remember { mutableStateOf(false) }
-    // SMCPKG_SUPPORT>>>Cursor043
     val consent = remember(context) { AdsConsentManager.getInstance(context) }
     val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
     val adsSdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
-    // SMCPKG_SUPPORT<<<Cursor043
-    // SMCPKG_SUPPORT>>>Cursor033
     val billing = (context.applicationContext as TetraVideoPlayerApp).removeAdsBilling
     DisposableEffect(billing) {
         val listener = RemoveAdsBilling.EntitlementListener { owned ->
@@ -201,10 +174,8 @@ fun LauncherSelectionScreen(
         adsRemoved = AdPreferences.isAdRemoved(context)
         onDispose { billing.removeListener(listener) }
     }
-    // SMCPKG_SUPPORT<<<Cursor033
 
     LaunchedEffect(adsRemoved, canRequestAds, adsSdkReady) {
-        // SMCPKG_SUPPORT>>>Cursor043
         // if (!adsRemoved) {
         //     preloadInterstitial(context)
         // }
@@ -214,7 +185,6 @@ fun LauncherSelectionScreen(
                 preloadInterstitial(context)
             }
         }
-        // SMCPKG_SUPPORT<<<Cursor043
     }
 
     fun pick(layout: PlayerLayout) {
@@ -222,14 +192,12 @@ fun LauncherSelectionScreen(
         scope.launch {
             gating = true
             try {
-                // SMCPKG_SUPPORT>>>Cursor043
                 // if (!AdPreferences.isAdRemoved(context)) {
                 //     maybeShowInterstitialOnce(activity)
                 // }
                 if (!AdPreferences.isAdRemoved(context) && canRequestAds && adsSdkReady) {
                     maybeShowInterstitialOnce(activity)
                 }
-                // SMCPKG_SUPPORT<<<Cursor043
                 onLayoutSelected(layout)
             } finally {
                 gating = false
@@ -240,29 +208,22 @@ fun LauncherSelectionScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            // SMCPKG_SUPPORT>>>Cursor046
             // .background(ScreenBlack),
             .background(MenuBackground),
-            // SMCPKG_SUPPORT<<<Cursor046
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                // SMCPKG_SUPPORT>>>Cursor045
                 // .statusBarsPadding()
                 // .navigationBarsPadding(),
                 .windowInsetsPadding(
                     WindowInsets.systemBars.union(WindowInsets.displayCutout),
                 ),
-                // SMCPKG_SUPPORT<<<Cursor045
         ) {
-            // SMCPKG_SUPPORT>>>Cursor040
             // if (!adsRemoved) {
             //     BannerAd(Modifier.fillMaxWidth())
             // }
             // Selection keeps the bottom banner only.
-            // SMCPKG_SUPPORT<<<Cursor040
-            // SMCPKG_SUPPORT>>>Cursor046
             // Box(
             //     modifier = Modifier
             //         .weight(1f)
@@ -272,7 +233,6 @@ fun LauncherSelectionScreen(
             // ) {
             //     BoxWithConstraints {
             //         val gap = 18.dp
-            //         // SMCPKG_SUPPORT>>>Cursor040
             //         // val tile = min((maxWidth - gap) / 2, (maxHeight - gap) / 2)
             //         //     .coerceIn(128.dp, 220.dp)
             //         val rowCount = 3
@@ -281,13 +241,10 @@ fun LauncherSelectionScreen(
             //             (maxHeight - gap * (rowCount - 1)) / rowCount,
             //         ).coerceIn(72.dp, 168.dp)
             //         val iconNudge = with(LocalDensity.current) { 10.toDp() }
-            //         // SMCPKG_SUPPORT<<<Cursor040
             //         Column(
             //             modifier = Modifier
-            //                 // SMCPKG_SUPPORT>>>Cursor040
             //                 .offset(x = -iconNudge)
             //                 .alpha(0.88f),
-            //                 // SMCPKG_SUPPORT<<<Cursor040
             //             verticalArrangement = Arrangement.spacedBy(gap),
             //             horizontalAlignment = Alignment.CenterHorizontally,
             //         ) {
@@ -319,7 +276,6 @@ fun LauncherSelectionScreen(
             //                     onClick = { pick(PlayerLayout.VERTICAL_1X2) },
             //                 )
             //             }
-            //             // SMCPKG_SUPPORT>>>Cursor040
             //             Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
             //                 LayoutTile(
             //                     tile = tile,
@@ -334,7 +290,6 @@ fun LauncherSelectionScreen(
             //                     onClick = { pick(PlayerLayout.VERTICAL_1X3) },
             //                 )
             //             }
-            //             // SMCPKG_SUPPORT<<<Cursor040
             //         }
             //     }
             // }
@@ -345,30 +300,22 @@ fun LauncherSelectionScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             )
-            // SMCPKG_SUPPORT<<<Cursor046
-            // SMCPKG_SUPPORT>>>Cursor043
             // if (!adsRemoved) {
             //     BannerAd(Modifier.fillMaxWidth())
             // }
             if (!adsRemoved && canRequestAds && adsSdkReady) {
                 BannerAd(Modifier.fillMaxWidth())
             }
-            // SMCPKG_SUPPORT<<<Cursor043
         }
 
-        // SMCPKG_SUPPORT>>>Cursor040
         // val iconNudge = with(LocalDensity.current) { 10.toDp() }
         val chromeBg = Color(0x22202A3A)
         // was Color(0x33202A3A)
-        // SMCPKG_SUPPORT<<<Cursor040
-        // SMCPKG_SUPPORT>>>Cursor046
         // .padding(end = 4.dp + iconNudge, top = 4.dp) kept the bitmap tiles shifted.
         // Cards are centered, so the corner controls sit on the normal inset.
-        // SMCPKG_SUPPORT<<<Cursor046
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                // SMCPKG_SUPPORT>>>Cursor045
                 // .statusBarsPadding()
                 .windowInsetsPadding(
                     WindowInsets.statusBars
@@ -376,17 +323,11 @@ fun LauncherSelectionScreen(
                         .union(WindowInsets.displayCutout)
                         .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
                 )
-                // SMCPKG_SUPPORT<<<Cursor045
-                // SMCPKG_SUPPORT>>>Cursor040
                 // .padding(end = 4.dp, top = 4.dp),
-                // SMCPKG_SUPPORT>>>Cursor046
                 // .padding(end = 4.dp + iconNudge, top = 4.dp),
                 .padding(end = 4.dp, top = 4.dp),
-                // SMCPKG_SUPPORT<<<Cursor046
-                // SMCPKG_SUPPORT<<<Cursor040
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // SMCPKG_SUPPORT>>>Cursor033
             // Box(
             //     modifier = Modifier
             //         .size(40.dp)
@@ -445,10 +386,8 @@ fun LauncherSelectionScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        // SMCPKG_SUPPORT>>>Cursor040
                         // .background(Color(0x33202A3A)),
                         .background(chromeBg),
-                        // SMCPKG_SUPPORT<<<Cursor040
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.ic_remove_ads),
@@ -462,66 +401,48 @@ fun LauncherSelectionScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        // SMCPKG_SUPPORT>>>Cursor040
                         // .background(Color(0x33202A3A))
                         .background(chromeBg)
-                        // SMCPKG_SUPPORT<<<Cursor040
                         .combinedClickable(
-                            // SMCPKG_SUPPORT>>>Cursor038
                             // onClick = onAbout,
                             onClick = onSettings,
-                            // SMCPKG_SUPPORT<<<Cursor038
                             onLongClick = { billing.restoreAdsForDebug() },
                         ),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        // SMCPKG_SUPPORT>>>Cursor038
                         // imageVector = Icons.Outlined.Info,
                         imageVector = SettingsGearIcon,
                         // contentDescription = stringResource(R.string.about_title),
                         contentDescription = stringResource(R.string.settings_open),
-                        // SMCPKG_SUPPORT<<<Cursor038
-                        // SMCPKG_SUPPORT>>>Cursor040
                         // tint = LabelWhite,
                         tint = LabelWhite.copy(alpha = 0.72f),
-                        // SMCPKG_SUPPORT<<<Cursor040
                     )
                 }
             } else {
                 IconButton(
-                    // SMCPKG_SUPPORT>>>Cursor038
                     // onClick = onAbout,
                     onClick = onSettings,
-                    // SMCPKG_SUPPORT<<<Cursor038
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        // SMCPKG_SUPPORT>>>Cursor040
                         // .background(Color(0x33202A3A)),
                         .background(chromeBg),
-                        // SMCPKG_SUPPORT<<<Cursor040
                 ) {
                     Icon(
-                        // SMCPKG_SUPPORT>>>Cursor038
                         // imageVector = Icons.Outlined.Info,
                         imageVector = SettingsGearIcon,
                         // contentDescription = stringResource(R.string.about_title),
                         contentDescription = stringResource(R.string.settings_open),
-                        // SMCPKG_SUPPORT<<<Cursor038
-                        // SMCPKG_SUPPORT>>>Cursor040
                         // tint = LabelWhite,
                         tint = LabelWhite.copy(alpha = 0.72f),
-                        // SMCPKG_SUPPORT<<<Cursor040
                     )
                 }
             }
-            // SMCPKG_SUPPORT<<<Cursor033
         }
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor046
 // @Composable
 // private fun LayoutTile(
 //     tile: androidx.compose.ui.unit.Dp,
@@ -529,7 +450,6 @@ fun LauncherSelectionScreen(
 //     @DrawableRes artwork: Int,
 //     onClick: () -> Unit,
 // ) {
-//     // SMCPKG_SUPPORT>>>Cursor036
 //     // Image(
 //     //     painter = painterResource(artwork),
 //     //     contentDescription = label,
@@ -549,7 +469,6 @@ fun LauncherSelectionScreen(
 //             .clip(RoundedCornerShape(tile * 0.22f))
 //             .clickable(onClick = onClick),
 //     )
-//     // SMCPKG_SUPPORT<<<Cursor036
 // }
 
 private data class LayoutChoice(
@@ -633,13 +552,11 @@ private fun LayoutSelectionGrid(
         // height on large screens so a tablet does not grow huge slabs.
         val usable = (maxHeight - buttonClearance - bottomPad - gaps).coerceAtLeast(0.dp)
         val fillHeight = usable / rowCount
-        // SMCPKG_SUPPORT>>>Cursor048
         // val heightCap = maxOf(cardWidth * 1.45f, 120.dp)
         // val cardHeight = fillHeight.coerceIn(120.dp, heightCap)
         // Taller floor so a wrapped title plus a two-line subtitle still fits.
         val heightCap = maxOf(cardWidth * 1.45f, 148.dp)
         val cardHeight = fillHeight.coerceIn(148.dp, heightCap)
-        // SMCPKG_SUPPORT<<<Cursor048
         val gridHeight = cardHeight * rows.size + gap * (rows.size - 1)
         val needsScroll = gridHeight + buttonClearance > maxHeight + 0.5.dp
         val leftover = (maxHeight - gridHeight).coerceAtLeast(0.dp)
@@ -744,13 +661,11 @@ private fun LayoutOptionCard(
             )
             .clickable(role = Role.Button, onClick = onClick),
     ) {
-        // SMCPKG_SUPPORT>>>Cursor048
         // val titleSize = (maxWidth.value * 0.092f).coerceIn(13f, 17f).sp
         // val subtitleSize = (maxWidth.value * 0.066f).coerceIn(10f, 12.5f).sp
         // Spanish and Japanese subtitles wrap; keep the floor small enough for a narrow card.
         val titleSize = (maxWidth.value * 0.088f).coerceIn(12f, 17f).sp
         val subtitleSize = (maxWidth.value * 0.062f).coerceIn(10f, 12.5f).sp
-        // SMCPKG_SUPPORT<<<Cursor048
         val iconSize = minOf(maxWidth * 0.42f, maxHeight * 0.34f)
         Column(
             modifier = Modifier
@@ -773,10 +688,8 @@ private fun LayoutOptionCard(
                         fontWeight = FontWeight.Bold,
                         fontSize = titleSize,
                         lineHeight = titleSize * 1.15f,
-                        // SMCPKG_SUPPORT>>>Cursor048
                         // maxLines = 1,
                         maxLines = 2,
-                        // SMCPKG_SUPPORT<<<Cursor048
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
@@ -915,4 +828,3 @@ internal fun LayoutSelectionMenuPreview() {
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor046

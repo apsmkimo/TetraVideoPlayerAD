@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor049
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -25,7 +24,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import kotlin.math.abs
 
-// SMCPKG_SUPPORT>>>Cursor050
 // Screen-level volume swipe and non-consuming taps were only for STREAM_MUSIC.
 // Pane volume is handled inside the playing cell. These helpers are unused.
 // /**
@@ -155,5 +153,3 @@ import kotlin.math.abs
 //         if (change != null) return change
 //     }
 // }
-// // SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT<<<Cursor050

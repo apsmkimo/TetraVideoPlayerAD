@@ -28,7 +28,6 @@ ENABLED_DECODERS=("${@:5}")
 echo "Enabled decoders are ${ENABLED_DECODERS[@]}"
 JOBS="$(nproc 2> /dev/null || sysctl -n hw.ncpu 2> /dev/null || echo 4)"
 echo "Using $JOBS jobs for make"
-# SMCPKG_SUPPORT>>>Cursor030
 # COMMON_OPTIONS used --enable-static --disable-shared (FFmpeg archived into libffmpegJNI.so).
 # LGPL-only shared build: never pass --enable-gpl or --enable-nonfree.
 COMMON_OPTIONS="
@@ -51,7 +50,6 @@ COMMON_OPTIONS="
     --disable-v4l2-m2m
     --disable-vulkan
     "
-# SMCPKG_SUPPORT<<<Cursor030
 TOOLCHAIN_PREFIX="${NDK_PATH}/toolchains/llvm/prebuilt/${HOST_PLATFORM}/bin"
 if [[ ! -d "${TOOLCHAIN_PREFIX}" ]]
 then

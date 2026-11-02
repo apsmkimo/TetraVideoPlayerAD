@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,25 +24,16 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import androidx.compose.foundation.background
-// SMCPKG_SUPPORT>>>Cursor049
 // import androidx.compose.foundation.clickable
 // Bar buttons use tapWithoutConsumingDown so a vertical swipe that starts on
 // an icon still reaches the screen-level volume gesture.
-// SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT>>>Cursor050
 import androidx.compose.foundation.clickable
-// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -69,9 +57,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-// SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material3.IconButton
-// SMCPKG_SUPPORT<<<Cursor022
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -100,50 +86,34 @@ import androidx.compose.ui.zIndex
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
-// SMCPKG_SUPPORT>>>Cursor052
 import android.os.SystemClock
 import androidx.media3.exoplayer.SeekParameters
-// SMCPKG_SUPPORT<<<Cursor052
-// SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.R
 // import com.example.quadvideoplayer.data.LocalVideoStore
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.LocalVideoStore
 import com.apsmkimo.tetravideoplayer.data.LocalVideoStore
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 import kotlin.math.abs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withTimeoutOrNull
 
-// SMCPKG_SUPPORT>>>Cursor049
 @OptIn(ExperimentalMaterial3Api::class)
-// SMCPKG_SUPPORT<<<Cursor049
 @Composable
 fun CellPlaybackBar(
     player: ExoPlayer,
     onPickVideo: () -> Unit,
     modifier: Modifier = Modifier,
-    // SMCPKG_SUPPORT>>>Cursor017
     onTogglePlay: (() -> Unit)? = null,
-    // SMCPKG_SUPPORT<<<Cursor017
-    // SMCPKG_SUPPORT>>>Cursor052
     onScrubbingChange: (Boolean) -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor052
 ) {
     var isPlaying by remember(player) { mutableStateOf(player.isPlaying) }
     var durationMs by remember(player) { mutableLongStateOf(resolvedDuration(player)) }
     var sliderValue by remember(player) { mutableFloatStateOf(player.currentPosition.toFloat()) }
     var isSeeking by remember { mutableStateOf(false) }
-    // SMCPKG_SUPPORT>>>Cursor052
     val scrub = remember(player) { ScrubSession() }
     val currentScrubbingChange = rememberUpdatedState(onScrubbingChange)
-    // SMCPKG_SUPPORT<<<Cursor052
     var volume by remember(player) { mutableFloatStateOf(player.volume.coerceIn(0f, 1f)) }
     var lastAudibleVolume by remember(player) {
         mutableFloatStateOf(player.volume.takeIf { it > 0f } ?: 1f)
@@ -152,21 +122,17 @@ fun CellPlaybackBar(
     DisposableEffect(player) {
         val listener = object : Player.Listener {
             override fun onEvents(player: Player, events: Player.Events) {
-                // SMCPKG_SUPPORT>>>Cursor052
                 // isPlaying = player.isPlaying
                 // Keep the play/pause icon stable while this pane is scrubbing.
                 if (!scrub.active) {
                     isPlaying = player.isPlaying
                 }
-                // SMCPKG_SUPPORT<<<Cursor052
                 val duration = resolvedDuration(player)
                 if (duration > 0L) {
                     durationMs = duration
                 }
-                // SMCPKG_SUPPORT>>>Cursor052
                 // if (!isSeeking) {
                 if (!scrub.active) {
-                // SMCPKG_SUPPORT<<<Cursor052
                     sliderValue = player.currentPosition.toFloat()
                 }
                 volume = player.volume.coerceIn(0f, 1f)
@@ -178,7 +144,6 @@ fun CellPlaybackBar(
         player.addListener(listener)
         onDispose {
             player.removeListener(listener)
-            // SMCPKG_SUPPORT>>>Cursor052
             if (scrub.active) {
                 scrub.active = false
                 scrub.pendingMs = -1L
@@ -191,11 +156,9 @@ fun CellPlaybackBar(
                     }
                 }
             }
-            // SMCPKG_SUPPORT<<<Cursor052
         }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor052
     LaunchedEffect(player, isSeeking) {
         if (!isSeeking) return@LaunchedEffect
         while (isActive && scrub.active) {
@@ -259,7 +222,6 @@ fun CellPlaybackBar(
             runCatching { player.play() }
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor052
 
     LaunchedEffect(player, isPlaying, isSeeking) {
         while (isActive && isPlaying && !isSeeking) {
@@ -275,7 +237,6 @@ fun CellPlaybackBar(
     val maxValue = durationMs.toFloat().coerceAtLeast(1f)
     val elapsedMs = sliderValue.toLong().coerceAtLeast(0L)
     val isMuted = volume <= 0f
-    // SMCPKG_SUPPORT>>>Cursor049
     val sliderInteraction = remember { MutableInteractionSource() }
     val sliderColors = SliderDefaults.colors(
         thumbColor = Color.White,
@@ -288,9 +249,7 @@ fun CellPlaybackBar(
         fontSize = BarTimeFontSize,
         lineHeight = BarTimeLineHeight,
     )
-    // SMCPKG_SUPPORT<<<Cursor049
 
-    // SMCPKG_SUPPORT>>>Cursor022
     // Row(fillMaxWidth, default IconButton 48.dp + Volume 40.dp) — icons sat
     // on different baselines and the bar was ~48.dp tall.
     Row(
@@ -298,22 +257,14 @@ fun CellPlaybackBar(
             .fillMaxWidth()
             .height(BarHeight)
             .background(Color.Black.copy(alpha = 0.72f))
-            // SMCPKG_SUPPORT>>>Cursor049
             // .padding(horizontal = 4.dp),
-            // SMCPKG_SUPPORT<<<Cursor049
-            // SMCPKG_SUPPORT>>>Cursor050
             .padding(horizontal = 2.dp),
-            // SMCPKG_SUPPORT<<<Cursor050
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // SMCPKG_SUPPORT>>>Cursor049
         // Play/pause used to be the leftmost control. Volume is now leftmost;
         // play/pause sits immediately to its right. Mute/unmute is unchanged.
         // CompactBarIconButton(onClick = { onTogglePlay / pause }) { PlayArrow }
-        // SMCPKG_SUPPORT<<<Cursor049
 
-        // SMCPKG_SUPPORT>>>Cursor006
-        // SMCPKG_SUPPORT>>>Cursor023
         // VolumeGestureIcon(... onVolumeDelta ... hold + swipe on speaker)
         // Speaker mutes and unmutes only this pane. The level is this pane's
         // ExoPlayer volume, changed by a vertical swipe on the video.
@@ -343,12 +294,9 @@ fun CellPlaybackBar(
                 modifier = Modifier.size(BarIconSize),
             )
         }
-        // SMCPKG_SUPPORT<<<Cursor023
 
-        // SMCPKG_SUPPORT>>>Cursor049
         CompactBarIconButton(
             onClick = {
-                // SMCPKG_SUPPORT>>>Cursor017
                 // if (player.isPlaying) {
                 //     player.pause()
                 // } else {
@@ -362,7 +310,6 @@ fun CellPlaybackBar(
                     player.playWhenReady = true
                     player.play()
                 }
-                // SMCPKG_SUPPORT<<<Cursor017
             },
         ) {
             Icon(
@@ -374,32 +321,22 @@ fun CellPlaybackBar(
                 modifier = Modifier.size(BarIconSize),
             )
         }
-        // SMCPKG_SUPPORT<<<Cursor049
-        // SMCPKG_SUPPORT<<<Cursor022
 
         Text(
             text = LocalVideoStore.formatDuration(durationMs),
-            // SMCPKG_SUPPORT>>>Cursor049
             // style = MaterialTheme.typography.labelSmall,
             style = timeStyle,
-            // SMCPKG_SUPPORT<<<Cursor049
             color = Color.White,
             textAlign = TextAlign.End,
             modifier = Modifier
-                // SMCPKG_SUPPORT>>>Cursor049
                 // .widthIn(min = BarTimeMinWidth)
                 // .padding(end = 4.dp),
-                // SMCPKG_SUPPORT<<<Cursor049
-                // SMCPKG_SUPPORT>>>Cursor050
                 .widthIn(min = BarTimeMinWidth)
                 .padding(end = 2.dp),
-                // SMCPKG_SUPPORT<<<Cursor050
         )
-        // SMCPKG_SUPPORT<<<Cursor006
 
         Slider(
             value = sliderValue.coerceIn(0f, maxValue),
-            // SMCPKG_SUPPORT>>>Cursor052
             // onValueChange = { value ->
             //     isSeeking = true
             //     sliderValue = value
@@ -415,13 +352,11 @@ fun CellPlaybackBar(
                 previewScrub(value.toLong())
             },
             onValueChangeFinished = { finishScrub() },
-            // SMCPKG_SUPPORT<<<Cursor052
             valueRange = 0f..maxValue,
             enabled = durationMs > 0L,
             modifier = Modifier
                 .weight(1f)
                 .height(BarHeight),
-            // SMCPKG_SUPPORT>>>Cursor049
             // colors = SliderDefaults.colors(
             //     thumbColor = Color.White,
             //     activeTrackColor = Color.White,
@@ -446,31 +381,21 @@ fun CellPlaybackBar(
                     enabled = durationMs > 0L,
                 )
             },
-            // SMCPKG_SUPPORT<<<Cursor049
         )
 
-        // SMCPKG_SUPPORT>>>Cursor006
         Text(
             text = LocalVideoStore.formatDuration(elapsedMs),
-            // SMCPKG_SUPPORT>>>Cursor049
             // style = MaterialTheme.typography.labelSmall,
             style = timeStyle,
-            // SMCPKG_SUPPORT<<<Cursor049
             color = Color.White,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                // SMCPKG_SUPPORT>>>Cursor049
                 // .widthIn(min = BarTimeMinWidth)
                 // .padding(start = 4.dp),
-                // SMCPKG_SUPPORT<<<Cursor049
-                // SMCPKG_SUPPORT>>>Cursor050
                 .widthIn(min = BarTimeMinWidth)
                 .padding(start = 2.dp),
-                // SMCPKG_SUPPORT<<<Cursor050
         )
-        // SMCPKG_SUPPORT<<<Cursor006
 
-        // SMCPKG_SUPPORT>>>Cursor022
         // IconButton(onClick = onPickVideo) { Icon(FolderOpen) }
         CompactBarIconButton(onClick = onPickVideo) {
             Icon(
@@ -480,7 +405,6 @@ fun CellPlaybackBar(
                 modifier = Modifier.size(BarIconSize),
             )
         }
-        // SMCPKG_SUPPORT<<<Cursor022
     }
 }
 
@@ -491,21 +415,18 @@ private fun VolumeGestureIcon(
     onToggleMute: () -> Unit,
     onVolumeDelta: (Float) -> Unit,
 ) {
-    // SMCPKG_SUPPORT>>>Cursor007
     // Immediate drag-to-adjust without an overlay. Replaced by press-and-hold bar.
     var overlayVisible by remember { mutableStateOf(false) }
     val touchSlopPx = 16f
     val dragSensitivity = 220f
     val holdTimeoutMs = 260L
 
-    // SMCPKG_SUPPORT>>>Cursor022
     // Box(Modifier.size(40.dp)) — sat higher than play IconButton; now matches bar.
     Box(
         modifier = Modifier
             .size(BarButtonSize)
             .zIndex(2f)
             .pointerInput(Unit) {
-    // SMCPKG_SUPPORT<<<Cursor022
                 awaitEachGesture {
                     val down = awaitFirstDown()
                     var overlayShown = false
@@ -562,14 +483,11 @@ private fun VolumeGestureIcon(
                 volume = volume,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    // SMCPKG_SUPPORT>>>Cursor022
                     // .offset(y = (-44).dp),
                     .offset(y = (-VolumeOverlayLift)),
-                // SMCPKG_SUPPORT<<<Cursor022
             )
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor007
 }
 
 @Composable
@@ -604,10 +522,7 @@ private fun VerticalVolumeOverlay(
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor022
-// SMCPKG_SUPPORT>>>Cursor038
 // private val BarHeight = 24.dp
-// SMCPKG_SUPPORT>>>Cursor049
 // internal val CellPlaybackBarHeight = 24.dp
 // private val BarButtonSize = 24.dp
 // private val BarIconSize = 19.dp
@@ -623,7 +538,6 @@ private fun VerticalVolumeOverlay(
 // private val BarThumbWidth = 8.dp
 // private val BarThumbHeight = 48.dp
 // private val VolumeOverlayLift = 96.dp
-// SMCPKG_SUPPORT>>>Cursor050
 // Half of the 64dp bar: 32dp tall, icons and thumb scaled with it.
 internal val CellPlaybackBarHeight = 32.dp
 private val BarHeight = CellPlaybackBarHeight
@@ -635,9 +549,6 @@ private val BarTimeMinWidth = 32.dp
 private val BarThumbWidth = 4.dp
 private val BarThumbHeight = 24.dp
 private val VolumeOverlayLift = 48.dp
-// SMCPKG_SUPPORT<<<Cursor050
-// SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT<<<Cursor038
 // private val BarButtonSize = 24.dp
 // private val BarIconSize = 19.dp
 // private val VolumeOverlayLift = 56.dp
@@ -649,12 +560,9 @@ private fun CompactBarIconButton(
 ) {
     Box(
         modifier = Modifier
-            // SMCPKG_SUPPORT>>>Cursor049
             // .width(BarButtonSize)
             // .height(BarHeight)
             // .tapWithoutConsumingDown(onClick),
-            // SMCPKG_SUPPORT<<<Cursor049
-            // SMCPKG_SUPPORT>>>Cursor050
             .width(BarButtonSize)
             .height(BarHeight)
             .clickable(
@@ -662,22 +570,18 @@ private fun CompactBarIconButton(
                 indication = null,
                 onClick = onClick,
             ),
-            // SMCPKG_SUPPORT<<<Cursor050
         contentAlignment = Alignment.Center,
     ) {
         content()
     }
 }
-// SMCPKG_SUPPORT<<<Cursor022
 
-// SMCPKG_SUPPORT>>>Cursor052
 private class ScrubSession {
     var active: Boolean = false
     var resume: Boolean = false
     var pendingMs: Long = -1L
     var lastPreviewAtMs: Long = 0L
 }
-// SMCPKG_SUPPORT<<<Cursor052
 
 private fun resolvedDuration(player: Player): Long {
     val duration = player.duration

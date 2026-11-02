@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor048
 package com.apsmkimo.tetravideoplayer.ui
 
 import androidx.appcompat.app.AppCompatDelegate
@@ -60,4 +59,3 @@ enum class AppLanguage(
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor048

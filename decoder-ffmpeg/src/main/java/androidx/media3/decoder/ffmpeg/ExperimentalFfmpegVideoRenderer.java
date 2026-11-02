@@ -41,9 +41,9 @@ import androidx.media3.exoplayer.video.VideoRendererEventListener;
 /**
  * Decodes and renders video using FFmpeg (ported from androidx/media PR 1591).
  *
- * <p>SMCPKG_SUPPORT>>>Cursor030 TetraVideoPlayer advertises old-AVI codecs only
+ * <p>TetraVideoPlayer advertises old-AVI codecs only
  * (MPEG-4 ASP, MSMPEG4, MJPEG, H.263, MPEG-1/2, FLV, VC-1). H.264/HEVC stay on
- * hardware MediaCodec. Was: TetraView. SMCPKG_SUPPORT<<<Cursor030
+ * hardware MediaCodec. Was: TetraView.
  */
 @ExperimentalApi
 public final class ExperimentalFfmpegVideoRenderer extends DecoderVideoRenderer {

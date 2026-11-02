@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor052
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -22,4 +21,3 @@ internal object ScrubSeek {
         return nowMs - lastPreviewAtMs >= PREVIEW_INTERVAL_MS
     }
 }
-// SMCPKG_SUPPORT<<<Cursor052

@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui.theme
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui.theme
 package com.apsmkimo.tetravideoplayer.ui.theme
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

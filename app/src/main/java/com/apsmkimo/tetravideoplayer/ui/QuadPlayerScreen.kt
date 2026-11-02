@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,33 +24,22 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
-// SMCPKG_SUPPORT>>>Cursor049
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-// SMCPKG_SUPPORT<<<Cursor049
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-// SMCPKG_SUPPORT>>>Cursor049
 // import androidx.compose.foundation.clickable
 // Top chrome uses tapWithoutConsumingDown so a swipe can still change volume.
-// SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT>>>Cursor050
 import androidx.compose.foundation.clickable
-// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,15 +62,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DashboardCustomize
-// SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material.icons.outlined.Info
-// SMCPKG_SUPPORT<<<Cursor022
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-// SMCPKG_SUPPORT>>>Cursor022
 // import androidx.compose.material3.IconButton
-// SMCPKG_SUPPORT<<<Cursor022
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -101,60 +83,39 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
-// SMCPKG_SUPPORT>>>Cursor050
 // import androidx.compose.ui.platform.LocalConfiguration
-// SMCPKG_SUPPORT<<<Cursor050
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
-// SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.R
 // import com.example.quadvideoplayer.data.PlayerLayout
 // import com.example.quadvideoplayer.player.QuadPlayerController
 // import com.example.quadvideoplayer.util.VideoPermissions
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.PlayerLayout
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
-// SMCPKG_SUPPORT>>>Cursor038
 import com.apsmkimo.tetravideoplayer.data.PlayerSettings
-// SMCPKG_SUPPORT>>>Cursor040
 import com.apsmkimo.tetravideoplayer.data.DecodeMode
 import com.apsmkimo.tetravideoplayer.data.SETTINGS_PANE_COUNT
-// SMCPKG_SUPPORT<<<Cursor040
-// SMCPKG_SUPPORT<<<Cursor038
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.player.QuadPlayerController
 import com.apsmkimo.tetravideoplayer.player.QuadPlayerController
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.util.VideoPermissions
 import com.apsmkimo.tetravideoplayer.util.VideoPermissions
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 import kotlinx.coroutines.delay
 
 private val Hairline = 1.dp
 private val HairlineColor = Color(0xFF5A5A5A)
-// SMCPKG_SUPPORT>>>Cursor049
 // private val TopChromeTouch = 48.dp
 // private val TopChromeIcon = 44.dp
-// SMCPKG_SUPPORT>>>Cursor050
 private val TopChromeTouch = 33.dp
 private val TopChromeIcon = 22.dp
-// SMCPKG_SUPPORT<<<Cursor050
 private const val TOP_CHROME_IDLE_MS = 10_000L
 private const val TOP_CHROME_FADE_MS = 350
-// SMCPKG_SUPPORT<<<Cursor049
 
-// SMCPKG_SUPPORT>>>Cursor045
 /** Top and side system bars / cutout. Bottom stays with the playback bar. */
 @Composable
 private fun Modifier.playerChromePadding(): Modifier = windowInsetsPadding(
@@ -187,32 +148,20 @@ private fun paneSafeEdges(index: Int, layout: PlayerLayout): WindowInsetsSides? 
         else -> null
     }
 }
-// SMCPKG_SUPPORT<<<Cursor045
 
-// SMCPKG_SUPPORT>>>Cursor012
 // @Composable
 // fun QuadPlayerScreen() {
 @Composable
 fun QuadPlayerScreen(
     layout: PlayerLayout,
     onChangeLayout: () -> Unit,
-    // SMCPKG_SUPPORT>>>Cursor021
-    // SMCPKG_SUPPORT>>>Cursor022
     // onAbout: () -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor022
-    // SMCPKG_SUPPORT<<<Cursor021
-    // SMCPKG_SUPPORT>>>Cursor038
     settings: PlayerSettings = PlayerSettings(),
     onOpenSettings: () -> Unit = {},
-    // SMCPKG_SUPPORT<<<Cursor038
 ) {
-// SMCPKG_SUPPORT<<<Cursor012
     val context = LocalContext.current
-    // SMCPKG_SUPPORT>>>Cursor049
     // val systemVolume = rememberSystemMusicVolume()
-    // SMCPKG_SUPPORT>>>Cursor050
     // Volume is per pane. The activity touch relay only restarts the icon fade.
-    // SMCPKG_SUPPORT<<<Cursor050
     val topChromeAlpha = remember { Animatable(1f) }
     val fingersDown = remember { mutableIntStateOf(0) }
     DisposableEffect(Unit) {
@@ -231,24 +180,18 @@ fun QuadPlayerScreen(
         topChromeAlpha.animateTo(0.3f, tween(durationMillis = TOP_CHROME_FADE_MS))
     }
     val chromeOpacity = topChromeAlpha.value
-    // SMCPKG_SUPPORT<<<Cursor049
-    // SMCPKG_SUPPORT>>>Cursor038
     // val controller = remember { QuadPlayerController(context) }
     val controller = remember {
         QuadPlayerController(
             context,
-            // SMCPKG_SUPPORT>>>Cursor040
             // initialDecodeModes = settings.panes.map { it.decodeMode },
             // Decode is no longer a setting. Stay on hardware so a saved
             // software mode cannot stick with no control to turn it off.
             initialDecodeModes = List(SETTINGS_PANE_COUNT) { DecodeMode.HARDWARE },
-            // SMCPKG_SUPPORT<<<Cursor040
             initialLoop = settings.panes.map { it.loop },
-            // SMCPKG_SUPPORT>>>Cursor042
             // Read once. LoadControl cannot change on a live ExoPlayer, so a
             // settings toggle applies the next time this screen is created.
             strongBuffering = settings.strongBuffering,
-            // SMCPKG_SUPPORT<<<Cursor042
         )
     }
     var playerGeneration by remember { mutableIntStateOf(0) }
@@ -256,25 +199,19 @@ fun QuadPlayerScreen(
         controller.onPlayerReplaced = { playerGeneration++ }
         onDispose { controller.onPlayerReplaced = null }
     }
-    // SMCPKG_SUPPORT>>>Cursor040
     // val decodeKey = settings.panes.joinToString(separator = ",") { it.decodeMode.name }
-    // SMCPKG_SUPPORT<<<Cursor040
     val loopKey = settings.panes.joinToString(separator = ",") { it.loop.toString() }
-    // SMCPKG_SUPPORT>>>Cursor040
     // LaunchedEffect(decodeKey) {
     //     settings.panes.forEachIndexed { index, pane ->
     //         controller.applyDecodeMode(index, pane.decodeMode)
     //     }
     // }
-    // SMCPKG_SUPPORT<<<Cursor040
     LaunchedEffect(loopKey) {
         settings.panes.forEachIndexed { index, pane ->
             controller.applyLoop(index, pane.loop)
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor038
 
-    // SMCPKG_SUPPORT>>>Cursor024
     // var videoUriStrings by rememberSaveable {
     //     mutableStateOf(List(QuadPlayerController.PLAYER_COUNT) { "" })
     // }
@@ -282,56 +219,41 @@ fun QuadPlayerScreen(
     var videoUriStrings by remember {
         mutableStateOf(List(QuadPlayerController.PLAYER_COUNT) { "" })
     }
-    // SMCPKG_SUPPORT<<<Cursor024
-    // SMCPKG_SUPPORT>>>Cursor004
     // var unmutedIndex by rememberSaveable {
     //     mutableIntStateOf(QuadPlayerController.DEFAULT_UNMUTED_INDEX)
     // }
     // var isGlobalPlaying by rememberSaveable { mutableStateOf(false) }
-    // SMCPKG_SUPPORT<<<Cursor004
-    // SMCPKG_SUPPORT>>>Cursor041
     var brightnessHud by remember { mutableStateOf<Int?>(null) }
-    // SMCPKG_SUPPORT<<<Cursor041
     var pickingIndex by rememberSaveable { mutableIntStateOf(0) }
     var hasPermission by remember { mutableStateOf(VideoPermissions.hasReadAccess(context)) }
     var showPicker by remember { mutableStateOf(false) }
     var pendingPicker by remember { mutableStateOf(false) }
     val playingSnapshot = remember { MutableList(QuadPlayerController.PLAYER_COUNT) { false } }
-    // SMCPKG_SUPPORT>>>Cursor013
     // var pendingPick by remember { mutableStateOf<Pair<Int, String>?>(null) }
     // val pickerResumeFlags = remember { MutableList(QuadPlayerController.PLAYER_COUNT) { false } }
     // var pausedForPicker by remember { mutableStateOf(false) }
-    // SMCPKG_SUPPORT<<<Cursor013
-    // SMCPKG_SUPPORT>>>Cursor014
     // var surfacesReady by remember { mutableStateOf(true) }
-    // SMCPKG_SUPPORT<<<Cursor014
 
     DisposableEffect(controller) {
         onDispose { controller.releaseAll() }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor015
     LaunchedEffect(layout) {
         delay(32)
-        // SMCPKG_SUPPORT>>>Cursor019
         // Pause panes that are not composed in 2-window modes so they
         // cannot play audio without a surface. Visible cells are restored.
         for (index in layout.paneCount until QuadPlayerController.PLAYER_COUNT) {
             controller.players.getOrNull(index)?.pause()
         }
-        // SMCPKG_SUPPORT<<<Cursor019
         controller.reattachAllBoundViews()
         controller.restorePlayback(
             List(QuadPlayerController.PLAYER_COUNT) { index ->
-                // SMCPKG_SUPPORT>>>Cursor019
                 // controller.players.getOrNull(index)?.mediaItemCount?.let { it > 0 } == true
                 index < layout.paneCount &&
                     controller.players.getOrNull(index)?.mediaItemCount?.let { it > 0 } == true
-                // SMCPKG_SUPPORT<<<Cursor019
             },
         )
     }
-    // SMCPKG_SUPPORT<<<Cursor015
 
     LifecycleStartEffect(controller) {
         controller.reattachAllBoundViews()
@@ -352,7 +274,6 @@ fun QuadPlayerScreen(
         onPauseOrDispose { }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor004
     // LaunchedEffect(unmutedIndex) {
     //     controller.setUnmuted(unmutedIndex)
     // }
@@ -360,9 +281,7 @@ fun QuadPlayerScreen(
     // LaunchedEffect(isGlobalPlaying) {
     //     controller.setPlaying(isGlobalPlaying)
     // }
-    // SMCPKG_SUPPORT<<<Cursor004
 
-    // SMCPKG_SUPPORT>>>Cursor016
     // videoUriStrings.forEachIndexed { index, uriString ->
     //     LaunchedEffect(index, uriString) {
     //         controller.setVideo(index, uriString.takeIf { it.isNotEmpty() }?.let(Uri::parse),
@@ -370,19 +289,15 @@ fun QuadPlayerScreen(
     //     }
     // }
     // Per-index effect: only THIS slot's URI. Empty slots do not call setVideo(null).
-    // SMCPKG_SUPPORT>>>Cursor019
     // repeat(QuadPlayerController.PLAYER_COUNT) { index ->
     repeat(layout.paneCount) { index ->
-    // SMCPKG_SUPPORT<<<Cursor019
         val uriString = videoUriStrings.getOrElse(index) { "" }
         key(index) {
             LaunchedEffect(uriString) {
                 if (uriString.isEmpty()) return@LaunchedEffect
-                // SMCPKG_SUPPORT>>>Cursor017
                 // First pick composes AndroidView in this same snapshot; wait one
                 // frame so attachPlayerView can bind the TextureView before prepare.
                 // delay(16)
-                // SMCPKG_SUPPORT<<<Cursor017
                 controller.setVideo(
                     index = index,
                     uri = Uri.parse(uriString),
@@ -393,21 +308,17 @@ fun QuadPlayerScreen(
     }
 
     // LaunchedEffect(showPicker) { pauseAll(); surfacesReady = false; restorePlayback() }
-    // SMCPKG_SUPPORT<<<Cursor016
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
         hasPermission = granted || VideoPermissions.hasReadAccess(context)
-        // SMCPKG_SUPPORT>>>Cursor005
         if (hasPermission && pendingPicker) {
             showPicker = true
             pendingPicker = false
         }
-        // SMCPKG_SUPPORT<<<Cursor005
     }
 
-    // SMCPKG_SUPPORT>>>Cursor005
     // val documentLauncher = rememberLauncherForActivityResult(
     //     contract = ActivityResultContracts.OpenDocument(),
     // ) { uri ->
@@ -437,7 +348,6 @@ fun QuadPlayerScreen(
         } catch (_: SecurityException) {
             // MediaStore URIs rely on READ_MEDIA_VIDEO / READ_EXTERNAL_STORAGE.
         }
-        // SMCPKG_SUPPORT>>>Cursor013
         // videoUriStrings = videoUriStrings.toMutableList().also { list ->
         //     list[pickingIndex] = uri.toString()
         // }
@@ -446,24 +356,17 @@ fun QuadPlayerScreen(
         val index = pickingIndex
         showPicker = false
         pendingPicker = false
-        // SMCPKG_SUPPORT>>>Cursor019
         // if (index !in 0 until QuadPlayerController.PLAYER_COUNT) return
         if (index !in 0 until layout.paneCount) return
-        // SMCPKG_SUPPORT<<<Cursor019
-        // SMCPKG_SUPPORT>>>Cursor016
         // pendingPick = index to uri.toString()
         videoUriStrings = videoUriStrings.toMutableList().also { list ->
             list[index] = uri.toString()
         }
-        // SMCPKG_SUPPORT<<<Cursor016
-        // SMCPKG_SUPPORT<<<Cursor013
     }
 
     fun pickVideo(index: Int) {
-        // SMCPKG_SUPPORT>>>Cursor019
         // if (index !in 0 until QuadPlayerController.PLAYER_COUNT) return
         if (index !in 0 until layout.paneCount) return
-        // SMCPKG_SUPPORT<<<Cursor019
         pickingIndex = index
         if (VideoPermissions.hasReadAccess(context)) {
             hasPermission = true
@@ -473,7 +376,6 @@ fun QuadPlayerScreen(
             permissionLauncher.launch(VideoPermissions.requiredPermission())
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor005
 
     fun openAppSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -482,14 +384,11 @@ fun QuadPlayerScreen(
         context.startActivity(intent)
     }
 
-    // SMCPKG_SUPPORT>>>Cursor024
     fun leaveToSelection() {
         videoUriStrings = List(QuadPlayerController.PLAYER_COUNT) { "" }
         controller.clearAllMedia()
         onChangeLayout()
     }
-    // SMCPKG_SUPPORT<<<Cursor024
-    // SMCPKG_SUPPORT>>>Cursor051
     // Picker handles its own back while a folder is open. At the picker root,
     // back still dismisses nothing here so the existing close control stays.
     ConfirmBackHandler(
@@ -497,30 +396,22 @@ fun QuadPlayerScreen(
         message = stringResource(R.string.back_again_to_return),
         onConfirmed = { leaveToSelection() },
     )
-    // SMCPKG_SUPPORT<<<Cursor051
 
-    // SMCPKG_SUPPORT>>>Cursor004
     // Scaffold(topBar = { TopAppBar(...) }) { innerPadding ->
     //     Column(Modifier.padding(innerPadding).padding(horizontal = 8.dp, vertical = 4.dp)) { ... }
     // }
-    // SMCPKG_SUPPORT<<<Cursor004
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(HairlineColor)
-            // SMCPKG_SUPPORT>>>Cursor049
             // .relativeSystemVolumeSwipe(
             //     volume = systemVolume,
             //     acceptConsumedDown = false,
             //     driveScreenHud = true,
             // ),
-            // SMCPKG_SUPPORT<<<Cursor049
-            // SMCPKG_SUPPORT>>>Cursor050
             // Screen-level STREAM_MUSIC swipe removed. Only a playing pane adjusts
             // its own ExoPlayer volume.
-            // SMCPKG_SUPPORT<<<Cursor050
     ) {
-        // SMCPKG_SUPPORT>>>Cursor013
         // BoxWithConstraints + LazyVerticalGrid used computed cellHeight. In 1x4
         // the 4th row could land on a clipped/zero lazy slot; PlayerView's
         // SurfaceView then died the process when the 4th video attached.
@@ -537,73 +428,46 @@ fun QuadPlayerScreen(
             val uri = videoUriStrings.getOrNull(index)
                 ?.takeIf { it.isNotEmpty() }
                 ?.let(Uri::parse)
-            // SMCPKG_SUPPORT>>>Cursor038
             // val player = controller.players.getOrNull(index) ?: return@PlayerPaneGrid
             // playerGeneration changes when one pane's ExoPlayer is rebuilt.
             if (playerGeneration < 0) return@PlayerPaneGrid
             val player = controller.players.getOrNull(index) ?: return@PlayerPaneGrid
-            // SMCPKG_SUPPORT<<<Cursor038
             VideoCell(
                 index = index,
                 player = player,
                 videoUri = uri,
                 onPickVideo = { pickVideo(index) },
-                // SMCPKG_SUPPORT>>>Cursor049
                 // systemVolume = systemVolume,
-                // SMCPKG_SUPPORT<<<Cursor049
-                // SMCPKG_SUPPORT>>>Cursor017
                 // attachSurface = !(showPicker && index == pickingIndex),
                 // TextureView does not punch through the picker. Keep the cell's
                 // PlayerView mounted so setVideo can attach → prepare → play.
                 attachSurface = true,
                 onTogglePlay = { controller.togglePlay(index) },
-                // SMCPKG_SUPPORT<<<Cursor017
-                // SMCPKG_SUPPORT>>>Cursor052
                 onScrubbingChange = { active -> controller.setScrubbing(index, active) },
-                // SMCPKG_SUPPORT<<<Cursor052
                 onAttachPlayerView = { view -> controller.attachPlayerView(index, view) },
                 onDetachPlayerView = { view -> controller.detachPlayerView(index, view) },
-                // SMCPKG_SUPPORT>>>Cursor038
                 toolbarLift = settings.pane(index).toolbarLift,
-                // SMCPKG_SUPPORT>>>Cursor040
                 // contrast = settings.contrast,
-                // SMCPKG_SUPPORT>>>Cursor041
                 contrast = settings.pane(index).contrast,
                 sharpness = settings.pane(index).sharpness,
                 onBrightnessAdjusting = { brightnessHud = it },
-                // SMCPKG_SUPPORT>>>Cursor045
                 safeEdges = paneSafeEdges(index, layout),
-                // SMCPKG_SUPPORT<<<Cursor045
-                // SMCPKG_SUPPORT<<<Cursor041
-                // SMCPKG_SUPPORT<<<Cursor040
-                // SMCPKG_SUPPORT<<<Cursor038
                 modifier = Modifier.fillMaxSize(),
             )
         }
-        // SMCPKG_SUPPORT<<<Cursor013
 
         if (!showPicker) {
-            // SMCPKG_SUPPORT>>>Cursor012
-            // SMCPKG_SUPPORT>>>Cursor022
             // Row(...) { About IconButton 40.dp; layout IconButton 40.dp }
             // About stays on LauncherSelectionScreen only. Layout chip is 50% of 40.dp.
-            // SMCPKG_SUPPORT>>>Cursor038
             // Box( ... DashboardCustomize only ... )
-            // SMCPKG_SUPPORT>>>Cursor040
             // val iconNudge = with(LocalDensity.current) { 10.toDp() }
             // val chromeBg = Color(0x99000000)
-            // SMCPKG_SUPPORT>>>Cursor049
             // val chromeBg = Color(0x66000000)
             // Nudge and scrim now live in PlayerTopChrome.
-            // SMCPKG_SUPPORT<<<Cursor049
-            // SMCPKG_SUPPORT<<<Cursor040
-            // SMCPKG_SUPPORT>>>Cursor049
             // Settings was left of the layout icon. Layout is now left, gear right.
             // 20.dp chips / 12.dp glyphs grew to a 48.dp target and a 44.dp glyph.
             // The row fades to 0.3 after 10s idle. The playback bar does not.
-            // SMCPKG_SUPPORT>>>Cursor051
             // if (settings.showPlayerChrome) {
-            // SMCPKG_SUPPORT<<<Cursor051
             if (settings.showPlayerChrome) {
             PlayerTopChrome(
                 chromeOpacity = chromeOpacity,
@@ -613,13 +477,7 @@ fun QuadPlayerScreen(
                     .align(Alignment.TopEnd)
                     .playerChromePadding(),
             )
-            // SMCPKG_SUPPORT>>>Cursor051
             }
-            // SMCPKG_SUPPORT<<<Cursor051
-            // SMCPKG_SUPPORT<<<Cursor049
-            // SMCPKG_SUPPORT<<<Cursor038
-            // SMCPKG_SUPPORT<<<Cursor022
-            // SMCPKG_SUPPORT<<<Cursor012
             PermissionBanner(
                 granted = hasPermission,
                 onGrantClick = {
@@ -628,25 +486,20 @@ fun QuadPlayerScreen(
                 onSettingsClick = { openAppSettings() },
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    // SMCPKG_SUPPORT>>>Cursor045
                     // .statusBarsPadding()
                     .playerChromePadding()
-                    // SMCPKG_SUPPORT<<<Cursor045
                     .fillMaxWidth(),
             )
         }
 
-        // SMCPKG_SUPPORT>>>Cursor041
         val shownBrightness = brightnessHud
         if (shownBrightness != null && !showPicker) {
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .fillMaxWidth()
-                    // SMCPKG_SUPPORT>>>Cursor045
                     // .statusBarsPadding()
                     .playerChromePadding()
-                    // SMCPKG_SUPPORT<<<Cursor045
                     .zIndex(4f)
                     .background(Color.Black.copy(alpha = 0.5f))
                     .padding(horizontal = 16.dp, vertical = 10.dp),
@@ -673,16 +526,11 @@ fun QuadPlayerScreen(
                 }
             }
         }
-        // SMCPKG_SUPPORT<<<Cursor041
 
-        // SMCPKG_SUPPORT>>>Cursor049
         // if (!showPicker && (systemVolume.hudVisible || systemVolume.flashVisible)) {
         //     SurfaceVolumeBar(volume = systemVolume.fraction, ...)
         // }
-        // SMCPKG_SUPPORT<<<Cursor049
-        // SMCPKG_SUPPORT>>>Cursor050
         // The pane under the finger draws its own volume bar from player.volume.
-        // SMCPKG_SUPPORT<<<Cursor050
 
         if (showPicker) {
             VideoPickerScreen(
@@ -696,7 +544,6 @@ fun QuadPlayerScreen(
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor013
 @Composable
 private fun PlayerPaneGrid(
     layout: PlayerLayout,
@@ -747,7 +594,6 @@ private fun PlayerPaneGrid(
             }
         }
 
-        // SMCPKG_SUPPORT>>>Cursor019
         PlayerLayout.VERTICAL_1X2 -> {
             Column(
                 modifier = modifier,
@@ -781,9 +627,7 @@ private fun PlayerPaneGrid(
                 }
             }
         }
-        // SMCPKG_SUPPORT<<<Cursor019
 
-        // SMCPKG_SUPPORT>>>Cursor040
         PlayerLayout.VERTICAL_1X1 -> {
             Box(modifier = modifier) {
                 key(0) { cell(0) }
@@ -806,12 +650,9 @@ private fun PlayerPaneGrid(
                 }
             }
         }
-        // SMCPKG_SUPPORT<<<Cursor040
     }
 }
-// SMCPKG_SUPPORT<<<Cursor013
 
-// SMCPKG_SUPPORT>>>Cursor049
 @Composable
 internal fun PlayerTopChrome(
     chromeOpacity: Float,
@@ -825,10 +666,8 @@ internal fun PlayerTopChrome(
         modifier = modifier
             .padding(end = 8.dp + iconNudge, top = 4.dp)
             .alpha(chromeOpacity),
-        // SMCPKG_SUPPORT>>>Cursor050
         // horizontalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        // SMCPKG_SUPPORT<<<Cursor050
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -836,10 +675,8 @@ internal fun PlayerTopChrome(
                 .size(TopChromeTouch)
                 .clip(CircleShape)
                 .background(chromeBg)
-                // SMCPKG_SUPPORT>>>Cursor050
                 // .tapWithoutConsumingDown(onChangeLayout),
                 .clickable(onClick = onChangeLayout),
-                // SMCPKG_SUPPORT<<<Cursor050
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -854,10 +691,8 @@ internal fun PlayerTopChrome(
                 .size(TopChromeTouch)
                 .clip(CircleShape)
                 .background(chromeBg)
-                // SMCPKG_SUPPORT>>>Cursor050
                 // .tapWithoutConsumingDown(onOpenSettings),
                 .clickable(onClick = onOpenSettings),
-                // SMCPKG_SUPPORT<<<Cursor050
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -869,4 +704,3 @@ internal fun PlayerTopChrome(
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor049

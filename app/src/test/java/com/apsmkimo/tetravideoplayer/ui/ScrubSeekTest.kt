@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor052
 package com.apsmkimo.tetravideoplayer.ui
 
 import org.junit.Assert.assertFalse
@@ -20,4 +19,3 @@ class ScrubSeekTest {
         assertTrue(ScrubSeek.shouldPreview(last + 100L, last))
     }
 }
-// SMCPKG_SUPPORT<<<Cursor052

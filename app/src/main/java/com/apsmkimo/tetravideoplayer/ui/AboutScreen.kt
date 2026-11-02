@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,18 +24,11 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
-// SMCPKG_SUPPORT>>>Cursor036
 import android.content.ActivityNotFoundException
-// SMCPKG_SUPPORT<<<Cursor036
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -62,9 +52,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-// SMCPKG_SUPPORT>>>Cursor036
 // import androidx.compose.material3.TextButton
-// SMCPKG_SUPPORT<<<Cursor036
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -72,53 +60,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-// SMCPKG_SUPPORT>>>Cursor036
 // import androidx.compose.ui.text.font.FontFamily
-// SMCPKG_SUPPORT<<<Cursor036
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-// SMCPKG_SUPPORT>>>Cursor036
 // import androidx.compose.ui.unit.sp
-// SMCPKG_SUPPORT<<<Cursor036
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
-// SMCPKG_SUPPORT<<<Cursor030
 private val AboutBackground = Color(0xFF000000)
 private val AboutText = Color(0xFFE8EEF6)
 private val AboutMuted = Color(0xFFB4C0D0)
-// SMCPKG_SUPPORT>>>Cursor030
 // private const val SOURCE_URL = "https://github.com/apsmkimo/FreeQuadPlayer"
 // private const val LICENSE_URL = "https://github.com/apsmkimo/FreeQuadPlayer/blob/main/LICENSE"
-// SMCPKG_SUPPORT>>>Cursor036
 // private const val SOURCE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD"
 // private const val LICENSE_URL = "https://github.com/apsmkimo/TetraVideoPlayerAD/blob/main/LICENSE"
-// SMCPKG_SUPPORT>>>Cursor038
 // private const val PRIVACY_POLICY_URL =
 //     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
-// SMCPKG_SUPPORT>>>Cursor043
 // internal const val PRIVACY_POLICY_URL =
 //     "https://sites.google.com/view/tetravideoplayerprivacypolicy"
 internal const val PRIVACY_POLICY_URL =
     "https://apsmkimo.github.io/privacy-tetravideoplayerad.html"
-// SMCPKG_SUPPORT<<<Cursor043
-// SMCPKG_SUPPORT<<<Cursor038
 private const val PLAY_STORE_PACKAGE = "com.apsmkimo.tetravideoplayer"
 private const val PLAY_STORE_MARKET_URI = "market://details?id=$PLAY_STORE_PACKAGE"
 private const val PLAY_STORE_WEB_URI =
     "https://play.google.com/store/apps/details?id=$PLAY_STORE_PACKAGE"
-// SMCPKG_SUPPORT<<<Cursor036
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor036
 // private const val LICENSE_ASSET = "LICENSE"
-// SMCPKG_SUPPORT<<<Cursor036
 
 @Composable
 fun AboutScreen(
     onClose: () -> Unit,
-    // SMCPKG_SUPPORT>>>Cursor036
     // onViewLicense: () -> Unit,
-    // SMCPKG_SUPPORT<<<Cursor036
     modifier: Modifier = Modifier,
 ) {
     BackHandler(onBack = onClose)
@@ -164,7 +134,6 @@ fun AboutScreen(
                 color = AboutText,
             )
             Text(text = versionLabel, color = AboutMuted)
-            // SMCPKG_SUPPORT>>>Cursor036
             // Text(
             //     text = stringResource(R.string.about_gpl_statement),
             //     color = AboutText,
@@ -210,12 +179,10 @@ fun AboutScreen(
             ) {
                 Text(stringResource(R.string.about_rate_us))
             }
-            // SMCPKG_SUPPORT<<<Cursor036
         }
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor036
 // @Composable
 // fun LicenseTextScreen(
 //     onClose: () -> Unit,
@@ -251,7 +218,6 @@ fun AboutScreen(
 //         )
 //     }
 // }
-// SMCPKG_SUPPORT<<<Cursor036
 
 @Composable
 private fun AboutTopBar(
@@ -279,20 +245,15 @@ private fun AboutTopBar(
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor038
 // private fun openUrl(context: android.content.Context, url: String) {
 internal fun openUrl(context: android.content.Context, url: String) {
-// SMCPKG_SUPPORT<<<Cursor038
     runCatching {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor036
-// SMCPKG_SUPPORT>>>Cursor038
 // private fun openPlayStoreListing(context: android.content.Context) {
 internal fun openPlayStoreListing(context: android.content.Context) {
-// SMCPKG_SUPPORT<<<Cursor038
     val marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_STORE_MARKET_URI))
     try {
         context.startActivity(marketIntent)
@@ -300,4 +261,3 @@ internal fun openPlayStoreListing(context: android.content.Context) {
         openUrl(context, PLAY_STORE_WEB_URI)
     }
 }
-// SMCPKG_SUPPORT<<<Cursor036

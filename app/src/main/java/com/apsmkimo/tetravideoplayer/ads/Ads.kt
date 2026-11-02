@@ -41,19 +41,15 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 
 object AdConfig {
-    // SMCPKG_SUPPORT>>>Cursor032
     // const val APP_ID = "ca-app-pub-3940256099942544~3347511713"
     // const val BANNER_UNIT_ID = "ca-app-pub-3940256099942544/6300978111"
     // const val INTERSTITIAL_UNIT_ID = "ca-app-pub-3940256099942544/1033173712"
-    // SMCPKG_SUPPORT>>>Cursor031
     // val APP_ID: String = BuildConfig.ADMOB_APP_ID
     // val BANNER_UNIT_ID: String = BuildConfig.ADMOB_BANNER_UNIT_ID
     // val INTERSTITIAL_UNIT_ID: String = BuildConfig.ADMOB_INTERSTITIAL_UNIT_ID
-    // SMCPKG_SUPPORT<<<Cursor031
     const val APP_ID = "ca-app-pub-6138247296137119~9086588842"
     const val BANNER_UNIT_ID = "ca-app-pub-6138247296137119/9074593518"
     const val INTERSTITIAL_UNIT_ID = "ca-app-pub-6138247296137119/5417227567"
-    // SMCPKG_SUPPORT<<<Cursor032
 }
 
 object AdPreferences {
@@ -82,7 +78,6 @@ object AdSession {
 }
 
 fun preloadInterstitial(context: Context) {
-    // SMCPKG_SUPPORT>>>Cursor043
     // if (AdPreferences.isAdRemoved(context) || AdSession.interstitialConsumed) {
     //     return
     // }
@@ -91,7 +86,6 @@ fun preloadInterstitial(context: Context) {
     ) {
         return
     }
-    // SMCPKG_SUPPORT<<<Cursor043
     if (AdSession.loadedInterstitial != null) {
         return
     }
@@ -101,14 +95,12 @@ fun preloadInterstitial(context: Context) {
         AdRequest.Builder().build(),
         object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(ad: InterstitialAd) {
-                // SMCPKG_SUPPORT>>>Cursor043
                 // AdSession.loadedInterstitial = ad
                 if (AdsConsentManager.getInstance(context).mayRequestAds(context)) {
                     AdSession.loadedInterstitial = ad
                 } else {
                     AdSession.loadedInterstitial = null
                 }
-                // SMCPKG_SUPPORT<<<Cursor043
             }
 
             override fun onAdFailedToLoad(error: LoadAdError) {
@@ -119,7 +111,6 @@ fun preloadInterstitial(context: Context) {
 }
 
 suspend fun maybeShowInterstitialOnce(activity: Activity) {
-    // SMCPKG_SUPPORT>>>Cursor043
     // if (AdPreferences.isAdRemoved(activity) || AdSession.interstitialConsumed) {
     //     return
     // }
@@ -128,7 +119,6 @@ suspend fun maybeShowInterstitialOnce(activity: Activity) {
     ) {
         return
     }
-    // SMCPKG_SUPPORT<<<Cursor043
     val ad = withTimeoutOrNull(2_500) {
         while (AdSession.loadedInterstitial == null) {
             delay(50)
@@ -160,14 +150,12 @@ suspend fun maybeShowInterstitialOnce(activity: Activity) {
 @Composable
 fun BannerAd(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    // SMCPKG_SUPPORT>>>Cursor043
     val consent = remember(context) { AdsConsentManager.getInstance(context) }
     val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
     val sdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
     if (!canRequestAds || !sdkReady || AdPreferences.isAdRemoved(context)) {
         return
     }
-    // SMCPKG_SUPPORT<<<Cursor043
     val activity = context as? Activity
     val lifecycleOwner = LocalLifecycleOwner.current
     val adView = remember {

@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-# SMCPKG_SUPPORT>>>Cursor030
 # Rebuild libffmpegJNI.so plus LGPL-only shared FFmpeg .so files
 # (no --enable-gpl / --enable-nonfree; dynamic linking).
 # Was: statically archive FFmpeg into libffmpegJNI.so only.
-# SMCPKG_SUPPORT<<<Cursor030
 # Not required for ./gradlew assembleDebug (prebuilt jniLibs are committed).
 set -euo pipefail
 
@@ -104,7 +102,6 @@ for ABI in armeabi-v7a arm64-v8a x86 x86_64; do
   fi
   cp -f "${SO}" "${OUT_DIR}/libffmpegJNI.so"
   echo "Installed ${OUT_DIR}/libffmpegJNI.so"
-  # SMCPKG_SUPPORT>>>Cursor030
   # Ship FFmpeg shared libraries next to libffmpegJNI.so for dynamic linking.
   FFMPEG_SO_DIR="${FFMPEG_MODULE_PATH}/jni/ffmpeg/android-libs/${ABI}"
   for FFSO in libavutil.so libswresample.so libavcodec.so libswscale.so; do
@@ -119,7 +116,6 @@ for ABI in armeabi-v7a arm64-v8a x86 x86_64; do
       exit 1
     fi
   done
-  # SMCPKG_SUPPORT<<<Cursor030
 done
 
 echo "Native rebuild complete."

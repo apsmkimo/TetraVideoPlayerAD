@@ -22,9 +22,7 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 
 ## Tech Stack
 
-<!-- SMCPKG_SUPPORT>>>Cursor034 -->
 <!-- Old CI/CD row: GitHub Actions (`./gradlew assembleDebug`, artifact `app-debug`) -->
-<!-- SMCPKG_SUPPORT<<<Cursor034 -->
 
 | Layer | Choice |
 | --- | --- |
@@ -37,35 +35,21 @@ TetraVideoPlayer is an Android app for watching up to four local videos at once.
 | CI/CD | GitHub Actions (`assembleDebug` → `app-debug`; `bundleRelease` → `app-release` AAB on `main` / `workflow_dispatch` when signing secrets are set) |
 
 **Package ID:** `com.apsmkimo.tetravideoplayer`  
-<!-- SMCPKG_SUPPORT>>>Cursor035 -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 35 -->
 <!-- **Version:** 1.0.2 (`versionCode` 102) -->
-<!-- SMCPKG_SUPPORT>>>Cursor036 -->
 <!-- **Version:** 1.0.3 (`versionCode` 103) -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.4 (`versionCode` 104) -->
-<!-- SMCPKG_SUPPORT>>>Cursor037 -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.5 (`versionCode` 105) -->
-<!-- SMCPKG_SUPPORT<<<Cursor037 -->
-<!-- SMCPKG_SUPPORT>>>Cursor038 -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.6 (`versionCode` 106) -->
-<!-- SMCPKG_SUPPORT<<<Cursor038 -->
-<!-- SMCPKG_SUPPORT>>>Cursor039 -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.7 (`versionCode` 107) -->
-<!-- SMCPKG_SUPPORT<<<Cursor039 -->
-<!-- SMCPKG_SUPPORT>>>Cursor040 -->
 <!-- **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36 -->
 <!-- **Version:** 1.0.8 (`versionCode` 108) -->
-<!-- SMCPKG_SUPPORT<<<Cursor040 -->
-<!-- SMCPKG_SUPPORT>>>Cursor041 -->
 **SDK:** minSdk 24 · compileSdk 36 · targetSdk 36  
 **Version:** 1.0.9 (`versionCode` 109)
-<!-- SMCPKG_SUPPORT<<<Cursor041 -->
-<!-- SMCPKG_SUPPORT<<<Cursor036 -->
-<!-- SMCPKG_SUPPORT<<<Cursor035 -->
 
 Official `androidx.media3:media3-decoder-ffmpeg` is not published on Maven Central. TetraVideoPlayer vendors the Media3 1.11.0 `decoder_ffmpeg` module with a prebuilt `libffmpegJNI.so` plus LGPL-only shared FFmpeg libraries. Modern H.264/HEVC streams stay on hardware MediaCodec; FFmpeg is preferred for allowlisted legacy codecs. See [decoder-ffmpeg/README.md](decoder-ffmpeg/README.md) for native rebuild notes.
 
@@ -122,7 +106,6 @@ Local `./gradlew assembleDebug` and GitHub Actions CI use the same committed **T
 
 `app/build.gradle.kts` `signingConfigs.debug` points at that file. `*.keystore` stays in `.gitignore` except this one (`!app/debug.keystore`). If you still see a signing mismatch, the device has an older APK signed with a different key—uninstall once, then future upgrades from this keystore will succeed.
 
-<!-- SMCPKG_SUPPORT>>>Cursor034 -->
 ## Release signing & Play Console AAB
 
 GitHub Actions on `main` (and **Actions → Android CI → Run workflow**) can produce a **signed `app-release.aab`** for Play Console. The keystore never lives in git: CI decodes it from GitHub Actions secrets onto the runner, then Gradle reads `KEYSTORE_FILE`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, and `KEY_PASSWORD`. Debug APK jobs do not need these secrets.
@@ -131,9 +114,9 @@ With [Play App Signing](https://support.google.com/googleplay/android-developer/
 
 ### 1. Create an upload keystore (once)
 
-<!-- SMCPKG_SUPPORT>>>Cursor034
+<!--
 Old example used upload-keystore.jks / alias upload.
-SMCPKG_SUPPORT<<<Cursor034 -->
+-->
 
 ```bash
 keytool -genkeypair -v \
@@ -199,7 +182,6 @@ Sideload testing still uses the **`app-debug`** APK artifact from the same workf
 3. **Testing → Internal testing → Create new release**.
 4. Upload `app-release.aab`, save, and roll out to internal testers.
 
-<!-- SMCPKG_SUPPORT>>>Cursor039 -->
 Release AABs are minified with R8. AGP embeds `mapping.txt` as `BUNDLE-METADATA/com.android.tools.build.obfuscation/proguard.map`. Native debug symbols use `ndk.debugSymbolLevel = SYMBOL_TABLE` and NDK `27.0.12077973`. The committed `.so` files are already stripped, so AGP would otherwise skip them; the release build writes a `.sym` per library (dynamic symbol table) and AGP embeds those under `BUNDLE-METADATA/com.android.tools.build.debugsymbols/`. Uploading **only** `app-release.aab` should clear Play’s “no deobfuscation file” and “native debug symbols” warnings. Line numbers for native frames are not available because the shipped libraries have no DWARF.
 
 The same CI run also uploads fallback artifacts if Play still asks you to attach them by hand:
@@ -210,7 +192,6 @@ The same CI run also uploads fallback artifacts if Play still asks you to attach
 | `app-release-native-debug-symbols` | `native-debug-symbols.zip` | Same version → **Downloads** → **Native debug symbols** |
 
 Do not unzip `native-debug-symbols.zip` before upload. `libffmpegJNI.so` in git is already stripped, so symbols are the dynamic symbol table (function names), not source file and line numbers.
-<!-- SMCPKG_SUPPORT<<<Cursor039 -->
 
 ### Local `bundleRelease` (optional)
 
@@ -230,4 +211,3 @@ Then:
 ```
 
 Output: `app/build/outputs/bundle/release/app-release.aab`. The same four names also work as environment variables.
-<!-- SMCPKG_SUPPORT<<<Cursor034 -->

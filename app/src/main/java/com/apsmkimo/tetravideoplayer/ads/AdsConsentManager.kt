@@ -10,7 +10,6 @@
 
 package com.apsmkimo.tetravideoplayer.ads
 
-// SMCPKG_SUPPORT>>>Cursor043
 import android.app.Activity
 import android.content.Context
 import android.os.Handler
@@ -209,4 +208,3 @@ class AdsConsentManager private constructor(private val appContext: Context) {
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor043

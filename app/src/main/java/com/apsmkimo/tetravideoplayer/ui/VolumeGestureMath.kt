@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor049
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -10,9 +9,7 @@
  */
 package com.apsmkimo.tetravideoplayer.ui
 
-// SMCPKG_SUPPORT>>>Cursor050
 // import kotlin.math.roundToInt
-// SMCPKG_SUPPORT<<<Cursor050
 
 /**
  * Relative per-pane volume drag.
@@ -45,12 +42,9 @@ object VolumeGestureMath {
         return (startFraction - (deltaYPx / travel)).coerceIn(0f, 1f)
     }
 
-    // SMCPKG_SUPPORT>>>Cursor050
     // fun streamIndexForFraction(fraction: Float, maxIndex: Int): Int {
     //     if (maxIndex <= 0) return 0
     //     return (fraction.coerceIn(0f, 1f) * maxIndex).roundToInt().coerceIn(0, maxIndex)
     // }
     // Pane volume is already a 0–1 fraction. No AudioManager stream index.
-    // SMCPKG_SUPPORT<<<Cursor050
 }
-// SMCPKG_SUPPORT<<<Cursor049

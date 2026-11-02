@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -89,38 +81,26 @@ import coil.decode.VideoFrameDecoder
 import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.videoFrameMillis
-// SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.R
 // import com.example.quadvideoplayer.data.LocalVideo
 // import com.example.quadvideoplayer.data.LocalVideoFolder
 // import com.example.quadvideoplayer.data.LocalVideoStore
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.R
 import com.apsmkimo.tetravideoplayer.R
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.LocalVideo
 import com.apsmkimo.tetravideoplayer.data.LocalVideo
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.LocalVideoFolder
 import com.apsmkimo.tetravideoplayer.data.LocalVideoFolder
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.LocalVideoStore
 import com.apsmkimo.tetravideoplayer.data.LocalVideoStore
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 import com.apsmkimo.tetravideoplayer.ads.AdPreferences
 import com.apsmkimo.tetravideoplayer.ads.AdsConsentManager
 import com.apsmkimo.tetravideoplayer.ads.BannerAd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// SMCPKG_SUPPORT>>>Cursor013
 private const val THUMB_WIDTH_PX = 512
 private const val THUMB_HEIGHT_PX = 288
-// SMCPKG_SUPPORT<<<Cursor013
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,16 +110,12 @@ fun VideoPickerScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    // SMCPKG_SUPPORT>>>Cursor043
     val consent = remember(context) { AdsConsentManager.getInstance(context) }
     val canRequestAds by consent.canRequestAdsFlow.collectAsStateWithLifecycle()
     val adsSdkReady by consent.adsSdkReady.collectAsStateWithLifecycle()
-    // SMCPKG_SUPPORT<<<Cursor043
     var videos by remember { mutableStateOf<List<LocalVideo>?>(null) }
-    // SMCPKG_SUPPORT>>>Cursor006
     // Flat all-videos grid replaced by folder-first navigation.
     var selectedFolder by remember { mutableStateOf<LocalVideoFolder?>(null) }
-    // SMCPKG_SUPPORT<<<Cursor006
 
     LaunchedEffect(Unit) {
         videos = withContext(Dispatchers.IO) {
@@ -147,14 +123,12 @@ fun VideoPickerScreen(
         }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor013
     DisposableEffect(Unit) {
         val imageLoader = context.imageLoader
         onDispose {
             imageLoader.memoryCache?.clear()
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor013
 
     val loaded = videos
     val folders = remember(loaded) {
@@ -255,14 +229,12 @@ fun VideoPickerScreen(
                                 )
                             }
                         }
-                        // SMCPKG_SUPPORT>>>Cursor043
                         // if (!adsRemoved) {
                         //     BannerAd(Modifier.fillMaxWidth())
                         // }
                         if (!adsRemoved && canRequestAds && adsSdkReady) {
                             BannerAd(Modifier.fillMaxWidth())
                         }
-                        // SMCPKG_SUPPORT<<<Cursor043
                     }
                 }
 
@@ -333,7 +305,6 @@ private fun VideoPickerItem(
                 uri = video.uri,
                 contentDescription = video.displayName,
             )
-            // SMCPKG_SUPPORT>>>Cursor007
             // Surface(
             //     color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f),
             //     ...
@@ -350,7 +321,6 @@ private fun VideoPickerItem(
                     .background(Color.Black.copy(alpha = 0.5f))
                     .padding(horizontal = 6.dp, vertical = 2.dp),
             )
-            // SMCPKG_SUPPORT<<<Cursor007
         }
         Text(
             text = video.displayName,
@@ -373,10 +343,8 @@ private fun VideoThumb(
             .data(uri)
             .decoderFactory(VideoFrameDecoder.Factory())
             .videoFrameMillis(0)
-            // SMCPKG_SUPPORT>>>Cursor013
             // Cap decode size so folder grids do not keep full-resolution frames.
             .size(THUMB_WIDTH_PX, THUMB_HEIGHT_PX)
-            // SMCPKG_SUPPORT<<<Cursor013
             .crossfade(true)
             .build(),
         contentDescription = contentDescription,
