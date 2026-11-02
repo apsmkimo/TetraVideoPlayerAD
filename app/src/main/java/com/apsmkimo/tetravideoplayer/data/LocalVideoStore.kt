@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.data
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.data
 package com.apsmkimo.tetravideoplayer.data
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.content.ContentUris
 import android.content.Context
@@ -55,10 +47,8 @@ object LocalVideoStore {
             MediaStore.Video.Media._ID,
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.DURATION,
-            // SMCPKG_SUPPORT>>>Cursor006
             MediaStore.Video.Media.BUCKET_ID,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
-            // SMCPKG_SUPPORT<<<Cursor006
         )
         val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC"
 
@@ -80,20 +70,16 @@ object LocalVideoStore {
                 videos += LocalVideo(
                     id = id,
                     uri = ContentUris.withAppendedId(collection, id),
-                    // SMCPKG_SUPPORT>>>Cursor048
                     // displayName = cursor.getString(nameColumn).orEmpty().ifBlank { "video_$id" },
                     displayName = cursor.getString(nameColumn).orEmpty().ifBlank {
                         context.getString(R.string.video_unnamed, id)
                     },
-                    // SMCPKG_SUPPORT<<<Cursor048
                     durationMs = cursor.getLong(durationColumn).coerceAtLeast(0L),
                     bucketId = cursor.getLong(bucketIdColumn),
-                    // SMCPKG_SUPPORT>>>Cursor048
                     // bucketDisplayName = cursor.getString(bucketNameColumn).orEmpty().ifBlank { "Folder" },
                     bucketDisplayName = cursor.getString(bucketNameColumn).orEmpty().ifBlank {
                         context.getString(R.string.folder_unknown)
                     },
-                    // SMCPKG_SUPPORT<<<Cursor048
                 )
             }
         }
@@ -119,7 +105,6 @@ object LocalVideoStore {
         val hours = totalSeconds / 3600L
         val minutes = (totalSeconds % 3600L) / 60L
         val seconds = totalSeconds % 60L
-        // SMCPKG_SUPPORT>>>Cursor006
         // return if (hours > 0L) {
         //     "%d:%02d:%02d".format(hours, minutes, seconds)
         // } else {
@@ -130,6 +115,5 @@ object LocalVideoStore {
         } else {
             "%02d:%02d".format(minutes, seconds)
         }
-        // SMCPKG_SUPPORT<<<Cursor006
     }
 }

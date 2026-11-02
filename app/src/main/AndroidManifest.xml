@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- SMCPKG_SUPPORT>>>Cursor033 -->
     <uses-permission android:name="com.android.vending.BILLING" />
-    <!-- SMCPKG_SUPPORT<<<Cursor033 -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -22,14 +20,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.QuadVideoPlayer"
         android:localeConfig="@xml/locales_config">
-        <!-- SMCPKG_SUPPORT>>>Cursor032 was: android:value="ca-app-pub-3940256099942544~3347511713" -->
-        <!-- SMCPKG_SUPPORT>>>Cursor031 was: android:value="${admobAppId}" -->
+        <!-- was: android:value="ca-app-pub-3940256099942544~3347511713" -->
+        <!-- was: android:value="${admobAppId}" -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6138247296137119~9086588842" />
-        <!-- SMCPKG_SUPPORT<<<Cursor032 -->
-        <!-- SMCPKG_SUPPORT>>>Cursor005 was: android:screenOrientation="fullSensor" -->
-        <!-- SMCPKG_SUPPORT>>>Cursor012 was: android:screenOrientation="landscape" -->
+        <!-- was: android:screenOrientation="fullSensor" -->
+        <!-- was: android:screenOrientation="landscape" -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize"
@@ -43,7 +40,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- SMCPKG_SUPPORT>>>Cursor048 -->
         <!-- Stores the per-app locale on API 24–32. API 33+ uses LocaleManager. -->
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
@@ -53,6 +49,5 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
-        <!-- SMCPKG_SUPPORT<<<Cursor048 -->
     </application>
 </manifest>

@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,28 +24,19 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.ui
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.ui
 package com.apsmkimo.tetravideoplayer.ui
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.widget.Toast
-// SMCPKG_SUPPORT>>>Cursor051
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.rememberUpdatedState
-// SMCPKG_SUPPORT<<<Cursor051
-// SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.foundation.layout.Box
 // import androidx.compose.foundation.layout.fillMaxSize
-// SMCPKG_SUPPORT<<<Cursor024
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,26 +44,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-// SMCPKG_SUPPORT>>>Cursor024
 // import androidx.compose.ui.Modifier
-// SMCPKG_SUPPORT<<<Cursor024
 import androidx.compose.ui.platform.LocalContext
-// SMCPKG_SUPPORT>>>Cursor021
 // import com.example.quadvideoplayer.data.LayoutPreferences
 // import com.example.quadvideoplayer.data.PlayerLayout
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.LayoutPreferences
 import com.apsmkimo.tetravideoplayer.data.LayoutPreferences
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor030
 // import com.apsmkimo.tetraview.data.PlayerLayout
 import com.apsmkimo.tetravideoplayer.data.PlayerLayout
-// SMCPKG_SUPPORT>>>Cursor038
 import com.apsmkimo.tetravideoplayer.data.PlayerSettings
 import com.apsmkimo.tetravideoplayer.data.PlayerSettingsStore
-// SMCPKG_SUPPORT<<<Cursor038
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 /**
  * Every cold start shows [LauncherSelectionScreen]. The chosen layout is
@@ -86,14 +64,11 @@ import com.apsmkimo.tetravideoplayer.data.PlayerSettingsStore
 fun TetraViewApp() {
     val context = LocalContext.current
     val activity = context as Activity
-    // SMCPKG_SUPPORT>>>Cursor019
     // var persisted by remember { mutableStateOf(LayoutPreferences.load(context)) }
     // var layout by remember { mutableStateOf(persisted ?: PlayerLayout.LANDSCAPE_2X2) }
     // var showSelection by remember { mutableStateOf(persisted == null) }
     // var layout by remember { mutableStateOf<PlayerLayout?>(null) }
     // var showSelection by remember { mutableStateOf(true) }
-    // SMCPKG_SUPPORT<<<Cursor019
-    // SMCPKG_SUPPORT>>>Cursor048
     // A language change recreates the activity. Save the session so playback
     // and the open Settings screen survive that recreation.
     var layoutName by rememberSaveable { mutableStateOf<String?>(null) }
@@ -101,33 +76,22 @@ fun TetraViewApp() {
     val layout = layoutName?.let { name ->
         PlayerLayout.entries.firstOrNull { it.name == name }
     }
-    // SMCPKG_SUPPORT<<<Cursor048
-    // SMCPKG_SUPPORT>>>Cursor021
-    // SMCPKG_SUPPORT>>>Cursor038
     // var showAbout by remember { mutableStateOf(false) }
     // var showSettings by remember { mutableStateOf(false) }
-    // SMCPKG_SUPPORT>>>Cursor048
     var showSettings by rememberSaveable { mutableStateOf(false) }
-    // SMCPKG_SUPPORT<<<Cursor048
     var settings by remember { mutableStateOf(PlayerSettingsStore.load(context)) }
-    // SMCPKG_SUPPORT<<<Cursor038
-    // SMCPKG_SUPPORT>>>Cursor036
     // var showLicense by remember { mutableStateOf(false) }
-    // SMCPKG_SUPPORT<<<Cursor036
-    // SMCPKG_SUPPORT<<<Cursor021
 
     LaunchedEffect(Unit) {
         LayoutPreferences.clear(context)
     }
 
-    // SMCPKG_SUPPORT>>>Cursor038
     fun updateSettings(next: PlayerSettings) {
         settings = next
         PlayerSettingsStore.save(context, next)
     }
 
     fun orientationFor(selected: PlayerLayout?, atSelection: Boolean): Int {
-        // SMCPKG_SUPPORT>>>Cursor040
         // if (settings.allowRotation) {
         //     return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         // }
@@ -143,27 +107,18 @@ fun TetraViewApp() {
             return ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         }
         return selected.orientation
-        // SMCPKG_SUPPORT<<<Cursor040
     }
-    // SMCPKG_SUPPORT<<<Cursor038
 
     fun applyLayout(newLayout: PlayerLayout) {
-        // SMCPKG_SUPPORT>>>Cursor019
         // LayoutPreferences.save(context, newLayout)
         // persisted = newLayout
-        // SMCPKG_SUPPORT<<<Cursor019
-        // SMCPKG_SUPPORT>>>Cursor048
         // layout = newLayout
         layoutName = newLayout.name
-        // SMCPKG_SUPPORT<<<Cursor048
         showSelection = false
-        // SMCPKG_SUPPORT>>>Cursor038
         // activity.requestedOrientation = newLayout.orientation
         activity.requestedOrientation = orientationFor(newLayout, atSelection = false)
-        // SMCPKG_SUPPORT<<<Cursor038
     }
 
-    // SMCPKG_SUPPORT>>>Cursor038
     // LaunchedEffect(showSelection, layout) {
     //     activity.requestedOrientation = if (showSelection && layout == null) {
     //         ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -174,27 +129,20 @@ fun TetraViewApp() {
     LaunchedEffect(showSelection, layout, settings.allowRotation) {
         activity.requestedOrientation = orientationFor(layout, atSelection = showSelection)
     }
-    // SMCPKG_SUPPORT<<<Cursor038
 
-    // SMCPKG_SUPPORT>>>Cursor019
     // if (persisted == null && showSelection) {
     //     LauncherSelectionScreen(onLayoutSelected = ::applyLayout)
     // } else { ... overlay picker ... }
-    // SMCPKG_SUPPORT>>>Cursor042
     // Selection, playback, and settings were emitted directly on the window.
     ScreenMarginFrame(progress = settings.screenMargin) {
-    // SMCPKG_SUPPORT<<<Cursor042
     val selected = layout
     if (selected == null) {
         LauncherSelectionScreen(
             onLayoutSelected = ::applyLayout,
-            // SMCPKG_SUPPORT>>>Cursor038
             // onAbout = { showAbout = true },
             onSettings = { showSettings = true },
-            // SMCPKG_SUPPORT<<<Cursor038
         )
     } else {
-        // SMCPKG_SUPPORT>>>Cursor024
         // Box(modifier = Modifier.fillMaxSize()) {
         //     QuadPlayerScreen(
         //         layout = selected,
@@ -213,25 +161,15 @@ fun TetraViewApp() {
         QuadPlayerScreen(
             layout = selected,
             onChangeLayout = {
-                // SMCPKG_SUPPORT>>>Cursor048
                 // layout = null
                 layoutName = null
-                // SMCPKG_SUPPORT<<<Cursor048
                 showSelection = true
             },
-            // SMCPKG_SUPPORT>>>Cursor022
             // onAbout = { showAbout = true },
-            // SMCPKG_SUPPORT<<<Cursor022
-            // SMCPKG_SUPPORT>>>Cursor038
             settings = settings,
             onOpenSettings = { showSettings = true },
-            // SMCPKG_SUPPORT<<<Cursor038
         )
-        // SMCPKG_SUPPORT<<<Cursor024
     }
-    // SMCPKG_SUPPORT<<<Cursor019
-    // SMCPKG_SUPPORT>>>Cursor021
-    // SMCPKG_SUPPORT>>>Cursor036
     // if (showLicense) {
     //     LicenseTextScreen(onClose = { showLicense = false })
     // } else if (showAbout) {
@@ -240,7 +178,6 @@ fun TetraViewApp() {
     //         onViewLicense = { showLicense = true },
     //     )
     // }
-    // SMCPKG_SUPPORT>>>Cursor038
     // if (showAbout) {
     //     AboutScreen(
     //         onClose = { showAbout = false },
@@ -253,15 +190,9 @@ fun TetraViewApp() {
             onClose = { showSettings = false },
         )
     }
-    // SMCPKG_SUPPORT<<<Cursor038
-    // SMCPKG_SUPPORT<<<Cursor036
-    // SMCPKG_SUPPORT<<<Cursor021
-    // SMCPKG_SUPPORT>>>Cursor042
     }
-    // SMCPKG_SUPPORT<<<Cursor042
 }
 
-// SMCPKG_SUPPORT>>>Cursor051
 /**
  * First back shows [message]. A second back within [windowMs] runs [onConfirmed].
  * Registered on [androidx.activity.OnBackPressedDispatcher] via [BackHandler],
@@ -290,4 +221,3 @@ internal fun ConfirmBackHandler(
         }
     }
 }
-// SMCPKG_SUPPORT<<<Cursor051

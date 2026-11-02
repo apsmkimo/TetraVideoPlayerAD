@@ -28,7 +28,6 @@ import com.android.billingclient.api.QueryPurchasesParams
 import com.apsmkimo.tetravideoplayer.BuildConfig
 import java.util.concurrent.CopyOnWriteArrayList
 
-// SMCPKG_SUPPORT>>>Cursor033
 /**
  * One-time managed product that removes ads.
  *
@@ -58,14 +57,12 @@ class RemoveAdsBilling(private val app: Application) {
         FAILED,
     }
 
-    // SMCPKG_SUPPORT>>>Cursor054
     enum class RestoreResult {
         RESTORED,
         NONE,
         UNAVAILABLE,
         FAILED,
     }
-    // SMCPKG_SUPPORT<<<Cursor054
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val listeners = CopyOnWriteArrayList<EntitlementListener>()
@@ -190,7 +187,6 @@ class RemoveAdsBilling(private val app: Application) {
         }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor054
     /**
      * Re-queries Play for [PRODUCT_ID_REMOVE_ADS] and grants the existing
      * entitlement when a completed purchase is found.
@@ -226,7 +222,6 @@ class RemoveAdsBilling(private val app: Application) {
     private fun deliverRestore(onResult: (RestoreResult) -> Unit, value: RestoreResult) {
         mainHandler.post { onResult(value) }
     }
-    // SMCPKG_SUPPORT<<<Cursor054
 
     fun restoreAdsForDebug() {
         if (!BuildConfig.DEBUG) return
@@ -312,4 +307,3 @@ class RemoveAdsBilling(private val app: Application) {
             ?.offerToken
     }
 }
-// SMCPKG_SUPPORT<<<Cursor033

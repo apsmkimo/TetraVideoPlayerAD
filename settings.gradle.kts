@@ -20,12 +20,8 @@ dependencyResolutionManagement {
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor030
 // rootProject.name = "QuadVideoPlayer"
 rootProject.name = "TetraVideoPlayer"
-// SMCPKG_SUPPORT<<<Cursor030
 include(":app")
-// SMCPKG_SUPPORT>>>Cursor009
 // Official androidx.media3:media3-decoder-ffmpeg is not on Maven; local 1.11.0 module.
 include(":decoder-ffmpeg")
-// SMCPKG_SUPPORT<<<Cursor009

@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor049
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -38,9 +37,7 @@ import kotlinx.coroutines.delay
  */
 object PlayerChromeSignals {
     var onTouch: ((action: Int, pointerCount: Int) -> Unit)? = null
-    // SMCPKG_SUPPORT>>>Cursor050
     // var onVolumeKey: (() -> Unit)? = null
-    // SMCPKG_SUPPORT<<<Cursor050
 }
 
 /** Fingers still down after this MotionEvent. */
@@ -55,7 +52,6 @@ internal fun fingersDownAfterEvent(action: Int, pointerCount: Int): Int {
     }
 }
 
-// SMCPKG_SUPPORT>>>Cursor050
 // Per-pane ExoPlayer volume replaced STREAM_MUSIC. Hardware keys are left to the system.
 // /**
 //  * STREAM_MUSIC level for the whole phone. ExoPlayer's own [androidx.media3.exoplayer.ExoPlayer.volume]
@@ -201,5 +197,3 @@ internal fun fingersDownAfterEvent(action: Int, pointerCount: Int): Int {
 //     }
 //     return controller
 // }
-// // SMCPKG_SUPPORT<<<Cursor049
-// SMCPKG_SUPPORT<<<Cursor050

@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.data
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.data
 package com.apsmkimo.tetravideoplayer.data
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.content.Context
 
@@ -44,13 +36,10 @@ import android.content.Context
  * every cold start shows the picker. [clear] wipes any leftover key.
  */
 object LayoutPreferences {
-    // SMCPKG_SUPPORT>>>Cursor030
     // private const val PREFS_NAME = "tetraview_layout"
     private const val PREFS_NAME = "tetravideoplayer_layout"
-    // SMCPKG_SUPPORT<<<Cursor030
     private const val KEY_LAYOUT = "player_layout"
 
-    // SMCPKG_SUPPORT>>>Cursor019
     // fun load(context: Context): PlayerLayout? {
     //     val raw = context.applicationContext
     //         .getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -73,5 +62,4 @@ object LayoutPreferences {
             .remove(KEY_LAYOUT)
             .apply()
     }
-    // SMCPKG_SUPPORT<<<Cursor019
 }

@@ -42,10 +42,8 @@ captures/
 # Keystore files
 *.jks
 *.keystore
-# SMCPKG_SUPPORT>>>Cursor012
 # Committed debug keystore so local and CI debug APKs share one signature.
 !app/debug.keystore
-# SMCPKG_SUPPORT<<<Cursor012
 
 # Google Services (uncomment if you add Firebase)
 # google-services.json
@@ -53,12 +51,10 @@ captures/
 # NDK
 obj/
 
-# SMCPKG_SUPPORT>>>Cursor009
 # FFmpeg / libyuv source (prebuilt jniLibs are committed)
 decoder-ffmpeg/src/main/jni/ffmpeg/
 decoder-ffmpeg/src/main/jni/libyuv/
 decoder-ffmpeg/.cxx-rebuild/
-# SMCPKG_SUPPORT<<<Cursor009
 
 # Lint
 lint/intermediates/

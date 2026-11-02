@@ -150,7 +150,6 @@ public final class FfmpegLibrary {
         return "pcm_mulaw";
       case MimeTypes.AUDIO_ALAW:
         return "pcm_alaw";
-      // SMCPKG_SUPPORT>>>Cursor010
       // H.264 / HEVC stay on hardware MediaCodec under PREFER so 4-way modern
       // MP4 does not burn CPU. Old AVI codecs take the FFmpeg video path.
       // case MimeTypes.VIDEO_H264:
@@ -175,7 +174,6 @@ public final class FfmpegLibrary {
         return "flv";
       case MimeTypes.VIDEO_VC1:
         return "vc1";
-      // SMCPKG_SUPPORT<<<Cursor010
       default:
         return null;
     }

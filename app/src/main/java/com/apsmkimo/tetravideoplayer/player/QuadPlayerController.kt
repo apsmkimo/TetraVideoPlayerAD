@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.player
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.player
 package com.apsmkimo.tetravideoplayer.player
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.content.Context
 import android.net.Uri
@@ -79,17 +71,13 @@ import kotlinx.coroutines.yield
 class QuadPlayerController(
     context: Context,
     val playerCount: Int = PLAYER_COUNT,
-    // SMCPKG_SUPPORT>>>Cursor038
     initialDecodeModes: List<DecodeMode> = emptyList(),
     initialLoop: List<Boolean> = emptyList(),
-    // SMCPKG_SUPPORT<<<Cursor038
-    // SMCPKG_SUPPORT>>>Cursor042
     /**
      * When true, new ExoPlayers use the stronger LoadControl and a longer
      * progressive read slice. Existing instances are not rebuilt.
      */
     private val strongBuffering: Boolean = false,
-    // SMCPKG_SUPPORT<<<Cursor042
 ) {
     private val appContext = context.applicationContext
     private val dataSourceFactory = DefaultDataSource.Factory(appContext)
@@ -98,14 +86,11 @@ class QuadPlayerController(
         dataSourceFactory,
         ExtractorsFactory { arrayOf(AviExtractor(0, DefaultSubtitleParserFactory())) },
     ).apply {
-        // SMCPKG_SUPPORT>>>Cursor042
         // Default check interval (1 MiB) stays when stronger buffering is off.
         if (strongBuffering) {
             setContinueLoadingCheckIntervalBytes(STRONG_LOADING_CHECK_INTERVAL_BYTES)
         }
-        // SMCPKG_SUPPORT<<<Cursor042
     }
-    // SMCPKG_SUPPORT>>>Cursor042
     /**
      * Non-AVI playback keeps [defaultMediaSourceFactory] when the switch is off.
      * When on, plain progressive files use this factory so the read slice matches
@@ -121,9 +106,7 @@ class QuadPlayerController(
         } else {
             null
         }
-    // SMCPKG_SUPPORT<<<Cursor042
 
-    // SMCPKG_SUPPORT>>>Cursor038
     // val players: List<ExoPlayer> = List(playerCount) { index ->
     //     createHardwareFirstPlayer(appContext).apply {
     //         repeatMode = Player.REPEAT_MODE_ONE
@@ -153,35 +136,23 @@ class QuadPlayerController(
         )
     }
     val players: List<ExoPlayer> get() = playerSlots
-    // SMCPKG_SUPPORT<<<Cursor038
 
     @Volatile
     private var released: Boolean = false
 
-    // SMCPKG_SUPPORT>>>Cursor014
     // private val swapMutex = Mutex()
     // @Volatile
     // private var swapping: Boolean = false
-    // SMCPKG_SUPPORT<<<Cursor014
-    // SMCPKG_SUPPORT>>>Cursor016
     // One mutex per player so preparing cell N never blocks cell 0's renderer.
     private val swapMutexes = Array(playerCount) { Mutex() }
     private val boundViews = arrayOfNulls<PlayerView>(playerCount)
-    // SMCPKG_SUPPORT<<<Cursor016
-    // SMCPKG_SUPPORT>>>Cursor017
     // True after a pick (or Play) until the user pauses that cell.
     private val autoplayWanted = BooleanArray(playerCount)
-    // SMCPKG_SUPPORT>>>Cursor052
     /** True while this pane's seek bar is being dragged. Blocks auto-resume. */
     private val scrubbing = BooleanArray(playerCount)
-    // SMCPKG_SUPPORT<<<Cursor052
-    // SMCPKG_SUPPORT<<<Cursor017
-    // SMCPKG_SUPPORT>>>Cursor018
     private val mainHandler = Handler(Looper.getMainLooper())
     private val bufferingRecoveries = arrayOfNulls<Runnable>(playerCount)
-    // SMCPKG_SUPPORT<<<Cursor018
 
-    // SMCPKG_SUPPORT>>>Cursor004
     // fun setUnmuted(index: Int) {
     //     if (released) return
     //     players.forEachIndexed { i, player ->
@@ -195,9 +166,7 @@ class QuadPlayerController(
     //         player.playWhenReady = playing
     //     }
     // }
-    // SMCPKG_SUPPORT<<<Cursor004
 
-    // SMCPKG_SUPPORT>>>Cursor038
     fun applyLoop(index: Int, loop: Boolean) {
         if (released || index !in playerSlots.indices) return
         loopEnabled[index] = loop
@@ -226,10 +195,8 @@ class QuadPlayerController(
         repeatMode: Int,
         volume: Float,
     ): ExoPlayer {
-        // SMCPKG_SUPPORT>>>Cursor042
         // return createHardwareFirstPlayer(appContext, decodeMode).apply {
         return createHardwareFirstPlayer(appContext, decodeMode, strongBuffering).apply {
-        // SMCPKG_SUPPORT<<<Cursor042
             this.repeatMode = repeatMode
             this.volume = volume
             setAudioAttributes(concurrentMediaAttributes(), /* handleAudioFocus = */ false)
@@ -290,14 +257,12 @@ class QuadPlayerController(
     private fun repeatModeFor(loop: Boolean): Int {
         return if (loop) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
     }
-    // SMCPKG_SUPPORT<<<Cursor038
 
     fun pauseAll() {
         if (released) return
         players.forEach { it.pause() }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor024
     /**
      * Stop and forget media on every cell without releasing the ExoPlayers.
      * Used when returning to layout selection so the next session starts empty.
@@ -317,18 +282,15 @@ class QuadPlayerController(
             }
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor024
 
     fun resumePlaying(playingFlags: List<Boolean>) {
         if (released) return
-        // SMCPKG_SUPPORT>>>Cursor015
         // players.forEachIndexed { index, player ->
         //     if (playingFlags.getOrElse(index) { false }) {
         //         player.play()
         //     }
         // }
         restorePlayback(playingFlags)
-        // SMCPKG_SUPPORT<<<Cursor015
     }
 
     fun snapshotPlaying(): List<Boolean> {
@@ -336,8 +298,6 @@ class QuadPlayerController(
         return players.map { it.playWhenReady || it.isPlaying }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor014
-    // SMCPKG_SUPPORT>>>Cursor015
     // fun bindPlayerView(index: Int, view: PlayerView?) {
     //     boundViews[index] = view
     //     if (view == null) { detachSurface(index); return }
@@ -347,28 +307,22 @@ class QuadPlayerController(
     fun attachPlayerView(index: Int, view: PlayerView) {
         if (index !in players.indices) return
         boundViews[index] = view
-        // SMCPKG_SUPPORT>>>Cursor016
         // if (swapping) return
-        // SMCPKG_SUPPORT<<<Cursor016
         val player = players[index]
         runCatching { view.player = player }
             .onFailure { error -> Log.w(TAG, "attach PlayerView[$index] failed", error) }
-        // SMCPKG_SUPPORT>>>Cursor017
         // Surface often arrives after setVideo prepared. Kick play on the live instance.
         if (autoplayWanted[index] && player.mediaItemCount > 0) {
             player.playWhenReady = true
             runCatching { player.play() }
                 .onFailure { error -> Log.w(TAG, "attach play[$index] failed", error) }
         }
-        // SMCPKG_SUPPORT<<<Cursor017
     }
 
-    // SMCPKG_SUPPORT>>>Cursor017
     /**
      * Play/Pause overlay: always the live ExoPlayer for [index], after re-binding
      * its TextureView. Isolation: never touches other cells.
      */
-    // SMCPKG_SUPPORT>>>Cursor052
     /**
      * Marks one pane as scrubbing so buffering recovery and the ready-to-play
      * listener do not resume it. Other panes are unchanged.
@@ -380,7 +334,6 @@ class QuadPlayerController(
             cancelBufferingRecovery(index)
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor052
 
     fun togglePlay(index: Int) {
         if (released || index !in players.indices) return
@@ -400,7 +353,6 @@ class QuadPlayerController(
         runCatching { player.play() }
             .onFailure { error -> Log.w(TAG, "toggle play[$index] failed", error) }
     }
-    // SMCPKG_SUPPORT<<<Cursor017
 
     fun detachPlayerView(index: Int, view: PlayerView) {
         if (index !in players.indices) return
@@ -438,15 +390,11 @@ class QuadPlayerController(
             }
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor015
 
-    // SMCPKG_SUPPORT>>>Cursor016
     // suspend fun awaitSwapIdle() {
     //     swapMutex.withLock { }
     // }
-    // SMCPKG_SUPPORT<<<Cursor016
 
-    // SMCPKG_SUPPORT>>>Cursor013
     // fun setVideo(index: Int, uri: Uri?, playWhenReady: Boolean) {
     //     if (released) return
     //     if (index !in players.indices) return
@@ -461,13 +409,11 @@ class QuadPlayerController(
     //     player.playWhenReady = playWhenReady
     //     ...
     // }
-    // SMCPKG_SUPPORT<<<Cursor013
 
     /**
      * Affects only [index]. Attach that cell's TextureView, then prepare and play.
      * Siblings are not paused or rebound.
      */
-    // SMCPKG_SUPPORT>>>Cursor016
     /**
      * Affects only [index]. Empty [uri] is ignored so a loop over slots
      * cannot stop a playing sibling. Mutex is per-player.
@@ -477,7 +423,6 @@ class QuadPlayerController(
         // Never stop/clear a cell because its URI slot is still empty.
         if (uri == null) return
         swapMutexes[index].withLock {
-            // SMCPKG_SUPPORT>>>Cursor017
             // 1.0.6 detached PlayerView then prepared. Empty cells and picker-close
             // races left boundViews[index] null, so rebound?.player was a no-op.
             // MediaCodec then waited forever for a surface → STATE_BUFFERING at 00:00.
@@ -490,12 +435,9 @@ class QuadPlayerController(
             withContext(NonCancellable) {
                 applyVideoOnCell(index, uri, playWhenReady)
             }
-            // SMCPKG_SUPPORT<<<Cursor017
         }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor017
-    // SMCPKG_SUPPORT>>>Cursor018
     // 1.0.7 always stop/clear + 48ms + awaitBoundView even on first pick.
     // That left first-load in BUFFERING at 00:00. First pick: attach→prepare→play.
     // private suspend fun applyVideoOnCell(...) { stop(); delay(48); awaitBoundView(); ... }
@@ -554,10 +496,8 @@ class QuadPlayerController(
     private fun scheduleBufferingRecovery(index: Int) {
         cancelBufferingRecovery(index)
         val task = Runnable {
-            // SMCPKG_SUPPORT>>>Cursor052
             // if (released || !autoplayWanted[index]) return@Runnable
             if (released || scrubbing[index] || !autoplayWanted[index]) return@Runnable
-            // SMCPKG_SUPPORT<<<Cursor052
             val player = players[index]
             if (player.playbackState != Player.STATE_BUFFERING) return@Runnable
             Log.w(TAG, "ExoPlayer[$index] BUFFERING >${BUFFERING_RECOVERY_MS}ms; retry prepare/play")
@@ -578,9 +518,6 @@ class QuadPlayerController(
         bufferingRecoveries[index]?.let { mainHandler.removeCallbacks(it) }
         bufferingRecoveries[index] = null
     }
-    // SMCPKG_SUPPORT<<<Cursor018
-    // SMCPKG_SUPPORT<<<Cursor017
-    // SMCPKG_SUPPORT<<<Cursor016
 
     private fun detachSurface(index: Int) {
         if (index !in players.indices) return
@@ -618,22 +555,17 @@ class QuadPlayerController(
         }
     }
 
-    // SMCPKG_SUPPORT>>>Cursor017
     private inner class AutoPlayOnReadyListener(
         private val playerIndex: Int,
     ) : Player.Listener {
         override fun onPlaybackStateChanged(playbackState: Int) {
             if (released) return
-            // SMCPKG_SUPPORT>>>Cursor018
             if (playbackState == Player.STATE_BUFFERING && autoplayWanted[playerIndex]) {
                 scheduleBufferingRecovery(playerIndex)
             } else {
                 cancelBufferingRecovery(playerIndex)
             }
-            // SMCPKG_SUPPORT<<<Cursor018
-            // SMCPKG_SUPPORT>>>Cursor052
             if (scrubbing[playerIndex]) return
-            // SMCPKG_SUPPORT<<<Cursor052
             if (!autoplayWanted[playerIndex]) return
             if (playbackState != Player.STATE_READY) return
             val player = players[playerIndex]
@@ -643,12 +575,9 @@ class QuadPlayerController(
                 .onFailure { error -> Log.w(TAG, "ready play[$playerIndex] failed", error) }
         }
     }
-    // SMCPKG_SUPPORT<<<Cursor017
-    // SMCPKG_SUPPORT<<<Cursor014
 
     private fun createMediaSource(uri: Uri): MediaSource {
         val mediaItem = MediaItem.fromUri(uri)
-        // SMCPKG_SUPPORT>>>Cursor042
         // return if (isAviUri(uri)) {
         //     aviMediaSourceFactory.createMediaSource(mediaItem)
         // } else {
@@ -662,7 +591,6 @@ class QuadPlayerController(
         } else {
             defaultMediaSourceFactory.createMediaSource(mediaItem)
         }
-        // SMCPKG_SUPPORT<<<Cursor042
     }
 
     private fun isAviUri(uri: Uri): Boolean {
@@ -701,9 +629,7 @@ class QuadPlayerController(
     fun releaseAll() {
         if (released) return
         released = true
-        // SMCPKG_SUPPORT>>>Cursor018
         repeat(playerCount) { cancelBufferingRecovery(it) }
-        // SMCPKG_SUPPORT<<<Cursor018
         players.forEach { player ->
             player.playWhenReady = false
             player.stop()
@@ -714,12 +640,9 @@ class QuadPlayerController(
 
     companion object {
         const val PLAYER_COUNT = 4
-        // SMCPKG_SUPPORT>>>Cursor004
         // const val DEFAULT_UNMUTED_INDEX = 0
-        // SMCPKG_SUPPORT<<<Cursor004
         const val GRID_COLUMNS = 2
 
-        // SMCPKG_SUPPORT>>>Cursor011
         // Larger min/max than the 2.5s/5s start thresholds so AVI can preload,
         // without exceeding 50s cached per player (4-way memory budget).
         // const val MIN_BUFFER_MS = 15_000
@@ -727,7 +650,6 @@ class QuadPlayerController(
         // const val BUFFER_FOR_PLAYBACK_MS = 2_500
         // const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = 5_000
         // LoadControl invariants: min >= playback buffers, max >= min.
-        // SMCPKG_SUPPORT>>>Cursor014
         // const val MIN_BUFFER_MS = 15_000
         // const val MAX_BUFFER_MS = 50_000
         // const val BUFFER_FOR_PLAYBACK_MS = 5_000
@@ -737,7 +659,6 @@ class QuadPlayerController(
         const val BUFFER_FOR_PLAYBACK_MS = 2_500
         const val BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS = 5_000
         const val TARGET_BUFFER_BYTES = 6 * 1024 * 1024
-        // SMCPKG_SUPPORT>>>Cursor042
         // Stronger profile. setBufferDurationsMs writes both the streaming and
         // the local (file / content / asset) durations, so internal storage,
         // SD, USB/OTG, SAF content://, and network shares share one policy.
@@ -753,20 +674,12 @@ class QuadPlayerController(
         const val STRONG_TARGET_BUFFER_BYTES = 12 * 1024 * 1024
         /** Media3's default progressive check interval is 1 MiB. */
         const val STRONG_LOADING_CHECK_INTERVAL_BYTES = 2 * 1024 * 1024
-        // SMCPKG_SUPPORT<<<Cursor042
         const val SWAP_TEARDOWN_MS = 48L
-        // SMCPKG_SUPPORT>>>Cursor017
         // private const val SURFACE_WAIT_FRAMES = 32
         // private const val SURFACE_WAIT_FRAME_MS = 16L
-        // SMCPKG_SUPPORT<<<Cursor017
-        // SMCPKG_SUPPORT>>>Cursor018
         private const val BUFFERING_RECOVERY_MS = 3_000L
-        // SMCPKG_SUPPORT<<<Cursor018
-        // SMCPKG_SUPPORT>>>Cursor030
         // private const val TAG = "TetraViewPlayer"
         private const val TAG = "TetraVideoPlayer"
-        // SMCPKG_SUPPORT<<<Cursor030
-        // SMCPKG_SUPPORT<<<Cursor014
         // Longer than the 5s default so a corrupt AVI video index can "join"
         // without blocking the audio MediaClock (DefaultMediaClock).
         const val ALLOWED_VIDEO_JOINING_TIME_MS = 15_000L
@@ -774,7 +687,6 @@ class QuadPlayerController(
         // drop decoder inputs predicted to render late so video skips silently
         // instead of stalling the audio-driven clock.
         const val LATE_THRESHOLD_TO_DROP_DECODER_INPUT_US = 5_000L
-        // SMCPKG_SUPPORT<<<Cursor011
 
         private val AVI_MIME_TYPES = setOf(
             "video/avi",
@@ -783,7 +695,6 @@ class QuadPlayerController(
             "video/msvideo",
         )
 
-        // SMCPKG_SUPPORT>>>Cursor007
         // fun createSoftDecodeRenderersFactory(context: Context): DefaultRenderersFactory {
         //     return DefaultRenderersFactory(context.applicationContext)
         //         .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
@@ -796,34 +707,26 @@ class QuadPlayerController(
         //         MediaCodecUtil.getDecoderInfos(...).sortedBy { if (it.hardwareAccelerated) 1 else 0 }
         //     }
         // }
-        // SMCPKG_SUPPORT<<<Cursor007
 
-        // SMCPKG_SUPPORT>>>Cursor038
         // fun createHardwareFirstPlayer(context: Context): ExoPlayer {
         @OptIn(UnstableApi::class)
         fun createHardwareFirstPlayer(
             context: Context,
             decodeMode: DecodeMode = DecodeMode.HARDWARE,
-            // SMCPKG_SUPPORT>>>Cursor042
             strongBuffering: Boolean = false,
-            // SMCPKG_SUPPORT<<<Cursor042
         ): ExoPlayer {
-        // SMCPKG_SUPPORT<<<Cursor038
             val appContext = context.applicationContext
             // Load libffmpegJNI.so so DefaultRenderersFactory can instantiate FfmpegAudioRenderer.
             FfmpegLibrary.isAvailable()
             val renderersFactory = DefaultRenderersFactory(appContext)
-                // SMCPKG_SUPPORT>>>Cursor009
                 // .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON)
                 // Prefer bundled FFmpeg software decoders (Media3 decoder_ffmpeg) when
                 // the extension can handle the stream (old AVI video + MP3/AC3 audio).
                 // H.264/HEVC are not advertised so modern MP4 stays on MediaCodec.
                 // Hardware MediaCodec stays registered as fallback via decoder fallback.
                 .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
-                // SMCPKG_SUPPORT<<<Cursor009
                 .setEnableDecoderFallback(true)
                 .setEnableAudioTrackPlaybackParams(true)
-                // SMCPKG_SUPPORT>>>Cursor011
                 // Audio-driven clock: ExoPlayer DefaultMediaClock uses the audio
                 // renderer (FfmpegAudioRenderer / MediaCodecAudioRenderer) as
                 // MediaClock. Video does not own the clock; late/missing AVI
@@ -835,8 +738,6 @@ class QuadPlayerController(
                 .experimentalSetLateThresholdToDropDecoderInputUs(
                     LATE_THRESHOLD_TO_DROP_DECODER_INPUT_US,
                 )
-                // SMCPKG_SUPPORT<<<Cursor011
-            // SMCPKG_SUPPORT>>>Cursor042
             // val loadControl = DefaultLoadControl.Builder()
             //     .setBufferDurationsMs(
             //         MIN_BUFFER_MS,
@@ -868,22 +769,14 @@ class QuadPlayerController(
                         BUFFER_FOR_PLAYBACK_MS,
                         BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS,
                     )
-                    // SMCPKG_SUPPORT>>>Cursor011
                     // .setPrioritizeTimeOverSizeThresholds(true)
-                    // SMCPKG_SUPPORT<<<Cursor011
-                    // SMCPKG_SUPPORT>>>Cursor014
                     .setTargetBufferBytes(TARGET_BUFFER_BYTES)
-                    // SMCPKG_SUPPORT>>>Cursor018
                     // .setPrioritizeTimeOverSizeThresholds(false)
                     // Size-first + 6MB target kept shouldStartPlayback false on some
                     // devices → forever BUFFERING at 00:00. Time thresholds can start.
                     .setPrioritizeTimeOverSizeThresholds(true)
-                    // SMCPKG_SUPPORT<<<Cursor018
-                    // SMCPKG_SUPPORT<<<Cursor014
                     .build()
             }
-            // SMCPKG_SUPPORT<<<Cursor042
-            // SMCPKG_SUPPORT>>>Cursor038
             // HW keeps the factory above: FFmpeg only for allowlisted legacy codecs,
             // H.264/HEVC/VP9/AV1 on hardware MediaCodec (default selector order).
             // SW keeps that FFmpeg path and asks MediaCodec to try software
@@ -891,18 +784,14 @@ class QuadPlayerController(
             if (decodeMode == DecodeMode.SOFTWARE) {
                 renderersFactory.setMediaCodecSelector(preferSoftwareMediaCodecSelector())
             }
-            // SMCPKG_SUPPORT>>>Cursor042
             // Log.i(TAG, "create player decodeMode=$decodeMode")
             Log.i(TAG, "create player decodeMode=$decodeMode strongBuffering=$strongBuffering")
-            // SMCPKG_SUPPORT<<<Cursor042
-            // SMCPKG_SUPPORT<<<Cursor038
             return ExoPlayer.Builder(appContext, renderersFactory)
                 .setLoadControl(loadControl)
                 .setVideoChangeFrameRateStrategy(C.VIDEO_CHANGE_FRAME_RATE_STRATEGY_OFF)
                 .build()
         }
 
-        // SMCPKG_SUPPORT>>>Cursor038
         /**
          * Software decoders (c2.android.* / OMX.google.*) first.
          * [setEnableDecoderFallback] still tries the next decoder, so a device
@@ -922,15 +811,12 @@ class QuadPlayerController(
                 infos.sortedBy { info -> if (info.hardwareAccelerated) 1 else 0 }
             }
         }
-        // SMCPKG_SUPPORT<<<Cursor038
 
         fun concurrentMediaAttributes(): AudioAttributes {
             return AudioAttributes.Builder()
                 .setUsage(C.USAGE_MEDIA)
-                // SMCPKG_SUPPORT>>>Cursor004
                 // .setContentType(C.CONTENT_TYPE_MOVIE)
                 .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                // SMCPKG_SUPPORT<<<Cursor004
                 .build()
         }
     }

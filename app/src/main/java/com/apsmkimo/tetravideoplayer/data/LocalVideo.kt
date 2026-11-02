@@ -1,4 +1,3 @@
-// SMCPKG_SUPPORT>>>Cursor030
 /*
  * TetraVideoPlayer
  * Copyright (C) 2026 apsmkimo
@@ -8,8 +7,6 @@
  * modification, or use is strictly prohibited except as expressly
  * permitted in writing by the copyright holder.
  */
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT>>>Cursor044
 // /*
 //  * TetraView / FreeQuadPlayer
 //  * Copyright (C) 2026 apsmkimo
@@ -27,15 +24,10 @@
 //  * You should have received a copy of the GNU General Public License
 //  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //  */
-// SMCPKG_SUPPORT<<<Cursor044
 
-// SMCPKG_SUPPORT>>>Cursor021
 // package com.example.quadvideoplayer.data
-// SMCPKG_SUPPORT>>>Cursor030
 // package com.apsmkimo.tetraview.data
 package com.apsmkimo.tetravideoplayer.data
-// SMCPKG_SUPPORT<<<Cursor030
-// SMCPKG_SUPPORT<<<Cursor021
 
 import android.net.Uri
 
@@ -44,10 +36,8 @@ data class LocalVideo(
     val uri: Uri,
     val displayName: String,
     val durationMs: Long,
-    // SMCPKG_SUPPORT>>>Cursor006
     val bucketId: Long,
     val bucketDisplayName: String,
-    // SMCPKG_SUPPORT<<<Cursor006
 )
 
 data class LocalVideoFolder(

@@ -5,9 +5,7 @@ on:
   # Also build PRs so FFmpeg JNI packaging is verified before merge.
   pull_request:
     branches: [main]
-  # SMCPKG_SUPPORT>>>Cursor034
   workflow_dispatch:
-  # SMCPKG_SUPPORT<<<Cursor034
 
 jobs:
   build:
@@ -27,12 +25,10 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # SMCPKG_SUPPORT>>>Cursor030
       # NDK is not required for this debug job: :decoder-ffmpeg ships prebuilt
       # libffmpegJNI.so. Release bundleRelease installs NDK r27 only to extract
       # native debug symbols. Rebuild natives locally with
       # ./decoder-ffmpeg/rebuild-native.sh (NDK r26b + FFmpeg 6.0).
-      # SMCPKG_SUPPORT<<<Cursor030
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
@@ -42,7 +38,6 @@ jobs:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
 
-  # SMCPKG_SUPPORT>>>Cursor034
   # Signed Play Console AAB. Restricted to main / workflow_dispatch so PRs and
   # forks do not fail when ANDROID_* secrets are absent. If any secret is
   # missing the job still succeeds and skips the Gradle release steps.
@@ -100,7 +95,6 @@ jobs:
           fi
           echo "KEYSTORE_FILE=${KEYSTORE_PATH}" >> "$GITHUB_ENV"
 
-      # SMCPKG_SUPPORT>>>Cursor039
       # AGP 8.7 default NDK. llvm-objcopy extracts SYMBOL_TABLE from prebuilt
       # libffmpegJNI.so into the AAB and native-debug-symbols.zip.
       - name: Install NDK for native debug symbols
@@ -115,7 +109,6 @@ jobs:
           fi
           yes | "${SM}" --sdk_root="${SDK}" --licenses >/dev/null || true
           "${SM}" --sdk_root="${SDK}" "ndk;27.0.12077973"
-      # SMCPKG_SUPPORT<<<Cursor039
 
       - name: Build signed release AAB
         if: steps.signing.outputs.has_secrets == 'true'
@@ -132,7 +125,6 @@ jobs:
           name: app-release
           path: app/build/outputs/bundle/release/app-release.aab
 
-      # SMCPKG_SUPPORT>>>Cursor039
       # Also embedded in the AAB. Kept as artifacts if Play Console still asks
       # for a separate mapping or native-debug-symbols upload.
       - name: Upload R8 mapping
@@ -150,5 +142,3 @@ jobs:
           name: app-release-native-debug-symbols
           path: app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip
           if-no-files-found: error
-      # SMCPKG_SUPPORT<<<Cursor039
-  # SMCPKG_SUPPORT<<<Cursor034
